@@ -34,48 +34,59 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           //for alignment
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 100,horizontal: 50),
-            child: Column(
-              children: [
-                Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)
+          SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 100,horizontal: 50),
+              child: Column(
+                children: [
+                  Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)
+                    ),
+                    child: Image.asset(
+                        "assets/images/shop_logo.png"
+                    ),
                   ),
-                  child: Image.asset(
-                    "assets/images/shop_logo.png"
-                  ),
-                ),
-                Text(
+                  Text(
                     "JuePos",
                     style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30
                     ),
-                ),
-                SizedBox(height: 5,),
-                userInput(
-                    "UserId",
-                    Icon(Icons.fingerprint),
-                    TextInputType.text),//input for userid
-                SizedBox(height: 5,),
-                userInput(
-                    "Password",
-                    Icon(Icons.lock),
-                    TextInputType.text,
-                    obtext: true),//input for password
-                Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: (){},
-                      child: Text("LOGIN")
                   ),
-                )
-              ],
+                  SizedBox(height: 5,),
+                  userInput(
+                      "UserId",
+                      Icon(Icons.fingerprint),
+                      TextInputType.text,
+                      userid_controller),//input for userid
+                  SizedBox(height: 5,),
+                  userInput(
+                      "Password",
+                      Icon(Icons.lock),
+                      TextInputType.text,
+                      password_controller,
+                      obtext: true),//input for password
+                  Container(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        onPressed: (){},
+                        child: Text(
+                            "LOGIN",
+                          style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold
+                          ),
+                        )
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         ],
@@ -83,7 +94,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget userInput(String hint_text,Icon icon,TextInputType type,{bool? obtext}){
+  Widget userInput(String hint_text,Icon icon,TextInputType type,TextEditingController t_controller,{bool? obtext}){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
@@ -98,6 +109,7 @@ class LoginScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
+        controller: t_controller,
         keyboardType: type,
         obscureText: obtext??false,
         decoration: InputDecoration(

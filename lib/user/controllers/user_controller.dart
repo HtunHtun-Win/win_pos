@@ -15,4 +15,5 @@ class UserController extends GetxController {
       users.add(User.fromMap(data));
     });
   }
+
 }
