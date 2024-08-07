@@ -1,0 +1,28 @@
+import 'package:flutter/material.dart';
+import 'package:jue_pos/category/screens/category_screen.dart';
+import 'package:jue_pos/core/database/db_helper.dart';
+import 'package:jue_pos/user/screens/login_screen.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    DbHelper dbObj = DbHelper();
+    dbObj.copyDatabase();
+    return MaterialApp(
+      title: 'JuePos',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: LoginScreen(),
+    );
+  }
+}

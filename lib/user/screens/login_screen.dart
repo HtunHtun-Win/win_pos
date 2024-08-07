@@ -1,0 +1,115 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:jue_pos/user/controllers/user_controller.dart';
+import 'package:path/path.dart';
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    UserController controller = UserController();
+    TextEditingController userid_controller = TextEditingController();
+    TextEditingController password_controller = TextEditingController();
+    return Scaffold(
+      body: Stack(
+        children: [
+          //for background color
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.blue,
+                  Colors.blueAccent,
+                  Colors.blueAccent,
+                  Colors.blue,
+                ],
+                stops: [0.1,0.3,0.7,0.9]
+              )
+            ),
+          ),
+          //for alignment
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 100,horizontal: 50),
+            child: Column(
+              children: [
+                Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: Image.asset(
+                    "assets/images/shop_logo.png"
+                  ),
+                ),
+                Text(
+                    "JuePos",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30
+                    ),
+                ),
+                SizedBox(height: 5,),
+                userInput(
+                    "UserId",
+                    Icon(Icons.fingerprint),
+                    TextInputType.text),//input for userid
+                SizedBox(height: 5,),
+                userInput(
+                    "Password",
+                    Icon(Icons.lock),
+                    TextInputType.text,
+                    obtext: true),//input for password
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                      onPressed: (){},
+                      child: Text("LOGIN")
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget userInput(String hint_text,Icon icon,TextInputType type,{bool? obtext}){
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.3),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              offset:Offset(5,5),
+              blurRadius: 20
+          )
+        ],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        keyboardType: type,
+        obscureText: obtext??false,
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: hint_text,
+            hintStyle: TextStyle(
+              color: Colors.white
+            ),
+            iconColor: Colors.white,
+            icon: icon
+        ),
+      ),
+    );
+  }
+}
