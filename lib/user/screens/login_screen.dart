@@ -60,7 +60,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 5,),
                   userInput(
-                      "UserId",
+                      "LoginId",
                       Icon(Icons.fingerprint),
                       TextInputType.text,
                       userid_controller),//input for userid
@@ -74,7 +74,11 @@ class LoginScreen extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: (){},
+                        onPressed: (){
+                          var loginId = userid_controller.text;
+                          var password = password_controller.text;
+                          controller.validUser(loginId,password);
+                        },
                         child: Text(
                             "LOGIN",
                           style: TextStyle(
@@ -112,6 +116,9 @@ class LoginScreen extends StatelessWidget {
         controller: t_controller,
         keyboardType: type,
         obscureText: obtext??false,
+        style: TextStyle(
+          color: Colors.white
+        ),
         decoration: InputDecoration(
             border: InputBorder.none,
             hintText: hint_text,
