@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserController controller = UserController();
+    UserController controller = Get.put(UserController());
     TextEditingController userid_controller = TextEditingController();
     TextEditingController password_controller = TextEditingController();
     //pre setup userid and password
@@ -82,12 +82,12 @@ class LoginScreen extends StatelessWidget {
                         onPressed: ()async{
                           var loginId = userid_controller.text;
                           var password = password_controller.text;
-                          var isValid = await controller.validUser(loginId,password);
-                          if(isValid){
-                            Get.to(UserScreen());
+                          var user = await controller.validUser(loginId,password);
+                          if(user.isNotEmpty){
+                            Get.to(()=>UserScreen());
                           }else{
                             Get.snackbar(
-                                "Invalid Credentials", 
+                                "Invalid Credentials",
                                 "Wrong UserId or Password!",
                                 colorText: Colors.white,
                                 backgroundColor: Colors.black.withOpacity(.3),

@@ -7,12 +7,12 @@ class UserService {
     return await userRepo.getAll();
   }
 
-  Future<bool> validUser(String loginId,String password) async{
+  Future<Map<String,dynamic>> validUser(String loginId,String password) async{
     var datas = await userRepo.validUser(loginId,password);
     if(datas.isNotEmpty){
-      return true;
+      return datas[0];
     }else{
-      return false;
+      return {};
     }
 }
 }

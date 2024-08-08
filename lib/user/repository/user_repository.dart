@@ -12,6 +12,6 @@ class UserRepository {
 
   Future<List> validUser(String loginId,String password) async{
     final database = await dbObj.database;
-    return await database.query("users",where: "login_id=? AND password=?",whereArgs: [loginId,password]);
+    return await database.query("users",where: "login_id=? AND password=? AND isactive=?",whereArgs: [loginId,password,0]);
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ class UserController extends GetxController {
   UserService service = UserService();
 
   var users = [].obs;
+  var current_user = {}.obs;
 
   Future<void> getAll() async {
     var datas = await service.getAll();
@@ -20,9 +22,10 @@ class UserController extends GetxController {
     });
   }
 
-  Future<bool> validUser(String loginId,String password) async{
-    var isValid = await service.validUser(loginId,password);
-    return isValid;
+  Future<Map> validUser(String loginId,String password) async{
+    Map<String,dynamic> data = await service.validUser(loginId,password);
+    current_user.value = data;
+    return current_user.value;
   }
 
 }
