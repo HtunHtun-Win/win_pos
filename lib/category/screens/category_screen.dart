@@ -10,7 +10,6 @@ class CategoryScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Category"),
       ),
-      drawer: CustDrawer(),
     );
   }
 }

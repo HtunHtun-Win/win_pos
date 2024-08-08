@@ -20,7 +20,8 @@ class MyApp extends StatelessWidget {
       title: 'JuePos',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+        primaryColor: Colors.blueAccent,
         useMaterial3: true,
       ),
       home: LoginScreen(),

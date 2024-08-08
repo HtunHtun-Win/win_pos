@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jue_pos/core/widgets/cust_drawer.dart';
+import 'package:jue_pos/user/controllers/user_controller.dart';
+import 'package:jue_pos/user/models/user.dart';
+import 'package:jue_pos/user/screens/user_screen.dart';
+
+class SettingScreen extends StatelessWidget {
+  const SettingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    UserController controller = Get.find();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Setting"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
+      body: ListView(
+        children: [
+          ListItem(context,Icon(Icons.house),"Company",(){}),
+          ListItem(context,Icon(Icons.people),"Users",(){Get.to(()=>UserScreen());}),
+        ],
+      ),
+    );
+  }
+
+  Widget ListItem(context,icon,text,VoidCallback fun){
+    return Container(
+      margin: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor.withOpacity(1),
+        borderRadius: BorderRadius.circular(10)
+      ),
+      child: ListTile(
+        leading: icon,
+        iconColor: Colors.white,
+        title: Text(
+            text,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18
+          ),
+        ),
+        onTap: fun,
+      ),
+    );
+  }
+}
