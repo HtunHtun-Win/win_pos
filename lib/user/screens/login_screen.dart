@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jue_pos/user/controllers/user_controller.dart';
+import 'package:jue_pos/user/screens/user_screen.dart';
 import 'package:path/path.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -12,6 +14,9 @@ class LoginScreen extends StatelessWidget {
     UserController controller = UserController();
     TextEditingController userid_controller = TextEditingController();
     TextEditingController password_controller = TextEditingController();
+    //pre setup userid and password
+    userid_controller.text = "admin";
+    password_controller.text = "admin";
     return Scaffold(
       body: Stack(
         children: [
@@ -74,10 +79,20 @@ class LoginScreen extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: (){
+                        onPressed: ()async{
                           var loginId = userid_controller.text;
                           var password = password_controller.text;
-                          controller.validUser(loginId,password);
+                          var isValid = await controller.validUser(loginId,password);
+                          if(isValid){
+                            Get.to(UserScreen());
+                          }else{
+                            Get.snackbar(
+                                "Invalid Credentials", 
+                                "Wrong UserId or Password!",
+                                colorText: Colors.white,
+                                backgroundColor: Colors.black.withOpacity(.3),
+                            );
+                          }
                         },
                         child: Text(
                             "LOGIN",

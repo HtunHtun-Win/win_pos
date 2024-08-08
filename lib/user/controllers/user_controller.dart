@@ -20,11 +20,9 @@ class UserController extends GetxController {
     });
   }
 
-  void validUser(String loginId,String password) async{
+  Future<bool> validUser(String loginId,String password) async{
     var isValid = await service.validUser(loginId,password);
-    if(isValid){
-      Get.off(UserScreen());
-    }
+    return isValid;
   }
 
 }
