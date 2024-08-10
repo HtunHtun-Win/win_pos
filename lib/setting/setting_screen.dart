@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jue_pos/category/screens/category_screen.dart';
 import 'package:jue_pos/core/widgets/cust_drawer.dart';
+import 'package:jue_pos/shop/shop_info_screen.dart';
 import 'package:jue_pos/user/controllers/user_controller.dart';
 import 'package:jue_pos/user/models/user.dart';
 import 'package:jue_pos/user/screens/user_screen.dart';
@@ -20,7 +21,7 @@ class SettingScreen extends StatelessWidget {
       drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
       body: ListView(
         children: [
-          ListItem(context,Icon(Icons.house),"Company",(){}),
+          ListItem(context,Icon(Icons.house),"Shop",(){Get.to(()=>ShopInfoScreen());}),
           ListItem(context,Icon(Icons.people),"Users",(){Get.to(()=>UserScreen());}),
           ListItem(context,Icon(Icons.category),"Category",(){Get.to(()=>CategoryScreen());}),
         ],
