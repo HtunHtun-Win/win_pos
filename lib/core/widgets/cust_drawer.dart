@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jue_pos/contact/contact_screen.dart';
 import 'package:jue_pos/sales/screens/sales_screen.dart';
 import 'package:jue_pos/setting/setting_screen.dart';
 import 'package:jue_pos/user/screens/login_screen.dart';
@@ -62,14 +63,14 @@ class CustDrawer extends StatelessWidget {
           Expanded(
               child: ListView(
                 children: [
-                  ListItem(context,Icon(Icons.shopping_cart),"Sales",(){Get.off(SalesScreen());}),
+                  ListItem(context,Icon(Icons.shopping_cart),"Sales",(){Get.off(()=>SalesScreen());}),
                   ListItem(context,Icon(Icons.add_shopping_cart),"Purchase",(){}),
                   ListItem(context,Icon(Icons.inventory),"Inventory",(){}),
-                  ListItem(context,Icon(Icons.people),"Contact",(){}),
+                  ListItem(context,Icon(Icons.people),"Contact",(){Get.off(()=>ContactScreen());}),
                   ListItem(context,Icon(Icons.monetization_on),"Income Expense",(){}),
                   ListItem(context,Icon(Icons.menu_book),"Report",(){}),
-                  ListItem(context,Icon(Icons.settings),"Setting",(){Get.off(SettingScreen());}),
-                  ListItem(context,Icon(Icons.exit_to_app),"Logout",(){Get.offAll(LoginScreen());}),
+                  ListItem(context,Icon(Icons.settings),"Setting",(){Get.off(()=>SettingScreen());}),
+                  ListItem(context,Icon(Icons.exit_to_app),"Logout",(){Get.offAll(()=>LoginScreen());}),
                 ],
               )
           ),
