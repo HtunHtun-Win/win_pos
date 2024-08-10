@@ -15,6 +15,11 @@ class UserRepository {
     return await database.query("users",where: "login_id=? AND password=? AND isdeleted=?",whereArgs: [loginId,password,"0"]);
   }
 
+  Future<List> getByName(String loginId) async{
+    final database = await dbObj.database;
+    return database.query("users",where: "login_id=? AND isdeleted=0",whereArgs: [loginId]);
+  }
+
   Future<int> insertUser(String name,String login_id,String password,int role_id) async{
     final database = await dbObj.database;
     return await database.insert(

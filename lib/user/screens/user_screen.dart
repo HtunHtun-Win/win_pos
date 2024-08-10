@@ -10,6 +10,7 @@ import '../models/user.dart';
 class UserScreen extends StatelessWidget {
   // const UserScreen({super.key});
   UserController controller = Get.find();
+  List roles = ["","admin","sale","purchase"];
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class UserScreen extends StatelessWidget {
           )
         ],
       ),
-      drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson()),),
+      // drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson()),),
       body: Obx(()=>ListView.builder(
         itemCount: controller.users.length,
         itemBuilder: (context,index){
@@ -70,7 +71,7 @@ class UserScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "(role)",
+                    "(${roles[user.role_id!].toString()})",
                     style: TextStyle(
                       fontSize: 17,
                     ),

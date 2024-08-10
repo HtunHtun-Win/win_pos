@@ -111,7 +111,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                             "LoginId is already exists!"
                         );
                       }else if(num!=0){
-                        Get.off(()=>UserScreen());
+                        Get.offAll(()=>UserScreen());
                       }else{
                         Get.snackbar(
                             "Invalid Input!",

@@ -1,15 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jue_pos/category/controller/category_controller.dart';
+import 'package:jue_pos/category/models/category_model.dart';
+import 'package:jue_pos/category/screens/category_add_screen.dart';
+import 'package:jue_pos/category/screens/category_edit_screen.dart';
 import 'package:jue_pos/core/widgets/cust_drawer.dart';
 
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key});
+  CategoryScreen({super.key});
+  CategoryController categoryController = Get.put(CategoryController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Category"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+              onPressed: ()=>Get.to(()=>CategoryAddScreen()),
+              icon: Icon(Icons.add)
+          )
+        ],
       ),
+      body: Obx((){
+        return ListView.builder(
+          itemCount: categoryController.categories.length,
+          itemBuilder: (context,index){
+            var category = categoryController.categories[index];
+            return listItem(category);
+          },
+        );
+      }),
+    );
+  }
+
+  Widget listItem(CategoryModel category){
+    return Column(
+      children: [
+        ListTile(
+          title: Text(category.name.toString()),
+          subtitle: Text(category.description.toString()),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(onPressed: (){
+                Get.to(()=>CategoryEditScreen(category));
+              }, icon: Icon(Icons.edit)),
+              IconButton(onPressed: (){
+                Get.defaultDialog(
+                  title: "Delete!",
+                  middleText: "Are you sure to delete!",
+                  actions: [
+                    TextButton(onPressed: (){
+                      Get.back();
+                    }, child: Text("Cancel"),),
+                    TextButton(onPressed: (){
+                      categoryController.deleteCategory(category.id!);
+                      Get.back();
+                    }, child: Text("Ok"),),
+                  ]
+                );
+              }, icon: Icon(Icons.delete)),
+            ],
+          ),
+        ),
+        Divider()
+      ],
     );
   }
 }
