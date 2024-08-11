@@ -26,12 +26,16 @@ class CustomerController extends GetxController{
     return await customerService.getByName(name);
   }
 
-  Future<int> insert(String name, String phone, String address) async{
-    return await customerService.insert(name, phone, address);
+  Future<Map> insert(String name, String phone, String address) async{
+    var map =  await customerService.insert(name, phone, address);
+    getAll();
+    return map;
   }
 
-  Future<int> updateCustomer(int id,String name, String phone, String address) async{
-    return await customerService.update(id, name, phone, address);
+  Future<Map> updateCustomer(int id,String name, String phone, String address) async{
+    var map = await customerService.update(id, name, phone, address);
+    getAll();
+    return map;
   }
 
   Future<void> delete(int id) async{

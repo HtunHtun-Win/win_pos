@@ -6,13 +6,13 @@ class CustomerRepository{
 
   Future<List> getAll() async{
     final database = await dbObj.database;
-    return await database.query(TABLE_NAME,where: "isdeleted=0");
+    return await database.query(TABLE_NAME,where: "isdeleted=0",orderBy: "name");
   }
 
-  Future<Map> getByName(String name) async{
+  Future<List> getByName(String name) async{
     final database = await dbObj.database;
     var data = await database.query(TABLE_NAME,where: "name=? AND isdeleted=0",whereArgs: [name]);
-    return data[0];
+    return data;
   }
 
   Future<int> insert(String name, String phone, String address) async{

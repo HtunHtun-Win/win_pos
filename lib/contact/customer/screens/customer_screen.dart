@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jue_pos/contact/customer/controller/customer_controller.dart';
 import 'package:jue_pos/contact/customer/model/customer_model.dart';
+import 'package:jue_pos/contact/customer/screens/customer_add_screen.dart';
+
+import 'customer_edit_screen.dart';
 
 class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
@@ -14,12 +17,15 @@ class CustomerScreen extends StatelessWidget {
         itemCount: customerController.customers.length,
         itemBuilder: (context,index){
           var customer = customerController.customers[index];
+          if(customer.id==1){
+            return Container();
+          };
           return listItem(context,customer);
         },
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          print("Go to add screen");
+          Get.to(()=>CustomerAddScreen());
         },
         child: Icon(Icons.add),
       ),
@@ -64,7 +70,9 @@ class CustomerScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  Get.to(()=>CustomerEditScreen(customer));
+                },
                 icon: Icon(Icons.edit,color: color,)
             ),
             IconButton(

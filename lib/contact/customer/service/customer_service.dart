@@ -8,15 +8,41 @@ class CustomerService{
   }
 
   Future<Map> getByName(String name) async{
-    return await customerRepository.getByName(name);
+    var datas = await customerRepository.getByName(name);
+    if(datas.length>0){
+      return datas[0];
+    }
+    return {};
   }
 
-  Future<int> insert(String name, String phone, String address) async{
-    return await customerRepository.insert(name, phone, address);
+  Future<Map> insert(String name, String phone, String address) async{
+    if(name.length>0){
+      var map = await getByName(name);
+      if(map.isNotEmpty){
+        return {"msg":"duplicate"};
+      }else{
+        var num = await customerRepository.insert(name, phone, address);
+        return {"msg":num};
+      }
+    }
+    return {"msg":"name_null"};
   }
 
-  Future<int> update(int id,String name, String phone, String address) async{
-    return await customerRepository.update(id, name, phone, address);
+  Future<Map> update(int id,String name, String phone, String address) async{
+    if(name.length>0){
+      var map = await getByName(name);
+      if(map.isNotEmpty){
+        if(map["id"]==id){
+          var num = await customerRepository.update(id, name, phone, address);
+          return {"msg":num};
+        }
+        return {"msg":"duplicate"};
+      }else{
+        var num = await customerRepository.update(id, name, phone, address);
+        return {"msg":num};
+      }
+    }
+    return {"msg":"name_null"};
   }
 
   Future<void> delete(int id) async{
