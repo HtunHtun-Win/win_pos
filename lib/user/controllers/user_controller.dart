@@ -37,7 +37,9 @@ class UserController extends GetxController {
   }
 
   Future<int> updateUser(int id,String name,String loginId,String password,int role_id) async{
-    return await service.updateUser(id, name, loginId, password, role_id);
+    var num = await service.updateUser(id, name, loginId, password, role_id);
+    getAll();
+    return num;
   }
 
   Future<void> deleteUser(int id) async{

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:jue_pos/contact/customer/screens/customer_screen.dart';
+import 'package:jue_pos/contact/supplier/screens/supplier_screen.dart';
 import 'package:jue_pos/core/widgets/cust_drawer.dart';
 
 import '../user/controllers/user_controller.dart';
@@ -30,7 +31,7 @@ class ContactScreen extends StatelessWidget {
           body: TabBarView(
             children: [
               CustomerScreen(),
-              Container(),
+              SupplierScreen(),
             ],
           ),
         ),
