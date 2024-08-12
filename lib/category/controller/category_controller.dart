@@ -19,9 +19,9 @@ class CategoryController extends GetxController{
   void getAll() async{
     var datas = await categoryService.getAll();
     categories.clear();
-    datas.forEach((data){
+    for (var data in datas) {
       categories.add(CategoryModel.fromMap(data));
-    });
+    }
   }
 
   Future<List> getByName(String name) async{

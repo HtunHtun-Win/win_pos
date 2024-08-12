@@ -28,6 +28,7 @@ class CategoryScreen extends StatelessWidget {
           itemCount: categoryController.categories.length,
           itemBuilder: (context,index){
             var category = categoryController.categories[index];
+            if(category.id == 1) return Container();
             return listItem(category);
           },
         );
