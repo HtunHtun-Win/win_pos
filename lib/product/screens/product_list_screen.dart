@@ -9,7 +9,6 @@ import 'package:jue_pos/product/models/product_model.dart';
 import 'package:jue_pos/product/screens/product_add_screen.dart';
 import 'package:jue_pos/product/screens/product_detail_screen.dart';
 import 'package:jue_pos/product/screens/product_edit_screen.dart';
-
 import '../../category/controller/category_controller.dart';
 
 class ProductListScreen extends StatelessWidget {
@@ -41,7 +40,7 @@ class ProductListScreen extends StatelessWidget {
               itemCount: productController.products.length,
               itemBuilder: (context,index){
                 var product = productController.products[index];
-                return listItem(context, product);
+                return listItem(product);
               },
             )),
           )
@@ -56,7 +55,7 @@ class ProductListScreen extends StatelessWidget {
     );
   }
 
-  Widget listItem(context,ProductModel product){
+  Widget listItem(ProductModel product){
     return Slidable(
       endActionPane: ActionPane(
         motion: const StretchMotion(),
