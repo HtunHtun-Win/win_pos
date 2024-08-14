@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jue_pos/product/controller/product_log_controller.dart';
@@ -29,7 +30,7 @@ class ProductAdjustScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          //
+          addDialog();
         },
         child: Icon(Icons.add),
       ),
@@ -75,6 +76,19 @@ class ProductAdjustScreen extends StatelessWidget {
             productLogController.getAll(map: daterangeCalculate(value!));
           }
         },
+      ),
+    );
+  }
+
+  Future<dynamic> addDialog() async{
+    return Get.defaultDialog(
+      title: "Product Adjust",
+      middleText: "Choose product to adjust",
+      content: Column(
+        children: [
+          TextField(),
+
+        ],
       ),
     );
   }
