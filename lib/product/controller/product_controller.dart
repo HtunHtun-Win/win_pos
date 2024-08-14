@@ -7,7 +7,6 @@ class ProductController extends GetxController{
   ProductService productService = ProductService();
 
   var products = [].obs;
-  var products_log = [].obs;
 
   @override
   void onInit(){

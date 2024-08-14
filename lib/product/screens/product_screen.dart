@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:jue_pos/core/widgets/cust_drawer.dart';
-import 'package:jue_pos/product/screens/product_add_screen.dart';
 import 'package:jue_pos/product/screens/product_adjust_screen.dart';
 import 'package:jue_pos/product/screens/product_list_screen.dart';
 import 'package:jue_pos/user/controllers/user_controller.dart';
@@ -15,7 +14,7 @@ class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             title: const Text("Inventory"),
@@ -28,16 +27,13 @@ class ProductScreen extends StatelessWidget {
                 Tab(
                   text: "Adjust",
                 ),
-                Tab(
-                  text: "Lose",
-                ),
               ],
             ),
           ),
           drawer: CustDrawer(
               user: User.fromMap(userController.current_user.toJson())),
           body: TabBarView(
-            children: [ProductListScreen(), ProductAdjustScreen(), Container()],
+            children: [ProductListScreen(), ProductAdjustScreen()],
           ),
         ));
   }

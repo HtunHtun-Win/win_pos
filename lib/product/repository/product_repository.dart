@@ -67,6 +67,15 @@ class ProductRepository{
     return num;
   }
 
+  Future<int> updateProductQty(int id, int qty) async{
+    final database = await dbObj.database;
+    var num = await database.rawUpdate(
+        'update $TABLE_NAME set quantity=quantity+? where id=?',
+        [qty,id]
+    );
+    return num;
+  }
+
   Future<void> deleteProduct(int id) async{
     final database = await dbObj.database;
     await database.update(

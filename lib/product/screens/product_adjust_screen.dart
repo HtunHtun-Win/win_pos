@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:jue_pos/product/controller/product_log_controller.dart';
 import 'package:jue_pos/product/models/product_log_model.dart';
 import 'package:intl/intl.dart';
+import 'package:jue_pos/product/screens/product_adjust_add_screen.dart';
 
 class ProductAdjustScreen extends StatelessWidget {
   ProductAdjustScreen({super.key});
-  ProductLogController productLogController = ProductLogController();
+  ProductLogController productLogController = Get.put(ProductLogController());
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class ProductAdjustScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          addDialog();
+          Get.to(()=>ProductAdjustAddScreen());
         },
         child: Icon(Icons.add),
       ),
@@ -43,11 +45,17 @@ class ProductAdjustScreen extends StatelessWidget {
     var final_date = fdate.format(date);
     return Container(
       child: ListTile(
-        title: Text(log.product.toString()),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(log.product.toString()),
+            Text(log.user.toString()),
+          ],
+        ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('${log.quantity.toString()} (${log.user.toString()})'),
+            Text('${log.quantity.toString()} : pcs (${log.note.toString()})'),
             Text(final_date),
           ],
         ),
@@ -73,22 +81,11 @@ class ProductAdjustScreen extends StatelessWidget {
           if(value=='all'){
             productLogController.getAll();
           }else{
-            productLogController.getAll(map: daterangeCalculate(value!));
+            productLogController.getAll(
+              map: daterangeCalculate(value!)
+            );
           }
         },
-      ),
-    );
-  }
-
-  Future<dynamic> addDialog() async{
-    return Get.defaultDialog(
-      title: "Product Adjust",
-      middleText: "Choose product to adjust",
-      content: Column(
-        children: [
-          TextField(),
-
-        ],
       ),
     );
   }

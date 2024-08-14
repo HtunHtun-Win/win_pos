@@ -27,12 +27,13 @@ class ProductListScreen extends StatelessWidget {
             child: TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: "Search..."
+                hintText: "Search...",
               ),
               onChanged: (value){
                 filterInput = value!;
                 productController.getAll(input: value!);
               },
+              // onTap: () => productController.getAll(),
             ),
           ),
           Expanded(
