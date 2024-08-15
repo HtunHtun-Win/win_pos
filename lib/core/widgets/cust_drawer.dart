@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jue_pos/contact/contact_screen.dart';
+import 'package:jue_pos/expense/screen/expense_screen.dart';
 import 'package:jue_pos/product/screens/product_screen.dart';
 import 'package:jue_pos/sales/screens/sales_screen.dart';
 import 'package:jue_pos/setting/setting_screen.dart';
@@ -68,7 +69,7 @@ class CustDrawer extends StatelessWidget {
                   ListItem(context,Icon(Icons.add_shopping_cart),"Purchase",(){}),
                   ListItem(context,Icon(Icons.inventory),"Inventory",(){Get.off(()=>ProductScreen());}),
                   ListItem(context,Icon(Icons.people),"Contact",(){Get.off(()=>ContactScreen());}),
-                  ListItem(context,Icon(Icons.monetization_on),"Income Expense",(){}),
+                  ListItem(context,Icon(Icons.monetization_on),"Income Expense",(){Get.off(()=>ExpenseScreen());}),
                   ListItem(context,Icon(Icons.menu_book),"Report",(){}),
                   ListItem(context,Icon(Icons.settings),"Setting",(){Get.off(()=>SettingScreen());}),
                   ListItem(context,Icon(Icons.exit_to_app),"Logout",(){Get.offAll(()=>LoginScreen());}),

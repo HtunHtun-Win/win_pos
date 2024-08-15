@@ -25,6 +25,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: ()async{
+              if(type=='lose') qtyController.text = '-'+qtyController.text;
               await productLogController.addProductLog(
                 pId!, int.parse(qtyController.text), type, userController.current_user['id']
               );
@@ -63,12 +64,14 @@ class ProductAdjustAddScreen extends StatelessWidget {
                   child: 
                     TextField(
                       controller: qtyController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         label: Text("Adust quantity"),
                         border: OutlineInputBorder()
                       ),
                       onChanged: (value){
                         value = value.length>0 ? value : '0';
+                        if(type=='lose') value = '-'+value;
                         newQty = productLogController.selectedProduct['qty']!+int.parse(value);
                         productLogController.selectedProduct['pid'] = pId!;
                       },
