@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:jue_pos/contact/customer/model/customer_model.dart';
-import 'package:jue_pos/contact/customer/service/customer_service.dart';
+import 'package:win_pos/contact/customer/model/customer_model.dart';
+import 'package:win_pos/contact/customer/service/customer_service.dart';
 
 class CustomerController extends GetxController{
   CustomerService customerService = CustomerService();

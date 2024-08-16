@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:jue_pos/contact/customer/screens/customer_screen.dart';
-import 'package:jue_pos/contact/supplier/screens/supplier_screen.dart';
-import 'package:jue_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/contact/customer/screens/customer_screen.dart';
+import 'package:win_pos/contact/supplier/screens/supplier_screen.dart';
+import 'package:win_pos/core/widgets/cust_drawer.dart';
 
 import '../user/controllers/user_controller.dart';
 import '../user/models/user.dart';

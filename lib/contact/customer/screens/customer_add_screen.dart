@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/contact/customer/controller/customer_controller.dart';
+import 'package:win_pos/contact/customer/controller/customer_controller.dart';
 
 class CustomerAddScreen extends StatelessWidget {
   CustomerAddScreen({super.key});

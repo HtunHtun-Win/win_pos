@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/category/controller/category_controller.dart';
-import 'package:jue_pos/category/models/category_model.dart';
-import 'package:jue_pos/category/screens/category_add_screen.dart';
-import 'package:jue_pos/category/screens/category_edit_screen.dart';
-import 'package:jue_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/category/controller/category_controller.dart';
+import 'package:win_pos/category/models/category_model.dart';
+import 'package:win_pos/category/screens/category_add_screen.dart';
+import 'package:win_pos/category/screens/category_edit_screen.dart';
+import 'package:win_pos/core/widgets/cust_drawer.dart';
 
 class CategoryScreen extends StatelessWidget {
   CategoryScreen({super.key});

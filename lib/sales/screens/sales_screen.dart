@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/core/widgets/cust_drawer.dart';
-import 'package:jue_pos/user/controllers/user_controller.dart';
-import 'package:jue_pos/user/models/user.dart';
+import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
+import 'package:win_pos/user/models/user.dart';
 
 class SalesScreen extends StatelessWidget {
   const SalesScreen({super.key});

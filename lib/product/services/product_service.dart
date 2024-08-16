@@ -1,7 +1,7 @@
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
-import 'package:jue_pos/product/repository/product_repository.dart';
-import 'package:jue_pos/user/controllers/user_controller.dart';
+import 'package:win_pos/product/repository/product_repository.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
 
 class ProductService{
   ProductRepository productRepository = ProductRepository();

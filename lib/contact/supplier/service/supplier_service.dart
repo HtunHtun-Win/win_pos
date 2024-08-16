@@ -1,4 +1,4 @@
-import 'package:jue_pos/contact/supplier/repository/supplier_repository.dart';
+import 'package:win_pos/contact/supplier/repository/supplier_repository.dart';
 
 class SupplierService{
   SupplierRepository supplierRepository = SupplierRepository();

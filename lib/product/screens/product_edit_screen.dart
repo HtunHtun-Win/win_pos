@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/category/controller/category_controller.dart';
-import 'package:jue_pos/category/models/category_model.dart';
-import 'package:jue_pos/product/controller/product_controller.dart';
-import 'package:jue_pos/product/models/product_model.dart';
+import 'package:win_pos/category/controller/category_controller.dart';
+import 'package:win_pos/category/models/category_model.dart';
+import 'package:win_pos/product/controller/product_controller.dart';
+import 'package:win_pos/product/models/product_model.dart';
 
 class ProductEditScreen extends StatelessWidget {
   ProductEditScreen(this.productModel);

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/contact/contact_screen.dart';
-import 'package:jue_pos/expense/screen/expense_screen.dart';
-import 'package:jue_pos/product/screens/product_screen.dart';
-import 'package:jue_pos/sales/screens/sales_screen.dart';
-import 'package:jue_pos/setting/setting_screen.dart';
-import 'package:jue_pos/user/screens/login_screen.dart';
+import 'package:win_pos/contact/contact_screen.dart';
+import 'package:win_pos/expense/screen/expense_screen.dart';
+import 'package:win_pos/product/screens/product_screen.dart';
+import 'package:win_pos/sales/screens/sales_screen.dart';
+import 'package:win_pos/setting/setting_screen.dart';
+import 'package:win_pos/user/screens/login_screen.dart';
 import '../../user/models/user.dart';
 
 class CustDrawer extends StatelessWidget {
@@ -40,8 +40,8 @@ class CustDrawer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "JuePos",
+                        const Text(
+                          "WinPos",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,

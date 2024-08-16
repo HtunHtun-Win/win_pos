@@ -1,4 +1,4 @@
-import 'package:jue_pos/category/repository/category_repository.dart';
+import 'package:win_pos/category/repository/category_repository.dart';
 
 class CategoryService{
   CategoryRepository categoryRepository = CategoryRepository();

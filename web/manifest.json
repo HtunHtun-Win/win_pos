@@ -1,6 +1,6 @@
 {
-    "name": "jue_pos",
-    "short_name": "jue_pos",
+    "name": "win_pos",
+    "short_name": "win_pos",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

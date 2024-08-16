@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/category/services/category_service.dart';
-import 'package:jue_pos/category/models/category_model.dart';
+import 'package:win_pos/category/services/category_service.dart';
+import 'package:win_pos/category/models/category_model.dart';
 
 class CategoryController extends GetxController{
 

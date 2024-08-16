@@ -1,4 +1,4 @@
-import 'package:jue_pos/shop/shop_info_repository.dart';
+import 'package:win_pos/shop/shop_info_repository.dart';
 
 class ShopInfoServices{
   ShopInfoRepository shopInfoRepository = ShopInfoRepository();

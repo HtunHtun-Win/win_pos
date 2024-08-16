@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/contact/customer/controller/customer_controller.dart';
-import 'package:jue_pos/contact/customer/model/customer_model.dart';
-import 'package:jue_pos/contact/supplier/controller/supplier_controller.dart';
-import 'package:jue_pos/contact/supplier/model/supplier_model.dart';
+import 'package:win_pos/contact/customer/controller/customer_controller.dart';
+import 'package:win_pos/contact/customer/model/customer_model.dart';
+import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
+import 'package:win_pos/contact/supplier/model/supplier_model.dart';
 
 class SupplierEditScreen extends StatelessWidget {
   SupplierModel supplier;

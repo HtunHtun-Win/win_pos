@@ -1,5 +1,5 @@
-import 'package:jue_pos/product/repository/product_log_repository.dart';
-import 'package:jue_pos/product/repository/product_repository.dart';
+import 'package:win_pos/product/repository/product_log_repository.dart';
+import 'package:win_pos/product/repository/product_repository.dart';
 
 class ProductLogService {
   ProductLogRepository productLogRepository = ProductLogRepository();

@@ -7,13 +7,13 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
-import 'package:jue_pos/core/widgets/cust_drawer.dart';
-import 'package:jue_pos/expense/controller/expense_controller.dart';
-import 'package:jue_pos/expense/model/expense_model.dart';
-import 'package:jue_pos/expense/screen/expense_add_screen.dart';
-import 'package:jue_pos/expense/screen/expense_edit_screen.dart';
-import 'package:jue_pos/user/controllers/user_controller.dart';
-import 'package:jue_pos/user/models/user.dart';
+import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/expense/controller/expense_controller.dart';
+import 'package:win_pos/expense/model/expense_model.dart';
+import 'package:win_pos/expense/screen/expense_add_screen.dart';
+import 'package:win_pos/expense/screen/expense_edit_screen.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
+import 'package:win_pos/user/models/user.dart';
 
 class ExpenseScreen extends StatelessWidget {
   ExpenseScreen({super.key});

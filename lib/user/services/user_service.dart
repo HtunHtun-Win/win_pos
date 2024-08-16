@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:jue_pos/user/repository/user_repository.dart';
+import 'package:win_pos/user/repository/user_repository.dart';
 
 class UserService {
   UserRepository userRepo = UserRepository();

@@ -1,4 +1,4 @@
-import 'package:jue_pos/expense/repository/expense_repository.dart';
+import 'package:win_pos/expense/repository/expense_repository.dart';
 
 class ExpenseService{
   ExpenseRepository _expenseRepository = ExpenseRepository();

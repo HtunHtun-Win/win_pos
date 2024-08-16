@@ -3,8 +3,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:jue_pos/product/controller/product_log_controller.dart';
-import 'package:jue_pos/user/controllers/user_controller.dart';
+import 'package:win_pos/product/controller/product_log_controller.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
 
 class ProductAdjustAddScreen extends StatelessWidget {
   ProductAdjustAddScreen({super.key});

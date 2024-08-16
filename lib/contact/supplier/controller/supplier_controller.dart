@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:jue_pos/contact/customer/model/customer_model.dart';
-import 'package:jue_pos/contact/supplier/model/supplier_model.dart';
-import 'package:jue_pos/contact/supplier/service/supplier_service.dart';
+import 'package:win_pos/contact/customer/model/customer_model.dart';
+import 'package:win_pos/contact/supplier/model/supplier_model.dart';
+import 'package:win_pos/contact/supplier/service/supplier_service.dart';
 
 class SupplierController extends GetxController{
   SupplierService supplierService = SupplierService();

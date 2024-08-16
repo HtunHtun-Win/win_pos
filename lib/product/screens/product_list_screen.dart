@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:jue_pos/product/controller/product_controller.dart';
-import 'package:jue_pos/product/models/product_model.dart';
-import 'package:jue_pos/product/screens/product_add_screen.dart';
-import 'package:jue_pos/product/screens/product_detail_screen.dart';
-import 'package:jue_pos/product/screens/product_edit_screen.dart';
+import 'package:win_pos/product/controller/product_controller.dart';
+import 'package:win_pos/product/models/product_model.dart';
+import 'package:win_pos/product/screens/product_add_screen.dart';
+import 'package:win_pos/product/screens/product_detail_screen.dart';
+import 'package:win_pos/product/screens/product_edit_screen.dart';
 import '../../category/controller/category_controller.dart';
 
 class ProductListScreen extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/category/controller/category_controller.dart';
+import 'package:win_pos/category/controller/category_controller.dart';
 
 class CategoryAddScreen extends StatelessWidget {
   CategoryAddScreen({super.key});

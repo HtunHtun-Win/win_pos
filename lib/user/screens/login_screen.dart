@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/sales/screens/sales_screen.dart';
-import 'package:jue_pos/user/controllers/user_controller.dart';
+import 'package:win_pos/sales/screens/sales_screen.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

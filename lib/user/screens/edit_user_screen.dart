@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/user/controllers/user_controller.dart';
-import 'package:jue_pos/user/screens/user_screen.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
+import 'package:win_pos/user/screens/user_screen.dart';
 import '../models/user.dart';
 
 class EditUserScreen extends StatefulWidget {

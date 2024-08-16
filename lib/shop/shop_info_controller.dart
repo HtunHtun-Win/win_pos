@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:jue_pos/shop/shop_info_services.dart';
+import 'package:win_pos/shop/shop_info_services.dart';
 
 class ShopInfoController extends GetxController{
 

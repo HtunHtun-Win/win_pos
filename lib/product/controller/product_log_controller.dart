@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:jue_pos/product/controller/product_controller.dart';
-import 'package:jue_pos/product/models/product_log_model.dart';
-import 'package:jue_pos/product/models/product_model.dart';
-import 'package:jue_pos/product/services/product_log_service.dart';
-import 'package:jue_pos/product/services/product_service.dart';
+import 'package:win_pos/product/controller/product_controller.dart';
+import 'package:win_pos/product/models/product_log_model.dart';
+import 'package:win_pos/product/models/product_model.dart';
+import 'package:win_pos/product/services/product_log_service.dart';
+import 'package:win_pos/product/services/product_service.dart';
 
 class ProductLogController extends GetxController {
   ProductLogService productLogService = ProductLogService();

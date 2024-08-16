@@ -1,4 +1,4 @@
-import 'package:jue_pos/contact/customer/repository/customer_repository.dart';
+import 'package:win_pos/contact/customer/repository/customer_repository.dart';
 
 class CustomerService{
   CustomerRepository customerRepository = CustomerRepository();

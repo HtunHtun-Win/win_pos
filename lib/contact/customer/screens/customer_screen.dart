@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jue_pos/contact/customer/controller/customer_controller.dart';
-import 'package:jue_pos/contact/customer/model/customer_model.dart';
-import 'package:jue_pos/contact/customer/screens/customer_add_screen.dart';
+import 'package:win_pos/contact/customer/controller/customer_controller.dart';
+import 'package:win_pos/contact/customer/model/customer_model.dart';
+import 'package:win_pos/contact/customer/screens/customer_add_screen.dart';
 
 import 'customer_edit_screen.dart';
 

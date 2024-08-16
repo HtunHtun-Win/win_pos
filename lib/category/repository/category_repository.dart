@@ -1,4 +1,4 @@
-import 'package:jue_pos/core/database/db_helper.dart';
+import 'package:win_pos/core/database/db_helper.dart';
 
 class CategoryRepository{
   DbHelper dbObj = DbHelper();

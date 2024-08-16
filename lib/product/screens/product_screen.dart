@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
-import 'package:jue_pos/core/widgets/cust_drawer.dart';
-import 'package:jue_pos/product/screens/product_adjust_screen.dart';
-import 'package:jue_pos/product/screens/product_list_screen.dart';
-import 'package:jue_pos/user/controllers/user_controller.dart';
-import 'package:jue_pos/user/models/user.dart';
+import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/product/screens/product_adjust_screen.dart';
+import 'package:win_pos/product/screens/product_list_screen.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
+import 'package:win_pos/user/models/user.dart';
 
 class ProductScreen extends StatelessWidget {
   ProductScreen({super.key});
