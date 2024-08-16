@@ -6,7 +6,11 @@ class ExpenseRepository{
 
   Future<List> getAll() async{
     final database = await dbObj.database;
-    return await database.query(TABLE_NAME);
+    return await database.query(
+      TABLE_NAME,
+      where: "isdeleted=0",
+      orderBy: "id desc"
+      );
   }
 
   Future<int> addExpense(int amount, String description, String note, int type, int userId) async{
@@ -21,5 +25,26 @@ class ExpenseRepository{
         "user_id" : userId
       }
     );
+  }
+
+  Future<int> updateExpense(int id, int amount, String description, String note, int type, int userId) async{
+    final database = await dbObj.database;
+    return await database.update(
+      TABLE_NAME,
+      {
+        "amount" : amount,
+        "description" : description,
+        "note" : note,
+        "flow_type_id" : type,
+        "user_id" : userId
+      },
+      where: 'id=?',
+      whereArgs: [id]
+    );
+  }
+
+  Future<void> deleteExpense(int id) async{
+    final database = await dbObj.database;
+    await database.delete(TABLE_NAME,where: "id=?",whereArgs: [id]);
   }
 }

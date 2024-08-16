@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:jue_pos/expense/controller/expense_controller.dart';
+
+class ExpenseAddScreen extends StatelessWidget {
+  ExpenseAddScreen({super.key});
+  ExpenseController _expenseController = Get.find();
+  int flowType = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController amountController = TextEditingController();
+    TextEditingController descController = TextEditingController();
+    TextEditingController noteController = TextEditingController();
+    amountController.text = '0';
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Add Income ~ Expense"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            onPressed: (){
+              onSave(amountController, descController, noteController);
+            }, 
+            icon: Icon(Icons.save)
+            )
+        ],
+      ),
+      body: Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            userInput("Amount",amountController,type: TextInputType.number),
+            userInput("Description",descController,type: TextInputType.text),
+            userInput("Note",noteController,type: TextInputType.text),
+            flowDropdown()
+          ],
+        ),
+      ),
+    );
+  }
+
+  void onSave(TextEditingController amountController, TextEditingController descController, TextEditingController noteController) async{
+    var result = await _expenseController.addExpense(
+      int.parse(amountController.text),
+      descController.text,
+      noteController.text,
+      flowType,
+      1
+    );
+    if(result['msg']=="null"){
+      Get.snackbar(
+        "Null!",
+        "Amount and description can't be empty"
+      );
+    }else if(result['msg']=='success'){
+      Get.back();
+    }
+  }
+
+  Widget userInput(text,controller,{type}){
+    return Container(
+      margin: EdgeInsets.all(5),
+      child: TextField(
+        keyboardType: type,
+        controller: controller,
+        decoration: InputDecoration(
+          label: Text(text),
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  Widget flowDropdown(){
+    return Container(
+      margin: EdgeInsets.all(5),
+      child: DropdownMenu(
+      width: 150,
+      initialSelection: 2,
+      dropdownMenuEntries: [
+        DropdownMenuEntry(value: 1, label: "Income"),
+        DropdownMenuEntry(value: 2, label: "Expense"),
+      ],
+      onSelected: (value){
+        flowType = value!;
+      },
+    ),
+    );
+  }
+}
