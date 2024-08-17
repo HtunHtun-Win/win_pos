@@ -6,7 +6,7 @@ import 'dart:io';
 
 class DbHelper {
   Database? _db;
-  String DB_NAME = "juepos.db";
+  String DB_NAME = "winpos.db";
 
   Future<void> copyDatabase() async {
     // Get the application documents directory
