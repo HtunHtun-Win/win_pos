@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:win_pos/core/widgets/cust_drawer.dart';
 import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/sales/controller/sales_controller.dart';
+import 'package:win_pos/sales/screens/sales_save_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
-import 'package:win_pos/user/models/user.dart';
 
 class SalesScreen extends StatelessWidget {
   SalesScreen({super.key});
@@ -16,10 +16,17 @@ class SalesScreen extends StatelessWidget {
     UserController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sale"),
+        title: Text("Sales"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+              onPressed: (){
+                Get.to(()=>SalesSaveScreen());
+              },
+              icon: Icon(Icons.save)
+          )
+        ],
       ),
-      drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -30,53 +37,141 @@ class SalesScreen extends StatelessWidget {
                 children: [
                   Obx((){
                     return ListView.builder(
+                      itemCount: salesController.selectedProduct.length,
+                      itemBuilder: (context,index){
+                        var product = salesController.selectedProduct[index];
+                        return selectedItem(product);
+                      },
+                    );
+                  }),
+                  Obx((){
+                    return salesController.products.length==0 ? Container() : ListView.builder(
                       itemCount: salesController.products.length,
                       itemBuilder: (context,index){
                         var product = salesController.products[index];
-                        return searchItem(product);
+                        return searchItem(context,product);
                       },
                     );
                   }),
                 ],
               ),
             ),
-          ],
+            Obx((){
+              return totalAmountWidget(context, salesController.totalAmount);
+            })
+          ]
         ),
       ),
     );
   }
 
   Widget userInput(){
-    return TextField(
-      controller: searchController,
-      decoration: InputDecoration(
-          hintText: "Search..."
-      ),
-      onChanged: (value){
-        salesController.getAllProduct(input: value);
-      },
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: searchController,
+            decoration: const InputDecoration(
+              hintText: "Search...",
+            ),
+            onChanged: (value){
+              salesController.getAllProduct(input: value);
+            },
+          ),
+        ),
+        IconButton(
+            onPressed: (){
+              searchController.text = "";
+            },
+            icon: Icon(Icons.cancel)
+        )
+      ],
     );
   }
 
-  Widget searchItem(ProductModel product){
-    return ListTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget searchItem(context,ProductModel product){
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.inversePrimary,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.5),
+            offset: Offset(5,5),
+            blurRadius: 10
+          )
+        ]
+      ),
+      child: ListTile(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(product.name.toString()),
+            Text(product.sale_price.toString())
+          ],
+        ),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(product.code.toString()),
+            Text(product.quantity.toString())
+          ],
+        ),
+        onTap: (){
+          salesController.totalAmount.value = 0;
+          if(salesController.cart.value["${product.id}"]!=null){
+            salesController.cart.value["${product.id}"] += 1;
+          }else{
+            salesController.cart.value["${product.id}"] = 1;
+          }
+          salesController.addToSelectedProduct();
+          salesController.products.clear();
+        },
+      ),
+    );
+  }
+
+  Widget selectedItem(ProductModel product){
+    var total = product.sale_price! * salesController.cart[product.id.toString()] as int;
+    return Slidable(
+      endActionPane: ActionPane(
+        motion: const StretchMotion(),
         children: [
-          Text(product.name.toString()),
-          Text(product.sale_price.toString())
+          SlidableAction(onPressed: (_){},icon: Icons.edit,),
+          SlidableAction(
+            onPressed: (_){
+              salesController.totalAmount.value = 0;
+              salesController.cart.remove(product.id.toString());
+              salesController.addToSelectedProduct();
+            },
+            icon: Icons.delete
+          )
         ],
       ),
-      subtitle: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(product.code.toString()),
-          Text(product.quantity.toString())
-        ],
+      child: ListTile(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(product.name.toString()),
+            Text(total.toString())
+          ],
+        ),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("${product.sale_price}x${salesController.cart[product.id.toString()]}"),
+          ],
+        ),
       ),
-      onTap: (){
-        salesController.products.clear();
-      },
+    );
+  }
+
+  Widget totalAmountWidget(context,amount){
+    return Container(
+      width: double.infinity,
+      color: Theme.of(context).colorScheme.inversePrimary,
+      child: ListTile(
+        title: Text("Total : $amount"),
+      ),
     );
   }
 }

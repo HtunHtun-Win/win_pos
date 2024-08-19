@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:win_pos/contact/contact_screen.dart';
 import 'package:win_pos/expense/screen/expense_screen.dart';
 import 'package:win_pos/product/screens/product_screen.dart';
-import 'package:win_pos/sales/screens/sales_screen.dart';
+import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/setting/setting_screen.dart';
 import 'package:win_pos/user/screens/login_screen.dart';
 import '../../user/models/user.dart';
@@ -65,7 +65,7 @@ class CustDrawer extends StatelessWidget {
           Expanded(
               child: ListView(
                 children: [
-                  ListItem(context,Icon(Icons.shopping_cart),"Sales",(){Get.off(()=>SalesScreen());}),
+                  ListItem(context,Icon(Icons.shopping_cart),"Sales",(){Get.off(()=>SalesVoucherScreen());}),
                   ListItem(context,Icon(Icons.add_shopping_cart),"Purchase",(){}),
                   ListItem(context,Icon(Icons.inventory),"Inventory",(){Get.off(()=>ProductScreen());}),
                   ListItem(context,Icon(Icons.people),"Contact",(){Get.off(()=>ContactScreen());}),

@@ -9,4 +9,9 @@ class SalesService{
     }
     return [];
   }
+
+  Future<List> getById(int id) async{
+    return await salesRepository.getById(id);
+  }
+
 }
