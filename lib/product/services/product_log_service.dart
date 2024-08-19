@@ -21,7 +21,8 @@ class ProductLogService {
   }
 
   Future<int> updateProductQty(int id, int qty) async{
-    final num = productRepository.updateProductQty(id, qty);
+    final num = await productRepository.updateProductQty(id, qty);
+    await productRepository.updatePurchasePriceQty(id, qty);
     return num;
   }
 }

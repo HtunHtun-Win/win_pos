@@ -82,7 +82,7 @@ class ProductAddScreen extends StatelessWidget {
     if (map["msg"] == "null") {
       Get.snackbar(
           "Empty!",
-          "Name and code can't be empty..."
+          "Name, code and purchase price can't be empty..."
       );
     } else if (map["msg"] == "duplicate") {
       Get.snackbar(

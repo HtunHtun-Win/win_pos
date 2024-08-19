@@ -102,4 +102,24 @@ class ProductRepository{
     );
   }
 
+  Future<void> addPurchasePrice(int productId,int quantity,int price) async{
+    final database = await dbObj.database;
+    await database.insert(
+        "purchase_price",
+        {
+          "product_id" : productId,
+          "quantity" : quantity,
+          "price" : price
+        }
+    );
+  }
+
+  Future<void> updatePurchasePriceQty(int productId,int quantity) async{
+    final database = await dbObj.database;
+    await database.rawUpdate(
+        "UPDATE purchase_price set quantity=quantity+? where id=(select id from purchase_price where product_id=? order by id desc limit 1)",
+      [quantity,productId]
+    );
+  }
+
 }

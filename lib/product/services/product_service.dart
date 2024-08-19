@@ -23,13 +23,14 @@ class ProductService{
   }
 
   Future<Map> addProduct(String code, String name,String description,int quantity,int category_id,int purchase_price,int sale_price) async{
-    if(code.length==0 || name.length==0){
+    if(code.length==0 || name.length==0 || purchase_price==0){
       return {'msg' : 'null'};
     }
     var product = await getByCode(code);
     if(product.isNotEmpty) return {'msg' : 'duplicate'};
     var num = await productRepository.addProduct(code, name, description, quantity, category_id, purchase_price, sale_price);
     await productRepository.addProductLog(num, quantity, "opening", userController.current_user["id"]);
+    await productRepository.addPurchasePrice(num, quantity, purchase_price);
     return {'msg' : num};
   }
 

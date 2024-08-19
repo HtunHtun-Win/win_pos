@@ -30,16 +30,16 @@ class UserService {
   }
 
   Future<int> updateUser(int id,String name,String loginId,String password,int role_id) async{
-    // var data = await validUser(loginId, password);
-    // if(data.isNotEmpty){
-    //   return -1;
-    // }
-    if(name.length>=2 && loginId.length>=2 && password.length>=2 && role_id!=null){
-      await userRepo.updateUser(id, name, loginId, password, role_id);
-      return 1;
-    }else{
-      return 0;
+    var data = await userRepo.getByName(loginId);
+    if(data.isEmpty || data[0]['id']==id){
+      if(name.length>=2 && loginId.length>=2 && password.length>=2 && role_id!=null){
+        await userRepo.updateUser(id, name, loginId, password, role_id);
+        return 1;
+      }else{
+        return 0;
+      }
     }
+    return 0;
   }
 
   Future<void> deleteUser(int id) async{
