@@ -7,9 +7,9 @@ class CustomerController extends GetxController{
   var customers = [].obs;
 
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
-    getAll();
+    await getAll();
   }
 
   Future<void> getAll() async{

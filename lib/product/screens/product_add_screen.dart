@@ -111,7 +111,7 @@ class ProductAddScreen extends StatelessWidget {
 
   Widget categoryBox(context){
     return DropdownMenu(
-      label: Text("Category"),
+      label: const Text("Category"),
       enableFilter: true,
       requestFocusOnTap: true,
       width: 180,
@@ -124,7 +124,6 @@ class ProductAddScreen extends StatelessWidget {
         }).toList(),
       onSelected: (value){
         category_id = value;
-        print(category_id);
       },
     );
   }

@@ -1,8 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:win_pos/sales/screens/sales_screen.dart';
+import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -83,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                           var password = password_controller.text;
                           var user = await controller.validUser(loginId,password);
                           if(user.isNotEmpty){
-                            Get.off(()=>SalesScreen());
+                            Get.off(()=>SalesVoucherScreen());
                           }else{
                             Get.snackbar(
                                 "Invalid Credentials",

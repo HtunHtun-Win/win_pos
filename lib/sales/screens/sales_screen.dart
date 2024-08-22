@@ -10,6 +10,7 @@ class SalesScreen extends StatelessWidget {
   SalesScreen({super.key});
   SalesController salesController = Get.put(SalesController());
   TextEditingController searchController = TextEditingController();
+  TextEditingController qtyController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +137,9 @@ class SalesScreen extends StatelessWidget {
       endActionPane: ActionPane(
         motion: const StretchMotion(),
         children: [
-          SlidableAction(onPressed: (_){},icon: Icons.edit,),
+          SlidableAction(onPressed: (_){
+            quantityAlert(product);
+          },icon: Icons.edit,),
           SlidableAction(
             onPressed: (_){
               salesController.totalAmount.value = 0;
@@ -172,6 +175,51 @@ class SalesScreen extends StatelessWidget {
       child: ListTile(
         title: Text("Total : $amount"),
       ),
+    );
+  }
+
+  void quantityAlert(ProductModel product){
+    qtyController.text = salesController.cart[product.id.toString()].toString();
+    Get.defaultDialog(
+      title: product.name!,
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: (){
+              int qty = int.parse(qtyController.text);
+              qty--;
+              qtyController.text = qty.toString();
+              salesController.cart[product.id.toString()]--;
+              salesController.totalAmount.value = 0;
+              salesController.addToSelectedProduct();
+            },
+            icon: Icon(Icons.remove),
+          ),
+          Expanded(
+            child: TextField(
+            controller: qtyController,
+            keyboardType: TextInputType.number,
+            onChanged: (value){
+              salesController.cart[product.id.toString()]=int.parse(value);
+              salesController.totalAmount.value = 0;
+              salesController.addToSelectedProduct();
+            },
+            textAlign: TextAlign.center,
+          )),
+          IconButton(
+            onPressed: (){
+              int qty = int.parse(qtyController.text);
+              qty++;
+              qtyController.text = qty.toString();
+              salesController.cart[product.id.toString()]++;
+              salesController.totalAmount.value = 0;
+              salesController.addToSelectedProduct();
+            },
+             icon: Icon(Icons.add),
+          ),
+        ],
+      )
     );
   }
 }

@@ -9,7 +9,7 @@ class SalesRepository{
       select products.id, products.code, products.name, products.description, products.quantity, 
       products.category_id,categories.name as category_name,products.purchase_price,products.sale_price
       from products inner join categories on categories.id=products.category_id 
-      where products.name like '%$input%' OR products.code like '%$input%' AND products.isdeleted=0;
+      where (products.name like '%$input%' OR products.code like '%$input%') AND products.isdeleted=0;
     ''';
     return await database.rawQuery(sql);
   }
