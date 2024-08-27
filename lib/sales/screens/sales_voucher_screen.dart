@@ -14,7 +14,7 @@ class SalesVoucherScreen extends StatelessWidget {
     UserController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sales Vouchers"),
+        title: const Text("Sales Vouchers"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
@@ -22,7 +22,7 @@ class SalesVoucherScreen extends StatelessWidget {
         onPressed: (){
           Get.to(()=>SalesScreen());
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
