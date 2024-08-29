@@ -1,6 +1,6 @@
 # win_pos
 
-A new Flutter project.
+Flutter POS project.
 
 ## Getting Started
 
