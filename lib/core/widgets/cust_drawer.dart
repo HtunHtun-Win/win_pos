@@ -50,7 +50,7 @@ class CustDrawer extends StatelessWidget {
                         ),
                         Text(
                           user.name.toString(),
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold

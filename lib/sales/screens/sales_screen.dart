@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/sales/controller/sales_controller.dart';
+import 'package:win_pos/sales/models/cart_model.dart';
 import 'package:win_pos/sales/screens/sales_save_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 
@@ -36,17 +37,19 @@ class SalesScreen extends StatelessWidget {
             Expanded(
               child: Stack(
                 children: [
+                  //show cart items
                   Obx((){
                     return ListView.builder(
-                      itemCount: salesController.selectedProduct.length,
+                      itemCount: salesController.cart.length,
                       itemBuilder: (context,index){
-                        var product = salesController.selectedProduct[index];
-                        return selectedItem(product);
+                        var item = salesController.cart[index];
+                        return selectedItem(item,index);
                       },
                     );
                   }),
+                  //for search result
                   Obx((){
-                    return salesController.products.length==0 ? Container() : ListView.builder(
+                    return salesController.products.isEmpty ? Container() : ListView.builder(
                       itemCount: salesController.products.length,
                       itemBuilder: (context,index){
                         var product = salesController.products[index];
@@ -118,33 +121,28 @@ class SalesScreen extends StatelessWidget {
           ],
         ),
         onTap: (){
-          salesController.totalAmount.value = 0;
-          if(salesController.cart.value["${product.id}"]!=null){
-            salesController.cart.value["${product.id}"] += 1;
-          }else{
-            salesController.cart.value["${product.id}"] = 1;
-          }
-          salesController.addToSelectedProduct();
+          salesController.addToCart(product);
           salesController.products.clear();
+          salesController.getTotal();
+          print(salesController.totalAmount);
         },
       ),
     );
   }
 
-  Widget selectedItem(ProductModel product){
-    var total = product.sale_price! * salesController.cart[product.id.toString()] as int;
+  Widget selectedItem(CartModel item,index){
+    var total = item.product!.sale_price! * item.quantity!;
     return Slidable(
       endActionPane: ActionPane(
         motion: const StretchMotion(),
         children: [
           SlidableAction(onPressed: (_){
-            quantityAlert(product);
+            quantityAlert(item,index);
           },icon: Icons.edit,),
           SlidableAction(
             onPressed: (_){
-              salesController.totalAmount.value = 0;
-              salesController.cart.remove(product.id.toString());
-              salesController.addToSelectedProduct();
+              salesController.cart.remove(item);
+              salesController.getTotal();
             },
             icon: Icons.delete
           )
@@ -154,14 +152,14 @@ class SalesScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(product.name.toString()),
+            Text(item.product!.name.toString()),
             Text(total.toString())
           ],
         ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("${product.sale_price}x${salesController.cart[product.id.toString()]}"),
+            Text("${item.sprice}x${item.quantity}"),
           ],
         ),
       ),
@@ -178,10 +176,10 @@ class SalesScreen extends StatelessWidget {
     );
   }
 
-  void quantityAlert(ProductModel product){
-    qtyController.text = salesController.cart[product.id.toString()].toString();
+  void quantityAlert(CartModel item,index){
+    qtyController.text = item.quantity.toString();
     Get.defaultDialog(
-      title: product.name!,
+      title: item.product!.name!,
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -190,9 +188,9 @@ class SalesScreen extends StatelessWidget {
               int qty = int.parse(qtyController.text);
               qty--;
               qtyController.text = qty.toString();
-              salesController.cart[product.id.toString()]--;
-              salesController.totalAmount.value = 0;
-              salesController.addToSelectedProduct();
+              if(qty>0) salesController.cart[index].quantity--;
+              salesController.cart.refresh();
+              salesController.getTotal();
             },
             icon: Icon(Icons.remove),
           ),
@@ -201,9 +199,10 @@ class SalesScreen extends StatelessWidget {
             controller: qtyController,
             keyboardType: TextInputType.number,
             onChanged: (value){
-              salesController.cart[product.id.toString()]=int.parse(value);
-              salesController.totalAmount.value = 0;
-              salesController.addToSelectedProduct();
+              int quantity = int.parse(value)>0 ? int.parse(value) : 1;
+              salesController.cart[index].quantity=quantity;
+              salesController.cart.refresh();
+              salesController.getTotal();
             },
             textAlign: TextAlign.center,
           )),
@@ -212,9 +211,9 @@ class SalesScreen extends StatelessWidget {
               int qty = int.parse(qtyController.text);
               qty++;
               qtyController.text = qty.toString();
-              salesController.cart[product.id.toString()]++;
-              salesController.totalAmount.value = 0;
-              salesController.addToSelectedProduct();
+              salesController.cart[index].quantity++;
+              salesController.cart.refresh();
+              salesController.getTotal();
             },
              icon: Icon(Icons.add),
           ),

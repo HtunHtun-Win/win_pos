@@ -53,7 +53,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "JuePos",
+                    "WinPos",
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

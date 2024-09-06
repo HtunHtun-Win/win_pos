@@ -30,8 +30,8 @@ class SalesSaveScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-              onPressed: (){
-                // Get.back();
+              onPressed: () {
+                onSave();
               },
               icon: Icon(Icons.save)
           )
@@ -56,6 +56,10 @@ class SalesSaveScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void onSave() async{
+
   }
 
   Widget customersBox(){
