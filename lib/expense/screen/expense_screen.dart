@@ -28,107 +28,99 @@ class ExpenseScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-            onPressed: ()=>Get.to(()=>ExpenseAddScreen()), 
-            icon: const Icon(Icons.add)
-            )
+              onPressed: () => Get.to(() => ExpenseAddScreen()),
+              icon: const Icon(Icons.add))
         ],
       ),
-      drawer: CustDrawer(
-        user: User.fromMap(userController.current_user.toJson())
-      ),
-      body: Obx(
-        (){
-          return Column(
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
-                child: Row(
+      drawer:
+          CustDrawer(user: User.fromMap(userController.current_user.toJson())),
+      body: Obx(() {
+        return Column(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Income : ${_expenseController.totalIncome}",
                     style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                    ),
-                    ),
+                        color: Colors.green,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
                   Text(
                     "Expense : ${_expenseController.totalExpense}",
                     style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                    ),
-                    ),
+                        color: Colors.red,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _expenseController.expense_list.length,
-                  itemBuilder: (context,index){
-                    var expense = _expenseController.expense_list[index];
-                    return listItem(expense);
-                  },
             ),
-              )
-            ],
-          );
-        }
-      ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _expenseController.expense_list.length,
+                itemBuilder: (context, index) {
+                  var expense = _expenseController.expense_list[index];
+                  return listItem(expense);
+                },
+              ),
+            )
+          ],
+        );
+      }),
     );
   }
 
-  Widget listItem(ExpenseModel expense){
+  Widget listItem(ExpenseModel expense) {
     DateTime date = DateTime.parse(expense.createdDate.toString());
     var format = DateFormat("yyyy-MM-dd h:m:s a");
     var finalDate = format.format(date);
     return Slidable(
-      endActionPane: ActionPane(
-        motion: const StretchMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (_){
-              Get.to(()=>ExpenseEditScreen(expense));
-            },
-            icon: Icons.edit,
-          ),
-          SlidableAction(
-            onPressed: (_){
-              Get.defaultDialog(
+      endActionPane: ActionPane(motion: const StretchMotion(), children: [
+        SlidableAction(
+          onPressed: (_) {
+            Get.to(() => ExpenseEditScreen(expense));
+          },
+          icon: Icons.edit,
+        ),
+        SlidableAction(
+          onPressed: (_) {
+            Get.defaultDialog(
                 onCancel: () => Get.back(),
                 onConfirm: () {
                   _expenseController.deleteExpense(expense.id!);
                   Get.back();
-                }
-              );
-            },
-            icon: Icons.delete,
-          )
-        ]
-      ),
+                });
+          },
+          icon: Icons.delete,
+        )
+      ]),
       child: Container(
-      margin: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
-      color: expense.type==1 ? Colors.blue[200] : Colors.red[200],
-      child: 
-      ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(expense.description.toString()),
-            Text(expense.amount.toString()),
-          ],
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        decoration: BoxDecoration(
+          color: expense.type == 1 ? Colors.blue[200] : Colors.red[200],
+          borderRadius: BorderRadius.circular(10),
         ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(expense.note.toString()),
-            Text(finalDate),
-          ],
+        child: ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(expense.description.toString()),
+              Text(expense.amount.toString()),
+            ],
+          ),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(expense.note.toString()),
+              Text(finalDate),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }

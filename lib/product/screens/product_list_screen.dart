@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/get_instance.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/product/screens/product_add_screen.dart';
@@ -23,85 +20,92 @@ class ProductListScreen extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: TextField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Search...",
               ),
-              onChanged: (value){
-                filterInput = value!;
-                productController.getAll(input: value!);
+              onChanged: (value) {
+                filterInput = value;
+                productController.getAll(input: value);
               },
-              // onTap: () => productController.getAll(),
             ),
           ),
-          Expanded(
-            child: Obx(()=>ListView.builder(
-              itemCount: productController.products.length,
-              itemBuilder: (context,index){
-                var product = productController.products[index];
-                return listItem(product);
-              },
-            )),
-          )
+          productController.products.isEmpty
+              ? const Text("No Data")
+              : Expanded(
+                  child: Obx(() => ListView.builder(
+                        itemCount: productController.products.length,
+                        itemBuilder: (context, index) {
+                          var product = productController.products[index];
+                          return listItem(product);
+                        },
+                      )),
+                )
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Get.to(()=>ProductAddScreen());
+        onPressed: () {
+          Get.to(() => ProductAddScreen());
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget listItem(ProductModel product){
+  Widget listItem(ProductModel product) {
     return Slidable(
       endActionPane: ActionPane(
         motion: const StretchMotion(),
         children: [
           SlidableAction(
-            onPressed: (_){
-              Get.to(()=>ProductDetailScreen(product));
+            onPressed: (_) {
+              Get.to(() => ProductDetailScreen(product));
             },
             icon: Icons.menu,
           ),
           SlidableAction(
-            onPressed: (_){
-              Get.to(()=>ProductEditScreen(product));
+            onPressed: (_) {
+              Get.to(() => ProductEditScreen(product));
             },
             icon: Icons.edit,
           ),
           SlidableAction(
-            onPressed: (_){
+            onPressed: (_) {
               Get.defaultDialog(
-                title: "Delete!",
-                middleText: "Are you sure to delete!",
-                actions: [
-                  TextButton(onPressed: (){
-                    productController.deleteProduct(product);
-                    productController.getAll(input: filterInput);
-                    Get.back();
-                  }, child: Text("save")),
-                  TextButton(onPressed: (){
-                    Get.back();
-                  }, child: Text("Cancel"))
-                ]
-              );
+                  title: "Delete!",
+                  middleText: "Are you sure to delete!",
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          productController.deleteProduct(product);
+                          productController.getAll(input: filterInput);
+                          Get.back();
+                        },
+                        child: const Text("save")),
+                    TextButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text("Cancel"))
+                  ]);
             },
             icon: Icons.delete,
           ),
         ],
       ),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(product.name.toString(),style: TextStyle(fontSize: 18),),
+                Text(
+                  product.name.toString(),
+                  style: const TextStyle(fontSize: 18),
+                ),
                 Text(product.quantity.toString()),
               ],
             ),
@@ -113,7 +117,7 @@ class ProductListScreen extends StatelessWidget {
                 Text(product.sale_price.toString()),
               ],
             ),
-            Divider()
+            const Divider()
           ],
         ),
       ),
