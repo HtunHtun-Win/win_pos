@@ -3,7 +3,7 @@ import 'package:win_pos/contact/customer/model/customer_model.dart';
 import 'package:win_pos/contact/supplier/model/supplier_model.dart';
 import 'package:win_pos/contact/supplier/service/supplier_service.dart';
 
-class SupplierController extends GetxController{
+class SupplierController extends GetxController {
   SupplierService supplierService = SupplierService();
   var suppliers = [].obs;
 
@@ -13,33 +13,32 @@ class SupplierController extends GetxController{
     getAll();
   }
 
-  Future<void> getAll() async{
+  Future<void> getAll() async {
     var datas = await supplierService.getAll();
     suppliers.clear();
-    datas.forEach((data){
-      suppliers.add(
-        SupplierModel.fromMap(data)
-      );
-    });
+    for (var data in datas) {
+      suppliers.add(SupplierModel.fromMap(data));
+    }
   }
 
-  Future<Map> getByName(String name) async{
+  Future<Map> getByName(String name) async {
     return await supplierService.getByName(name);
   }
 
-  Future<Map> insert(String name, String phone, String address) async{
-    var map =  await supplierService.insert(name, phone, address);
+  Future<Map> insert(String name, String phone, String address) async {
+    var map = await supplierService.insert(name, phone, address);
     getAll();
     return map;
   }
 
-  Future<Map> updateCustomer(int id,String name, String phone, String address) async{
+  Future<Map> updateCustomer(
+      int id, String name, String phone, String address) async {
     var map = await supplierService.update(id, name, phone, address);
     getAll();
     return map;
   }
 
-  Future<void> delete(int id) async{
+  Future<void> delete(int id) async {
     await supplierService.delete(id);
     getAll();
   }

@@ -1,6 +1,4 @@
-import 'package:win_pos/contact/customer/model/customer_model.dart';
 import 'package:win_pos/sales/repository/sales_repository.dart';
-
 import '../models/cart_model.dart';
 import '../models/sale_model.dart';
 
@@ -8,7 +6,7 @@ class SalesService {
   SalesRepository salesRepository = SalesRepository();
 
   Future<List> getAllProduct({String? input}) async {
-    if (input!.length > 0) {
+    if (input!.isNotEmpty) {
       return await salesRepository.getByFilter(input);
     }
     return [];

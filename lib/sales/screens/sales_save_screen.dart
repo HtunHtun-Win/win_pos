@@ -117,7 +117,7 @@ class SalesSaveScreen extends StatelessWidget {
         decoration: const InputDecoration(
             border: OutlineInputBorder(), label: Text("discount")),
         onChanged: (value) {
-          if (value.length > 0) {
+          if (value.isNotEmpty) {
             totalPrice = salesController.totalAmount.value - int.parse(value);
             salesController.discount.value = int.parse(value);
             totalController.text = totalPrice.toString();

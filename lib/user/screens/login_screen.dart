@@ -9,11 +9,11 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserController controller = Get.put(UserController());
-    TextEditingController userid_controller = TextEditingController();
-    TextEditingController password_controller = TextEditingController();
+    TextEditingController useridController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     //pre setup userid and password
-    userid_controller.text = "admin";
-    password_controller.text = "admin";
+    useridController.text = "admin";
+    passwordController.text = "admin";
     return Scaffold(
       body: Stack(
         children: [
@@ -21,24 +21,28 @@ class LoginScreen extends StatelessWidget {
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
                   Colors.blue,
                   Colors.blueAccent,
                   Colors.blueAccent,
                   Colors.blue,
                 ],
-                stops: [0.1,0.3,0.7,0.9]
-              )
-            ),
+                    stops: [
+                  0.1,
+                  0.3,
+                  0.7,
+                  0.9
+                ])),
           ),
           //for alignment
           SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 100,horizontal: 50),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 100, horizontal: 50),
               child: Column(
                 children: [
                   Container(
@@ -46,60 +50,53 @@ class LoginScreen extends StatelessWidget {
                     height: 150,
                     decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Image.asset(
-                        "assets/images/shop_logo.png"
-                    ),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Image.asset("assets/images/shop_logo.png"),
                   ),
-                  Text(
+                  const Text(
                     "WinPos",
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 30
-                    ),
+                        fontSize: 30),
                   ),
-                  SizedBox(height: 5,),
-                  userInput(
-                      "LoginId",
-                      Icon(Icons.fingerprint),
-                      TextInputType.text,
-                      userid_controller),//input for userid
-                  SizedBox(height: 5,),
-                  userInput(
-                      "Password",
-                      Icon(Icons.lock),
-                      TextInputType.text,
-                      password_controller,
-                      obtext: true),//input for password
-                  Container(
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  userInput("LoginId", const Icon(Icons.fingerprint),
+                      TextInputType.text, useridController), //input for userid
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  userInput("Password", const Icon(Icons.lock),
+                      TextInputType.text, passwordController,
+                      obtext: true), //input for password
+                  SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                        onPressed: ()async{
-                          var loginId = userid_controller.text;
-                          var password = password_controller.text;
-                          var user = await controller.validUser(loginId,password);
-                          if(user.isNotEmpty){
-                            Get.off(()=>SalesVoucherScreen());
-                          }else{
+                        onPressed: () async {
+                          var loginId = useridController.text;
+                          var password = passwordController.text;
+                          var user =
+                              await controller.validUser(loginId, password);
+                          if (user.isNotEmpty) {
+                            Get.off(() => SalesVoucherScreen());
+                          } else {
                             Get.snackbar(
-                                "Invalid Credentials",
-                                "Wrong UserId or Password!",
-                                colorText: Colors.white,
-                                backgroundColor: Colors.black.withOpacity(.3),
+                              "Invalid Credentials",
+                              "Wrong UserId or Password!",
+                              colorText: Colors.white,
+                              backgroundColor: Colors.black.withOpacity(.3),
                             );
                           }
                         },
-                        child: Text(
-                            "LOGIN",
+                        child: const Text(
+                          "LOGIN",
                           style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold
-                          ),
-                        )
-                    ),
+                              color: Colors.blueAccent,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        )),
                   )
                 ],
               ),
@@ -110,36 +107,32 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget userInput(String hint_text,Icon icon,TextInputType type,TextEditingController t_controller,{bool? obtext}){
+  Widget userInput(String hintText, Icon icon, TextInputType type,
+      TextEditingController tController,
+      {bool? obtext}) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.3),
         boxShadow: [
           BoxShadow(
               color: Colors.black.withOpacity(0.1),
-              offset:Offset(5,5),
-              blurRadius: 20
-          )
+              offset: const Offset(5, 5),
+              blurRadius: 20)
         ],
         borderRadius: BorderRadius.circular(10),
       ),
       child: TextField(
-        controller: t_controller,
+        controller: tController,
         keyboardType: type,
-        obscureText: obtext??false,
-        style: TextStyle(
-          color: Colors.white
-        ),
+        obscureText: obtext ?? false,
+        style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: hint_text,
-            hintStyle: TextStyle(
-              color: Colors.white
-            ),
+            hintText: hintText,
+            hintStyle: const TextStyle(color: Colors.white),
             iconColor: Colors.white,
-            icon: icon
-        ),
+            icon: icon),
       ),
     );
   }

@@ -10,36 +10,37 @@ import '../models/user.dart';
 class UserScreen extends StatelessWidget {
   // const UserScreen({super.key});
   UserController controller = Get.find();
-  List roles = ["","admin","sale","purchase"];
+  List roles = ["", "admin", "sale", "purchase"];
+
+  UserScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     controller.getAll();
     return Scaffold(
       appBar: AppBar(
-        title: Text("User List"),
+        title: const Text("User List"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-              onPressed: (){
-                Get.to(()=>AddUserScreen());
+              onPressed: () {
+                Get.to(() => const AddUserScreen());
               },
-              icon: Icon(Icons.add)
-          )
+              icon: const Icon(Icons.add))
         ],
       ),
       // drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson()),),
-      body: Obx(()=>ListView.builder(
-        itemCount: controller.users.length,
-        itemBuilder: (context,index){
-          User user = controller.users[index];
-          return ListItem(user);
-        },
-      )),
+      body: Obx(() => ListView.builder(
+            itemCount: controller.users.length,
+            itemBuilder: (context, index) {
+              User user = controller.users[index];
+              return ListItem(user);
+            },
+          )),
     );
   }
 
-  Widget ListItem(User user){
+  Widget ListItem(User user) {
     return Column(
       children: [
         ListTile(
@@ -48,31 +49,31 @@ class UserScreen extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                      user.login_id.toString(),
-                    style: TextStyle(
+                    user.login_id.toString(),
+                    style: const TextStyle(
                       fontSize: 17,
                     ),
                   ),
                   Text(
-                      user.password.toString(),
-                    style: TextStyle(
+                    user.password.toString(),
+                    style: const TextStyle(
                       fontSize: 17,
                     ),
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               Column(
                 children: [
                   Text(
                     user.name.toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 17,
                     ),
                   ),
                   Text(
                     "(${roles[user.role_id!].toString()})",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 17,
                     ),
                   ),
@@ -85,26 +86,27 @@ class UserScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(onPressed: (){
-                controller.edit_user.value = user;
-                Get.to(()=>EditUserScreen());
-              }, icon: Icon(Icons.edit)),
               IconButton(
-                  onPressed: (){
-                    Get.defaultDialog(
-                      title: "Delete!",
-                      middleText: "Tap outside area to cancel!",
-                      onConfirm: (){
-                        controller.deleteUser(user.id!);
-                        Get.back();
-                      }
-                    );
+                  onPressed: () {
+                    controller.edit_user.value = user;
+                    Get.to(() => EditUserScreen());
                   },
-                  icon: Icon(Icons.delete)),
+                  icon: const Icon(Icons.edit)),
+              IconButton(
+                  onPressed: () {
+                    Get.defaultDialog(
+                        title: "Delete!",
+                        middleText: "Tap outside area to cancel!",
+                        onConfirm: () {
+                          controller.deleteUser(user.id!);
+                          Get.back();
+                        });
+                  },
+                  icon: const Icon(Icons.delete)),
             ],
           ),
         ),
-        Divider()
+        const Divider()
       ],
     );
   }

@@ -18,7 +18,7 @@ import 'package:win_pos/user/models/user.dart';
 class ExpenseScreen extends StatelessWidget {
   ExpenseScreen({super.key});
   UserController userController = Get.find();
-  ExpenseController _expenseController = Get.put(ExpenseController());
+  final ExpenseController _expenseController = Get.put(ExpenseController());
 
   @override
   Widget build(BuildContext context) {
@@ -38,20 +38,20 @@ class ExpenseScreen extends StatelessWidget {
         return Column(
           children: [
             Container(
-              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Income : ${_expenseController.totalIncome}",
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.green,
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
                     "Expense : ${_expenseController.totalExpense}",
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.red,
                         fontSize: 20,
                         fontWeight: FontWeight.bold),

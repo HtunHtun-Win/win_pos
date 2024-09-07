@@ -23,8 +23,8 @@ class ProductAdjustScreen extends StatelessWidget {
             child: Obx(() => ListView.builder(
                   itemCount: productLogController.logs.length,
                   itemBuilder: (context, index) {
-                    var product_log = productLogController.logs[index];
-                    return listItem(product_log);
+                    var productLog = productLogController.logs[index];
+                    return listItem(productLog);
                   },
                 )),
           )
@@ -32,9 +32,9 @@ class ProductAdjustScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(()=>ProductAdjustAddScreen());
+          Get.to(() => ProductAdjustAddScreen());
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -42,7 +42,7 @@ class ProductAdjustScreen extends StatelessWidget {
   Widget listItem(ProductLogModel log) {
     DateTime date = DateTime.parse(log.date.toString());
     var fdate = DateFormat("yyyy-MM-dd h:m:s a");
-    var final_date = fdate.format(date);
+    var finalDate = fdate.format(date);
     return Container(
       child: ListTile(
         title: Row(
@@ -56,19 +56,19 @@ class ProductAdjustScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('${log.quantity.toString()} : pcs (${log.note.toString()})'),
-            Text(final_date),
+            Text(finalDate),
           ],
         ),
       ),
     );
   }
 
-  Widget datePicker(){
+  Widget datePicker() {
     return Container(
-      padding: EdgeInsets.only(top: 5,right: 10),
+      padding: const EdgeInsets.only(top: 5, right: 10),
       child: DropdownMenu(
         initialSelection: "all",
-        dropdownMenuEntries: [
+        dropdownMenuEntries: const [
           DropdownMenuEntry(value: "all", label: "All"),
           DropdownMenuEntry(value: "today", label: "Today"),
           DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
@@ -77,51 +77,41 @@ class ProductAdjustScreen extends StatelessWidget {
           DropdownMenuEntry(value: "thisyear", label: "This year"),
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
-        onSelected: (value){
-          if(value=='all'){
+        onSelected: (value) {
+          if (value == 'all') {
             productLogController.getAll();
-          }else{
-            productLogController.getAll(
-              map: daterangeCalculate(value!)
-            );
+          } else {
+            productLogController.getAll(map: daterangeCalculate(value!));
           }
         },
       ),
     );
   }
 
-  Map daterangeCalculate(String selectedDate){
+  Map daterangeCalculate(String selectedDate) {
     String startDate = "";
     String endDate = "";
     var now = DateTime.now();
-    var today = DateTime(now.year,now.month,now.day);
-    if(selectedDate=="today"){
+    var today = DateTime(now.year, now.month, now.day);
+    if (selectedDate == "today") {
       startDate = today.toString();
-      endDate = DateTime(now.year,now.month,now.day+1).toString();
+      endDate = DateTime(now.year, now.month, now.day + 1).toString();
+    } else if (selectedDate == "yesterday") {
+      startDate = DateTime(now.year, now.month, now.day - 1).toString();
+      endDate = DateTime(now.year, now.month, now.day).toString();
+    } else if (selectedDate == "thismonth") {
+      startDate = DateTime(now.year, now.month, 1).toString();
+      endDate = DateTime(now.year, now.month, now.day + 1).toString();
+    } else if (selectedDate == "lastmonth") {
+      startDate = DateTime(now.year, now.month - 1, 1).toString();
+      endDate = DateTime(now.year, now.month, 1).toString();
+    } else if (selectedDate == "thisyear") {
+      startDate = DateTime(now.year, 1, 1).toString();
+      endDate = DateTime(now.year, now.month, now.day + 1).toString();
+    } else if (selectedDate == "lastyear") {
+      startDate = DateTime(now.year - 1, 1, 1).toString();
+      endDate = DateTime(now.year, 1, 1).toString();
     }
-    else if(selectedDate=="yesterday"){
-      startDate = DateTime(now.year,now.month,now.day-1).toString();
-      endDate = DateTime(now.year,now.month,now.day).toString();
-    }
-    else if(selectedDate=="thismonth"){
-      startDate = DateTime(now.year,now.month,1).toString();
-      endDate = DateTime(now.year,now.month,now.day+1).toString();
-    }
-    else if(selectedDate=="lastmonth"){
-      startDate = DateTime(now.year,now.month-1,1).toString();
-      endDate = DateTime(now.year,now.month,1).toString();
-    }
-    else if(selectedDate=="thisyear"){
-      startDate = DateTime(now.year,1,1).toString();
-      endDate = DateTime(now.year,now.month,now.day+1).toString();
-    }
-    else if(selectedDate=="lastyear"){
-      startDate = DateTime(now.year-1,1,1).toString();
-      endDate = DateTime(now.year,1,1).toString();
-    }
-    return {
-      'start' : startDate,
-      'end' : endDate
-    };
+    return {'start': startDate, 'end': endDate};
   }
 }

@@ -8,7 +8,7 @@ import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
 class SalesVoucherScreen extends StatelessWidget {
-  SalesVoucherScreen({super.key});
+  const SalesVoucherScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

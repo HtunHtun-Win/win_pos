@@ -14,21 +14,20 @@ class CategoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Category"),
+        title: const Text("Category"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-              onPressed: ()=>Get.to(()=>CategoryAddScreen()),
-              icon: Icon(Icons.add)
-          )
+              onPressed: () => Get.to(() => CategoryAddScreen()),
+              icon: const Icon(Icons.add))
         ],
       ),
-      body: Obx((){
+      body: Obx(() {
         return ListView.builder(
           itemCount: categoryController.categories.length,
-          itemBuilder: (context,index){
+          itemBuilder: (context, index) {
             var category = categoryController.categories[index];
-            if(category.id == 1) return Container();
+            if (category.id == 1) return Container();
             return listItem(category);
           },
         );
@@ -36,7 +35,7 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
-  Widget listItem(CategoryModel category){
+  Widget listItem(CategoryModel category) {
     return Column(
       children: [
         ListTile(
@@ -46,28 +45,37 @@ class CategoryScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              IconButton(onPressed: (){
-                Get.to(()=>CategoryEditScreen(category));
-              }, icon: Icon(Icons.edit)),
-              IconButton(onPressed: (){
-                Get.defaultDialog(
-                  title: "Delete!",
-                  middleText: "Are you sure to delete!",
-                  actions: [
-                    TextButton(onPressed: (){
-                      Get.back();
-                    }, child: Text("Cancel"),),
-                    TextButton(onPressed: (){
-                      categoryController.deleteCategory(category.id!);
-                      Get.back();
-                    }, child: Text("Ok"),),
-                  ]
-                );
-              }, icon: Icon(Icons.delete)),
+              IconButton(
+                  onPressed: () {
+                    Get.to(() => CategoryEditScreen(category));
+                  },
+                  icon: const Icon(Icons.edit)),
+              IconButton(
+                  onPressed: () {
+                    Get.defaultDialog(
+                        title: "Delete!",
+                        middleText: "Are you sure to delete!",
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text("Cancel"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              categoryController.deleteCategory(category.id!);
+                              Get.back();
+                            },
+                            child: const Text("Ok"),
+                          ),
+                        ]);
+                  },
+                  icon: const Icon(Icons.delete)),
             ],
           ),
         ),
-        Divider()
+        const Divider()
       ],
     );
   }

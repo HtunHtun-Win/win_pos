@@ -100,7 +100,7 @@ class SalesScreen extends StatelessWidget {
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withOpacity(.5),
-                offset: Offset(5, 5),
+                offset: const Offset(5, 5),
                 blurRadius: 10)
           ]),
       child: ListTile(

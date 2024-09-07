@@ -6,7 +6,7 @@ import 'package:win_pos/expense/controller/expense_controller.dart';
 
 class ExpenseAddScreen extends StatelessWidget {
   ExpenseAddScreen({super.key});
-  ExpenseController _expenseController = Get.find();
+  final ExpenseController _expenseController = Get.find();
   int flowType = 2;
 
   @override
@@ -61,13 +61,13 @@ class ExpenseAddScreen extends StatelessWidget {
 
   Widget userInput(text, controller, {type}) {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: const EdgeInsets.all(5),
       child: TextField(
         keyboardType: type,
         controller: controller,
         decoration: InputDecoration(
           label: Text(text),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     );
@@ -75,11 +75,11 @@ class ExpenseAddScreen extends StatelessWidget {
 
   Widget flowDropdown() {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: const EdgeInsets.all(5),
       child: DropdownMenu(
         width: 150,
         initialSelection: 2,
-        dropdownMenuEntries: [
+        dropdownMenuEntries: const [
           DropdownMenuEntry(value: 1, label: "Income"),
           DropdownMenuEntry(value: 2, label: "Expense"),
         ],

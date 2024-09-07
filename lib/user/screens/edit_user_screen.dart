@@ -5,12 +5,13 @@ import 'package:win_pos/user/screens/user_screen.dart';
 import '../models/user.dart';
 
 class EditUserScreen extends StatefulWidget {
+  const EditUserScreen({super.key});
+
   @override
   State<EditUserScreen> createState() => _EditUserScreenState();
 }
 
 class _EditUserScreenState extends State<EditUserScreen> {
-
   TextEditingController nameController = TextEditingController();
   TextEditingController loginIdController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -31,19 +32,28 @@ class _EditUserScreenState extends State<EditUserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit User"),
+        title: const Text("Edit User"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
-            userInput(context,"Name",Icon(Icons.person),nameController),
-            SizedBox(height: 5,),
-            userInput(context,"Login Id",Icon(Icons.fingerprint),loginIdController),
-            SizedBox(height: 5,),
-            userInput(context,"Password",Icon(Icons.lock),passwordController),
-            SizedBox(height: 5,),
+            userInput(
+                context, "Name", const Icon(Icons.person), nameController),
+            const SizedBox(
+              height: 5,
+            ),
+            userInput(context, "Login Id", const Icon(Icons.fingerprint),
+                loginIdController),
+            const SizedBox(
+              height: 5,
+            ),
+            userInput(context, "Password", const Icon(Icons.lock),
+                passwordController),
+            const SizedBox(
+              height: 5,
+            ),
             //for role selecter
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -51,100 +61,94 @@ class _EditUserScreenState extends State<EditUserScreen> {
                 Row(
                   children: [
                     const Text("Admin"),
-                    Radio(value: 1, groupValue: currentOpt, onChanged: (value){
-                      setState(() {
-                        currentOpt = 1;
-                      });
-                    })
+                    Radio(
+                        value: 1,
+                        groupValue: currentOpt,
+                        onChanged: (value) {
+                          setState(() {
+                            currentOpt = 1;
+                          });
+                        })
                   ],
                 ),
                 Row(
                   children: [
                     const Text("Sale"),
-                    Radio(value: 2, groupValue: currentOpt, onChanged: (value){
-                      setState(() {
-                        currentOpt = 2;
-                      });
-                    })
+                    Radio(
+                        value: 2,
+                        groupValue: currentOpt,
+                        onChanged: (value) {
+                          setState(() {
+                            currentOpt = 2;
+                          });
+                        })
                   ],
                 ),
                 Row(
                   children: [
                     const Text("Purchase"),
-                    Radio(value: 3, groupValue: currentOpt, onChanged: (value){
-                      setState(() {
-                        currentOpt = 3;
-                      });
-                    })
+                    Radio(
+                        value: 3,
+                        groupValue: currentOpt,
+                        onChanged: (value) {
+                          setState(() {
+                            currentOpt = 3;
+                          });
+                        })
                   ],
                 ),
               ],
             ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: (){
-                      nameController.clear();
-                      loginIdController.clear();
-                      passwordController.clear();
-                    },
-                    child: Text(
-                      "Clear",
-                      style: TextStyle(
-                          fontSize: 18
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async{
-                      var num = await controller.updateUser(
-                          controller.edit_user.value.id!,
-                          nameController.text,
-                          loginIdController.text,
-                          passwordController.text,
-                          currentOpt
-                      );
-                      if(num==-1){
-                        Get.snackbar(
-                            "Duplicate!",
-                            "LoginId is already exists!"
-                        );
-                      }else if(num!=0){
-                        Get.back();
-                      }else{
-                        Get.snackbar(
-                            "Invalid Input!",
-                            "Every input must have at least 2"
-                        );
-                      }
-                    },
-                    child: Text(
-                      "Update",
-                      style: TextStyle(
-                          fontSize: 18
-                      ),
-                    ),
-                  ),
-                ]
-            )
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              TextButton(
+                onPressed: () {
+                  nameController.clear();
+                  loginIdController.clear();
+                  passwordController.clear();
+                },
+                child: const Text(
+                  "Clear",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  var num = await controller.updateUser(
+                      controller.edit_user.value.id!,
+                      nameController.text,
+                      loginIdController.text,
+                      passwordController.text,
+                      currentOpt);
+                  if (num == -1) {
+                    Get.snackbar("Duplicate!", "LoginId is already exists!");
+                  } else if (num != 0) {
+                    Get.back();
+                  } else {
+                    Get.snackbar(
+                        "Invalid Input!", "Every input must have at least 2");
+                  }
+                },
+                child: const Text(
+                  "Update",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ])
           ],
         ),
       ),
     );
   }
 
-  Widget userInput(context,String hint_text,Icon icon,TextEditingController t_controller){
+  Widget userInput(
+      context, String hintText, Icon icon, TextEditingController tController) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
-        controller: t_controller,
+        controller: tController,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: hint_text,
-            icon: icon
-        ),
+            border: const OutlineInputBorder(), hintText: hintText, icon: icon),
       ),
     );
   }

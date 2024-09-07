@@ -3,17 +3,16 @@ import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:win_pos/product/models/product_log_model.dart';
 import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/product/services/product_log_service.dart';
-import 'package:win_pos/product/services/product_service.dart';
 
 class ProductLogController extends GetxController {
   ProductLogService productLogService = ProductLogService();
   ProductController productController = Get.find();
   var logs = [].obs;
   var products = [].obs;
-  var selectedProduct = {'pid':0,'qty':0}.obs;
+  var selectedProduct = {'pid': 0, 'qty': 0}.obs;
 
   @override
-  void onInit(){
+  void onInit() {
     super.onInit();
     getAll();
   }
@@ -31,11 +30,11 @@ class ProductLogController extends GetxController {
     }
   }
 
-  Future<void> addProductLog(int productId,int quantity,String note,int userId) async{
+  Future<void> addProductLog(
+      int productId, int quantity, String note, int userId) async {
     await productLogService.addProductLog(productId, quantity, note, userId);
     await productLogService.updateProductQty(productId, quantity);
     await productController.getAll();
     getAll();
   }
-
 }
