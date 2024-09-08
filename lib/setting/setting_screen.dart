@@ -15,37 +15,39 @@ class SettingScreen extends StatelessWidget {
     UserController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Setting"),
+        title: const Text("Setting"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
       body: ListView(
         children: [
-          ListItem(context,Icon(Icons.house),"Shop",(){Get.to(()=>ShopInfoScreen());}),
-          ListItem(context,Icon(Icons.people),"Users",(){Get.to(()=>UserScreen());}),
-          ListItem(context,Icon(Icons.category),"Category",(){Get.to(()=>CategoryScreen());}),
+          ListItem(context, const Icon(Icons.house), "Shop", () {
+            Get.to(() => ShopInfoScreen());
+          }),
+          ListItem(context, const Icon(Icons.people), "Users", () {
+            Get.to(() => UserScreen());
+          }),
+          ListItem(context, const Icon(Icons.category), "Category", () {
+            Get.to(() => CategoryScreen());
+          }),
         ],
       ),
     );
   }
 
-  Widget ListItem(context,icon,text,VoidCallback fun){
+  Widget ListItem(context, icon, text, VoidCallback fun) {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(1),
-        borderRadius: BorderRadius.circular(10)
-      ),
+          color: Theme.of(context).primaryColor.withOpacity(1),
+          borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: icon,
         iconColor: Colors.white,
         title: Text(
-            text,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 18
-          ),
+          text,
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         onTap: fun,
       ),

@@ -1,6 +1,6 @@
 import 'package:win_pos/product/models/product_model.dart';
 
-class CartModel{
+class CartModel {
   ProductModel product;
   int quantity;
   int? sprice;
@@ -13,9 +13,9 @@ class CartModel{
 
   Map<String, dynamic> toMap() {
     return {
-      'productId': this.product,
-      'quantity': this.quantity,
-      'sprice': this.sprice,
+      'productId': product,
+      'quantity': quantity,
+      'sprice': sprice,
     };
   }
 

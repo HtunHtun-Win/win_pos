@@ -19,7 +19,7 @@ class ProductScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text("Inventory"),
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            bottom: TabBar(
+            bottom: const TabBar(
               tabs: [
                 Tab(
                   text: "List",

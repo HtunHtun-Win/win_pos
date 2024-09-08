@@ -22,7 +22,8 @@ class ExpenseRepository{
         "description" : description,
         "note" : note,
         "flow_type_id" : type,
-        "user_id" : userId
+        "user_id" : userId,
+        "created_at" : DateTime.now().toString(),
       }
     );
   }

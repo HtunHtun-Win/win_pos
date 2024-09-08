@@ -6,7 +6,7 @@ import 'package:win_pos/expense/controller/expense_controller.dart';
 
 class ExpenseAddScreen extends StatelessWidget {
   ExpenseAddScreen({super.key});
-  ExpenseController _expenseController = Get.find();
+  final ExpenseController _expenseController = Get.find();
   int flowType = 2;
 
   @override
@@ -21,21 +21,20 @@ class ExpenseAddScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-            onPressed: (){
-              onSave(amountController, descController, noteController);
-            }, 
-            icon: Icon(Icons.save)
-            )
+              onPressed: () {
+                onSave(amountController, descController, noteController);
+              },
+              icon: const Icon(Icons.save))
         ],
       ),
       body: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            userInput("Amount",amountController,type: TextInputType.number),
-            userInput("Description",descController,type: TextInputType.text),
-            userInput("Note",noteController,type: TextInputType.text),
+            userInput("Amount", amountController, type: TextInputType.number),
+            userInput("Description", descController, type: TextInputType.text),
+            userInput("Note", noteController, type: TextInputType.text),
             flowDropdown()
           ],
         ),
@@ -43,52 +42,51 @@ class ExpenseAddScreen extends StatelessWidget {
     );
   }
 
-  void onSave(TextEditingController amountController, TextEditingController descController, TextEditingController noteController) async{
+  void onSave(
+      TextEditingController amountController,
+      TextEditingController descController,
+      TextEditingController noteController) async {
     var result = await _expenseController.addExpense(
-      int.parse(amountController.text),
-      descController.text,
-      noteController.text,
-      flowType,
-      1
-    );
-    if(result['msg']=="null"){
-      Get.snackbar(
-        "Null!",
-        "Amount and description can't be empty"
-      );
-    }else if(result['msg']=='success'){
+        int.parse(amountController.text),
+        descController.text,
+        noteController.text,
+        flowType,
+        1);
+    if (result['msg'] == "null") {
+      Get.snackbar("Null!", "Amount and description can't be empty");
+    } else if (result['msg'] == 'success') {
       Get.back();
     }
   }
 
-  Widget userInput(text,controller,{type}){
+  Widget userInput(text, controller, {type}) {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: const EdgeInsets.all(5),
       child: TextField(
         keyboardType: type,
         controller: controller,
         decoration: InputDecoration(
           label: Text(text),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     );
   }
 
-  Widget flowDropdown(){
+  Widget flowDropdown() {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: const EdgeInsets.all(5),
       child: DropdownMenu(
-      width: 150,
-      initialSelection: 2,
-      dropdownMenuEntries: [
-        DropdownMenuEntry(value: 1, label: "Income"),
-        DropdownMenuEntry(value: 2, label: "Expense"),
-      ],
-      onSelected: (value){
-        flowType = value!;
-      },
-    ),
+        width: 150,
+        initialSelection: 2,
+        dropdownMenuEntries: const [
+          DropdownMenuEntry(value: 1, label: "Income"),
+          DropdownMenuEntry(value: 2, label: "Expense"),
+        ],
+        onSelected: (value) {
+          flowType = value!;
+        },
+      ),
     );
   }
 }

@@ -6,7 +6,7 @@ import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:win_pos/product/models/product_model.dart';
 
 class ProductEditScreen extends StatelessWidget {
-  ProductEditScreen(this.productModel);
+  ProductEditScreen(this.productModel, {super.key});
   ProductModel productModel;
   ProductController productController = Get.find();
   CategoryController categoryController = Get.find();
@@ -33,7 +33,7 @@ class ProductEditScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-              onPressed:(){
+              onPressed: () {
                 updateProduct(
                   productModel.id!,
                   codeController.text,
@@ -42,29 +42,38 @@ class ProductEditScreen extends StatelessWidget {
                   category_id,
                 );
               },
-              icon: Icon(Icons.save)
-          )
+              icon: const Icon(Icons.save))
         ],
       ),
       body: Container(
         margin: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            userInput("Name",nameController),
-            userInput("Code",codeController),
-            userInput("Description",descController,num: 2),
+            userInput("Name", nameController),
+            userInput("Code", codeController),
+            userInput("Description", descController, num: 2),
             Row(
               children: [
-                Expanded(child: userInput("Quantity",quantityController,type: TextInputType.number,state: true)),
-                SizedBox(width: 10,),
+                Expanded(
+                    child: userInput("Quantity", quantityController,
+                        type: TextInputType.number, state: true)),
+                const SizedBox(
+                  width: 10,
+                ),
                 categoryBox(context),
               ],
             ),
             Row(
               children: [
-                Expanded(child: userInput("Purchase Price",ppriceController,type: TextInputType.number,state: true)),
-                SizedBox(width: 10,),
-                Expanded(child: userInput("Sale Price",spriceController,type: TextInputType.number,state: true)),
+                Expanded(
+                    child: userInput("Purchase Price", ppriceController,
+                        type: TextInputType.number, state: true)),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                    child: userInput("Sale Price", spriceController,
+                        type: TextInputType.number, state: true)),
               ],
             )
           ],
@@ -73,60 +82,44 @@ class ProductEditScreen extends StatelessWidget {
     );
   }
 
-  Future<void> updateProduct(int id,String code, String name,String description,int category_id) async {
+  Future<void> updateProduct(int id, String code, String name,
+      String description, int categoryId) async {
     var map = await productController.updateProduct(
-        id,
-        code,
-        name,
-        description,
-        category_id
-    );
+        id, code, name, description, categoryId);
     if (map["msg"] == "null") {
-      Get.snackbar(
-          "Empty!",
-          "Name and code can't be empty..."
-      );
+      Get.snackbar("Empty!", "Name and code can't be empty...");
     } else if (map["msg"] == "duplicate") {
-      Get.snackbar(
-          "Duplicate!",
-          "This code is already exist..."
-      );
-    }else{
+      Get.snackbar("Duplicate!", "This code is already exist...");
+    } else {
       Get.back();
     }
   }
 
   Widget userInput(text, controller, {type, num, state}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 7),
+      margin: const EdgeInsets.symmetric(vertical: 7),
       child: TextField(
         controller: controller,
         keyboardType: type,
         maxLines: num,
         readOnly: state ?? false,
         decoration: InputDecoration(
-            labelText: text,
-            border: OutlineInputBorder()
-        ),
+            labelText: text, border: const OutlineInputBorder()),
       ),
     );
   }
 
-  Widget categoryBox(context){
+  Widget categoryBox(context) {
     return DropdownMenu(
       initialSelection: category_id,
-      label: Text("Category"),
+      label: const Text("Category"),
       enableFilter: true,
       requestFocusOnTap: true,
       width: 180,
-      dropdownMenuEntries:
-      categoryController.categories.map((category){
-        return DropdownMenuEntry(
-            value: category.id,
-            label: category.name
-        );
+      dropdownMenuEntries: categoryController.categories.map((category) {
+        return DropdownMenuEntry(value: category.id, label: category.name);
       }).toList(),
-      onSelected: (value){
+      onSelected: (value) {
         category_id = value;
         print(category_id);
       },

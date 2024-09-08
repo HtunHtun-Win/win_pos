@@ -2,19 +2,18 @@ import 'package:get/get.dart';
 import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/product/services/product_service.dart';
 
-class ProductController extends GetxController{
-
+class ProductController extends GetxController {
   ProductService productService = ProductService();
 
   var products = [].obs;
 
   @override
-  void onInit(){
+  void onInit() {
     super.onInit();
     getAll();
   }
 
-  Future<void> getAll({String? input=''}) async{
+  Future<void> getAll({String? input = ''}) async {
     var datas = await productService.getAll(input: input);
     products.clear();
     for (var data in datas) {
@@ -22,20 +21,28 @@ class ProductController extends GetxController{
     }
   }
 
-  Future<Map> addProduct(String code, String name,String description,int quantity,int category_id,int purchase_price,int sale_price) async{
-    var map = await productService.addProduct(code, name, description, quantity, category_id, purchase_price, sale_price);
+  Future<Map> addProduct(String code, String name, String description,
+      int quantity, int categoryId, int purchasePrice, int salePrice) async {
+    var map = await productService.addProduct(code, name, description, quantity,
+        categoryId, purchasePrice, salePrice);
     getAll();
     return map;
   }
 
-  Future<Map> updateProduct(int id, String code, String name,String description,int category_id,) async{
-    var map = await productService.updateProduct(id, code, name, description, category_id);
+  Future<Map> updateProduct(
+    int id,
+    String code,
+    String name,
+    String description,
+    int categoryId,
+  ) async {
+    var map = await productService.updateProduct(
+        id, code, name, description, categoryId);
     getAll();
     return map;
   }
 
-  Future<void> deleteProduct(ProductModel product) async{
+  Future<void> deleteProduct(ProductModel product) async {
     await productService.deleteProduct(product.id!);
   }
-
 }
