@@ -37,22 +37,24 @@ class SalesSaveScreen extends StatelessWidget {
               icon: const Icon(Icons.save))
         ],
       ),
-      body: Container(
-        margin: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            customersBox(),
-            const SizedBox(height: 10),
-            infoBox(controller: phoneController, text: "Phone"),
-            const SizedBox(height: 10),
-            infoBox(controller: addressController, line: 2, text: "Address"),
-            const SizedBox(height: 10),
-            infoBox(controller: netAmountController, text: "Net Price"),
-            const SizedBox(height: 10),
-            discountBox(),
-            const SizedBox(height: 10),
-            infoBox(controller: totalController, text: "Total Price"),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              customersBox(),
+              const SizedBox(height: 10),
+              infoBox(controller: phoneController, text: "Phone"),
+              const SizedBox(height: 10),
+              infoBox(controller: addressController, line: 2, text: "Address"),
+              const SizedBox(height: 10),
+              infoBox(controller: netAmountController, text: "Net Price"),
+              const SizedBox(height: 10),
+              discountBox(),
+              const SizedBox(height: 10),
+              infoBox(controller: totalController, text: "Total Price"),
+            ],
+          ),
         ),
       ),
     );
