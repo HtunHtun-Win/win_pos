@@ -16,33 +16,35 @@ class UserController extends GetxController {
   Future<void> getAll() async {
     var datas = await service.getAll();
     users.clear();
-    datas.forEach((data) {
+    for (var data in datas) {
       users.add(User.fromMap(data));
-    });
+    }
   }
 
-  Future<Map> validUser(String loginId,String password) async{
-    var data = await service.validUser(loginId,password);
-    if(data.length > 0){
+  Future<Map> validUser(String loginId, String password) async {
+    var data = await service.validUser(loginId, password);
+    if (data.isNotEmpty) {
       current_user.value = data[0];
       return current_user.value;
     }
     return {};
   }
 
-  Future<int> insertUser(String name,String login_id,String password,int role_id) async{
-    var num = await service.insertUser(name, login_id, password, role_id);
+  Future<int> insertUser(
+      String name, String loginId, String password, int roleId) async {
+    var num = await service.insertUser(name, loginId, password, roleId);
     getAll();
     return num;
   }
 
-  Future<int> updateUser(int id,String name,String loginId,String password,int role_id) async{
-    var num = await service.updateUser(id, name, loginId, password, role_id);
+  Future<int> updateUser(
+      int id, String name, String loginId, String password, int roleId) async {
+    var num = await service.updateUser(id, name, loginId, password, roleId);
     getAll();
     return num;
   }
 
-  Future<void> deleteUser(int id) async{
+  Future<void> deleteUser(int id) async {
     await service.deleteUser(id);
     getAll();
   }

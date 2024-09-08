@@ -27,7 +27,7 @@ class ProductAddScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-              onPressed:(){
+              onPressed: () {
                 addProduct(
                   codeController.text,
                   nameController.text,
@@ -38,29 +38,38 @@ class ProductAddScreen extends StatelessWidget {
                   int.parse(spriceController.text),
                 );
               },
-              icon: Icon(Icons.save)
-          )
+              icon: const Icon(Icons.save))
         ],
       ),
       body: Container(
         margin: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            userInput("Name",nameController),
-            userInput("Code",codeController),
-            userInput("Description",descController,num: 2),
+            userInput("Name", nameController),
+            userInput("Code", codeController),
+            userInput("Description", descController, num: 2),
             Row(
               children: [
-                Expanded(child: userInput("Quantity",quantityController,type: TextInputType.number)),
-                SizedBox(width: 10,),
+                Expanded(
+                    child: userInput("Quantity", quantityController,
+                        type: TextInputType.number)),
+                const SizedBox(
+                  width: 10,
+                ),
                 categoryBox(context),
               ],
             ),
             Row(
               children: [
-                Expanded(child: userInput("Purchase Price",ppriceController,type: TextInputType.number)),
-                SizedBox(width: 10,),
-                Expanded(child: userInput("Sale Price",spriceController,type: TextInputType.number)),
+                Expanded(
+                    child: userInput("Purchase Price", ppriceController,
+                        type: TextInputType.number)),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                    child: userInput("Sale Price", spriceController,
+                        type: TextInputType.number)),
               ],
             )
           ],
@@ -69,60 +78,42 @@ class ProductAddScreen extends StatelessWidget {
     );
   }
 
-  Future<void> addProduct(String code, String name,String description,int quantity,int category_id,int purchase_price,int sale_price) async {
-    var map = await productController.addProduct(
-        code,
-        name,
-        description,
-        quantity,
-        category_id,
-        purchase_price,
-        sale_price
-    );
+  Future<void> addProduct(String code, String name, String description,
+      int quantity, int categoryId, int purchasePrice, int salePrice) async {
+    var map = await productController.addProduct(code, name, description,
+        quantity, categoryId, purchasePrice, salePrice);
     if (map["msg"] == "null") {
-      Get.snackbar(
-          "Empty!",
-          "Name, code and purchase price can't be empty..."
-      );
+      Get.snackbar("Empty!", "Name, code and purchase price can't be empty...");
     } else if (map["msg"] == "duplicate") {
-      Get.snackbar(
-          "Duplicate!",
-          "This code is already exist..."
-      );
-    }else{
+      Get.snackbar("Duplicate!", "This code is already exist...");
+    } else {
       Get.back();
     }
   }
 
-  Widget userInput(text, controller, {type,num}) {
+  Widget userInput(text, controller, {type, num}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 7),
+      margin: const EdgeInsets.symmetric(vertical: 7),
       child: TextField(
         controller: controller,
         keyboardType: type,
         maxLines: num,
         decoration: InputDecoration(
-            labelText: text,
-            border: OutlineInputBorder()
-        ),
+            labelText: text, border: const OutlineInputBorder()),
       ),
     );
   }
 
-  Widget categoryBox(context){
+  Widget categoryBox(context) {
     return DropdownMenu(
       label: const Text("Category"),
       enableFilter: true,
       requestFocusOnTap: true,
       width: 180,
-      dropdownMenuEntries:
-        categoryController.categories.map((category){
-          return DropdownMenuEntry(
-              value: category.id,
-              label: category.name
-          );
-        }).toList(),
-      onSelected: (value){
+      dropdownMenuEntries: categoryController.categories.map((category) {
+        return DropdownMenuEntry(value: category.id, label: category.name);
+      }).toList(),
+      onSelected: (value) {
         category_id = value;
       },
     );

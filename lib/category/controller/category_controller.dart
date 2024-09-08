@@ -1,10 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/services/category_service.dart';
 import 'package:win_pos/category/models/category_model.dart';
 
-class CategoryController extends GetxController{
-
+class CategoryController extends GetxController {
   var categories = [].obs;
 
   @override
@@ -16,7 +14,7 @@ class CategoryController extends GetxController{
 
   CategoryService categoryService = CategoryService();
 
-  void getAll() async{
+  void getAll() async {
     var datas = await categoryService.getAll();
     categories.clear();
     for (var data in datas) {
@@ -24,25 +22,24 @@ class CategoryController extends GetxController{
     }
   }
 
-  Future<List> getByName(String name) async{
+  Future<List> getByName(String name) async {
     return await categoryService.getByName(name);
   }
 
-  Future<Map> insertCategory(String name,String description) async{
+  Future<Map> insertCategory(String name, String description) async {
     var num = await categoryService.insertCategory(name, description);
     getAll();
     return num;
   }
 
-  Future<Map> updateCategory(int id,String name,String description) async{
+  Future<Map> updateCategory(int id, String name, String description) async {
     var data = await categoryService.updateCategory(id, name, description);
     getAll();
     return data;
   }
 
-  Future<void> deleteCategory(int id) async{
+  Future<void> deleteCategory(int id) async {
     await categoryService.deleteCategory(id);
     getAll();
   }
-
 }

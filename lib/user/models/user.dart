@@ -6,10 +6,10 @@ class User {
   int? role_id;
 
   User.fromMap(Map<String, dynamic> user) {
-    this.id = user["id"];
-    this.name = user["name"];
-    this.login_id = user["login_id"];
-    this.password = user["password"];
-    this.role_id = user["role_id"];
+    id = user["id"];
+    name = user["name"];
+    login_id = user["login_id"];
+    password = user["password"];
+    role_id = user["role_id"];
   }
 }

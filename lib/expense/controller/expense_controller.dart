@@ -3,48 +3,50 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:win_pos/expense/model/expense_model.dart';
 import 'package:win_pos/expense/service/expense_service.dart';
 
-class ExpenseController extends GetxController{
-  ExpenseService _expenseService = ExpenseService();
-  var expense_list = [].obs; //variable to keep income and expense list 
+class ExpenseController extends GetxController {
+  final ExpenseService _expenseService = ExpenseService();
+  var expense_list = [].obs; //variable to keep income and expense list
   var totalIncome = 0.obs;
   var totalExpense = 0.obs;
 
   @override
-  void onInit(){
+  void onInit() {
     super.onInit();
     getAll();
   }
-  
-  Future<void> getAll() async{
+
+  Future<void> getAll() async {
     var datas = await _expenseService.getAll();
     expense_list.clear();
     totalIncome = 0.obs;
     totalExpense = 0.obs;
-    for(var data in datas){
-      expense_list.add(
-        ExpenseModel.fromMap(data)
-      );
-      if(data['flow_type_id']==1){
-        totalIncome+=data['amount'];
-      }else{
-        totalExpense+=data['amount'];
+    for (var data in datas) {
+      expense_list.add(ExpenseModel.fromMap(data));
+      if (data['flow_type_id'] == 1) {
+        totalIncome += data['amount'];
+      } else {
+        totalExpense += data['amount'];
       }
     }
   }
 
-  Future<Map> addExpense(int amount, String description, String note, int type, int userId) async{
-    var num = await _expenseService.addExpense(amount, description, note, type, userId);
+  Future<Map> addExpense(
+      int amount, String description, String note, int type, int userId) async {
+    var num = await _expenseService.addExpense(
+        amount, description, note, type, userId);
     getAll();
     return num;
   }
 
-  Future<Map> updateExpense(int id, int amount, String description, String note, int type, int userId) async{
-    var num = await _expenseService.updateExpense(id, amount, description, note, type, userId);
+  Future<Map> updateExpense(int id, int amount, String description, String note,
+      int type, int userId) async {
+    var num = await _expenseService.updateExpense(
+        id, amount, description, note, type, userId);
     getAll();
     return num;
   }
 
-  Future<void> deleteExpense(int id) async{
+  Future<void> deleteExpense(int id) async {
     await _expenseService.deleteExpense(id);
     getAll();
   }

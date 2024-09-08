@@ -13,91 +13,95 @@ class CustomerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(()=>ListView.builder(
-        itemCount: customerController.customers.length,
-        itemBuilder: (context,index){
-          var customer = customerController.customers[index];
-          if(customer.id==1){
-            return Container();
-          };
-          return listItem(context,customer);
-        },
-      )),
+      body: Obx(() => ListView.builder(
+            itemCount: customerController.customers.length,
+            itemBuilder: (context, index) {
+              var customer = customerController.customers[index];
+              if (customer.id == 1) {
+                return Container();
+              }
+              return listItem(context, customer);
+            },
+          )),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Get.to(()=>CustomerAddScreen());
+        onPressed: () {
+          Get.to(() => CustomerAddScreen());
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget listItem(context,CustomerModel customer){
+  Widget listItem(context, CustomerModel customer) {
     Color color = Colors.white;
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-        borderRadius: BorderRadius.circular(10)
-      ),
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         title: Text(
-            customer.name.toString(),
-          style: TextStyle(
-            color: color,
-            fontWeight: FontWeight.bold
-          ),
+          customer.name.toString(),
+          style: TextStyle(color: color, fontWeight: FontWeight.bold),
         ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-                customer.phone.toString(),
+              customer.phone.toString(),
               style: TextStyle(
-                  color: color,
+                color: color,
               ),
             ),
             Text(
-                customer.address.toString(),
+              customer.address.toString(),
               style: TextStyle(
-                  color: color,
+                color: color,
               ),
             ),
           ],
         ),
-        trailing: customer.id == 1 ? SizedBox() : Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-                onPressed: (){
-                  Get.to(()=>CustomerEditScreen(customer));
-                },
-                icon: Icon(Icons.edit,color: color,)
-            ),
-            IconButton(
-                onPressed: (){
-                  Get.defaultDialog(
-                      title: "Delete!",
-                      middleText: "Are you sure to delete!",
-                      actions: [
-                        TextButton(onPressed: (){
-                          Get.back();
-                        }, child: Text("Cancel"),),
-                        TextButton(
-                          onPressed: (){
-                            customerController.delete(customer.id!);
-                            Get.back();
-                          },
-                          child: Text("Ok"),
-                        ),
-                      ]
-                  );
-                },
-                icon: Icon(Icons.delete,color: color,)
-            ),
-          ],
-        ),
+        trailing: customer.id == 1
+            ? const SizedBox()
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        Get.to(() => CustomerEditScreen(customer));
+                      },
+                      icon: Icon(
+                        Icons.edit,
+                        color: color,
+                      )),
+                  IconButton(
+                      onPressed: () {
+                        Get.defaultDialog(
+                            title: "Delete!",
+                            middleText: "Are you sure to delete!",
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text("Cancel"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  customerController.delete(customer.id!);
+                                  Get.back();
+                                },
+                                child: const Text("Ok"),
+                              ),
+                            ]);
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: color,
+                      )),
+                ],
+              ),
       ),
     );
   }

@@ -15,11 +15,11 @@ class ShopInfoScreen extends StatelessWidget {
     shopInfoController.getAll();
     return Scaffold(
       appBar: AppBar(
-          title: Text('Shop'),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Shop'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Obx((){
-        if(shopInfoController.shop.isNotEmpty){
+      body: Obx(() {
+        if (shopInfoController.shop.isNotEmpty) {
           ShopModel shopModel = ShopModel.fromMap(shopInfoController.shop);
           nameController.text = shopModel.name!;
           addressController.text = shopModel.address!;
@@ -28,18 +28,17 @@ class ShopInfoScreen extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            inputField("Name",nameController),
-            inputField("Address",addressController),
-            inputField("Phone",phoneController),
+            inputField("Name", nameController),
+            inputField("Phone", phoneController),
+            inputField("Address", addressController,maxLine: 3),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child:TextButton(onPressed: (){
-                shopInfoController.updateInfo(
-                    nameController.text,
-                    addressController.text,
-                    phoneController.text
-                );
-              }, child: Text("Update")),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextButton(
+                  onPressed: () {
+                    shopInfoController.updateInfo(nameController.text,
+                        addressController.text, phoneController.text);
+                  },
+                  child: const Text("Update")),
             )
           ],
         );
@@ -47,23 +46,20 @@ class ShopInfoScreen extends StatelessWidget {
     );
   }
 
-  Widget inputField(title,controller){
+  Widget inputField(title, controller,{maxLine}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5,horizontal: 15),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: TextStyle(
-                fontSize: 18
-            ),
+            style: const TextStyle(fontSize: 18),
           ),
           TextField(
             controller: controller,
-            decoration: InputDecoration(
-                border: OutlineInputBorder()
-            ),
+            maxLines: maxLine,
+            decoration: const InputDecoration(border: OutlineInputBorder()),
           )
         ],
       ),
