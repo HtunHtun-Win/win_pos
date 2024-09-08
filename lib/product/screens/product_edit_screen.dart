@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/controller/category_controller.dart';
@@ -49,28 +50,19 @@ class ProductEditScreen extends StatelessWidget {
         margin: const EdgeInsets.all(10),
         child: ListView(
           children: [
+            const SizedBox(width: 8),
+            categoryBox(context),
+            const SizedBox(width: 8),
             userInput("Name", nameController),
             userInput("Code", codeController),
             userInput("Description", descController, num: 2),
-            Row(
-              children: [
-                Expanded(
-                    child: userInput("Quantity", quantityController,
-                        type: TextInputType.number, state: true)),
-                const SizedBox(
-                  width: 10,
-                ),
-                categoryBox(context),
-              ],
-            ),
+            userInput("Quantity", quantityController,type: TextInputType.number,state: true),
             Row(
               children: [
                 Expanded(
                     child: userInput("Purchase Price", ppriceController,
                         type: TextInputType.number, state: true)),
-                const SizedBox(
-                  width: 10,
-                ),
+                const SizedBox(width: 10,),
                 Expanded(
                     child: userInput("Sale Price", spriceController,
                         type: TextInputType.number, state: true)),
@@ -109,20 +101,49 @@ class ProductEditScreen extends StatelessWidget {
     );
   }
 
-  Widget categoryBox(context) {
-    return DropdownMenu(
-      initialSelection: category_id,
-      label: const Text("Category"),
-      enableFilter: true,
-      requestFocusOnTap: true,
-      width: 180,
-      dropdownMenuEntries: categoryController.categories.map((category) {
-        return DropdownMenuEntry(value: category.id, label: category.name);
-      }).toList(),
-      onSelected: (value) {
-        category_id = value;
-        print(category_id);
+  Widget categoryBox(BuildContext context) {
+    return DropdownSearch<String>(
+      dropdownDecoratorProps: const DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          labelText: "Category",
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          border: OutlineInputBorder(),
+        ),
+      ),
+      items: categoryController.categories.map((category) => category.name.toString()).toList(),
+      onChanged: (String? selectedCategory) {
+        final selected = categoryController.categories.firstWhere(
+              (category) => category.name == selectedCategory,
+        );
+        category_id = selected.id;
       },
+      selectedItem: "Select Category", // Optional: Can be null if no initial selection is required
+      popupProps: const PopupProps.menu(
+        showSearchBox: true,
+        searchFieldProps: TextFieldProps(
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: "Search Category",
+          ),
+        ),
+      ),
     );
   }
+
+  // Widget categoryBox(context) {
+  //   return DropdownMenu(
+  //     initialSelection: category_id,
+  //     label: const Text("Category"),
+  //     enableFilter: true,
+  //     requestFocusOnTap: true,
+  //     width: 180,
+  //     dropdownMenuEntries: categoryController.categories.map((category) {
+  //       return DropdownMenuEntry(value: category.id, label: category.name);
+  //     }).toList(),
+  //     onSelected: (value) {
+  //       category_id = value;
+  //       print(category_id);
+  //     },
+  //   );
+  // }
 }
