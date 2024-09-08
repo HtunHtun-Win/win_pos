@@ -37,7 +37,7 @@ class SettingScreen extends StatelessWidget {
 
   Widget ListItem(context, icon, text, VoidCallback fun) {
     return Container(
-      margin: const EdgeInsets.all(5),
+      margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor.withOpacity(1),
           borderRadius: BorderRadius.circular(10)),

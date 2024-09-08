@@ -32,10 +32,10 @@ class ProductListScreen extends StatelessWidget {
               },
             ),
           ),
-          productController.products.isEmpty
-              ? const Text("No Data")
-              : Expanded(
-                  child: Obx(() => ListView.builder(
+          Expanded(
+                  child: Obx(() => productController.products.isEmpty
+                      ? const Text("No Data")
+                      :  ListView.builder(
                         itemCount: productController.products.length,
                         itemBuilder: (context, index) {
                           var product = productController.products[index];

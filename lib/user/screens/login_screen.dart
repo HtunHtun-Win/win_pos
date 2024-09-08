@@ -69,7 +69,7 @@ class LoginScreen extends StatelessWidget {
                     height: 5,
                   ),
                   userInput("Password", const Icon(Icons.lock),
-                      TextInputType.text, passwordController,
+                      TextInputType.number, passwordController,
                       obtext: true), //input for password
                   SizedBox(
                     width: double.infinity,

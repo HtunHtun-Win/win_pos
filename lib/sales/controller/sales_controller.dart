@@ -9,7 +9,6 @@ class SalesController extends GetxController {
   var products = [].obs;
   var cart = <CartModel>[].obs;
   var vouchers = <SaleModel>[].obs;
-  var customers = {}.obs;
   var totalAmount = 0.obs;
   var discount = 0.obs;
 
@@ -21,8 +20,8 @@ class SalesController extends GetxController {
     }
   }
 
-  Future<void> getAllVouchers() async {
-    var datas = await salesService.getAllVouchers();
+  Future<void> getAllVouchers({Map? map}) async {
+    var datas = await salesService.getAllVouchers(map: map);
     vouchers.clear();
     for (var data in datas) {
       vouchers.add(SaleModel.fromMap(data));
@@ -46,16 +45,9 @@ class SalesController extends GetxController {
     }
   }
 
-  Future<int> addSale(SaleModel sale, List<CartModel> cart) async {
+  Future<int> addSale(Map sale, List<CartModel> cart) async {
     int saleId = await salesService.addSale(sale, cart);
     return saleId;
-  }
-
-  void getCustomer() async {
-    var datas = await salesService.getCustomer();
-    for (var data in datas) {
-      customers[data['id']] = data['name'];
-    }
   }
 
   void getTotal() {

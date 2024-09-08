@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/sales/screens/sales_detail.dart';
 
 class VoucherItem extends StatelessWidget {
-  VoucherItem({super.key, required this.voucher, required this.cName});
+  VoucherItem({super.key, required this.voucher});
   SaleModel voucher;
-  String cName;
 
   @override
   Widget build(BuildContext context) {
+    DateTime date = DateTime.parse(voucher.created_at.toString());
+    var fdate = DateFormat("yyyy-MM-dd h:m:s a");
+    var finalDate = fdate.format(date);
     return Container(
-      margin: const EdgeInsets.all(3),
+      margin: const EdgeInsets.symmetric(vertical: 1,horizontal: 8),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
@@ -29,8 +32,8 @@ class VoucherItem extends StatelessWidget {
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(voucher.created_at!),
-            Text(cName),
+            Text(finalDate),
+            Text(voucher.customer!),
           ],
         ),
         onTap: () {

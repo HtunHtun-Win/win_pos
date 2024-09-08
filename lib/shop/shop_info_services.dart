@@ -8,7 +8,8 @@ class ShopInfoServices {
   }
 
   Future<void> updateInfo(String name, String address, String phone) async {
-    if (name.isNotEmpty)
+    if (name.isNotEmpty) {
       await shopInfoRepository.updateInfo(name, address, phone);
+    }
   }
 }

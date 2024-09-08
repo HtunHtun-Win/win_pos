@@ -39,7 +39,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
               height: 5,
             ),
             userInput(context, "Password", const Icon(Icons.lock),
-                passwordController),
+                passwordController, type: TextInputType.number),
             const SizedBox(
               height: 5,
             ),
@@ -129,12 +129,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
   }
 
   Widget userInput(
-      context, String hintText, Icon icon, TextEditingController tController) {
+      context, String hintText, Icon icon, TextEditingController tController,{type}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
         controller: tController,
-        keyboardType: TextInputType.text,
+        keyboardType: type,
         decoration: InputDecoration(
             border: const OutlineInputBorder(), hintText: hintText, icon: icon),
       ),

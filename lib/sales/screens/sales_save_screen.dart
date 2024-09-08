@@ -59,16 +59,15 @@ class SalesSaveScreen extends StatelessWidget {
   }
 
   void onSave() async {
-    SaleModel saleModel = SaleModel(
-      sale_no: "inv1",
-      customer_id: customerId,
-      user_id: userController.current_user["id"],
-      net_price: salesController.totalAmount.value,
-      discount: salesController.discount.value,
-      total_price: totalPrice,
-      payment_type_id: 1,
-    );
-    await salesController.addSale(saleModel, salesController.cart);
+    Map saleMap = {
+      "customer_id": customerId,
+      "user_id": userController.current_user["id"],
+      "net_price": salesController.totalAmount.value,
+      "discount": salesController.discount.value,
+      "total_price": totalPrice,
+      "payment_type_id": 1,
+    };
+    await salesController.addSale(saleMap, salesController.cart);
     salesController.cart.clear();
     salesController.getAllVouchers();
     salesController.getTotal();

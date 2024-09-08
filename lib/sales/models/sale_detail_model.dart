@@ -1,27 +1,19 @@
 class SaleDetailModel {
-  int? id;
-  int? sales_id;
-  int? product_id;
+  String? product;
   int? quantity;
   int? price;
-  int? pprice;
 
-  SaleDetailModel(
-      {this.id,
-      this.sales_id,
-      this.product_id,
+  SaleDetailModel({
+      this.product,
       this.quantity,
-      this.price,
-      this.pprice});
+      this.price
+      });
 
-  SaleDetailModel.fromMap(Map map) {
-    SaleDetailModel(
-      id: map['id'],
-      sales_id: map['sales_id'],
-      product_id: map['product_id'],
+  factory SaleDetailModel.fromMap(Map map) {
+    return SaleDetailModel(
+      product: map['name'],
       quantity: map['quantity'],
       price: map['price'],
-      pprice: map['pprice'],
     );
   }
 }

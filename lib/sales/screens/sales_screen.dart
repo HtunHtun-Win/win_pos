@@ -25,6 +25,12 @@ class SalesScreen extends StatelessWidget {
               onPressed: () {
                 if (salesController.cart.isNotEmpty) {
                   Get.to(() => SalesSaveScreen());
+                }else{
+                  Get.snackbar(
+                  "Cart is empty!", "Select product!",
+                    backgroundColor: Colors.black.withOpacity(.5),
+                    colorText: Colors.white,
+                  );
                 }
               },
               icon: const Icon(Icons.save))
@@ -122,6 +128,7 @@ class SalesScreen extends StatelessWidget {
           salesController.addToCart(product);
           salesController.products.clear();
           salesController.getTotal();
+          searchController.text = "";
         },
       ),
     );
@@ -144,7 +151,9 @@ class SalesScreen extends StatelessWidget {
                 salesController.cart.remove(item);
                 salesController.getTotal();
               },
-              icon: Icons.delete)
+              icon: Icons.delete,
+            foregroundColor: Colors.red,
+          )
         ],
       ),
       child: ListTile(
@@ -178,7 +187,7 @@ class SalesScreen extends StatelessWidget {
   void quantityAlert(CartModel item, index) {
     qtyController.text = item.quantity.toString();
     Get.defaultDialog(
-        title: item.product.name!,
+        title: "${item.product.name!} (${item.product.quantity!} pcs)",
         content: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -186,8 +195,10 @@ class SalesScreen extends StatelessWidget {
               onPressed: () {
                 int qty = int.parse(qtyController.text);
                 qty--;
-                qtyController.text = qty.toString();
-                if (qty > 0) salesController.cart[index].quantity--;
+                if (qty > 0){
+                  qtyController.text = qty.toString();
+                  salesController.cart[index].quantity--;
+                }
                 salesController.cart.refresh();
                 salesController.getTotal();
               },
@@ -199,7 +210,16 @@ class SalesScreen extends StatelessWidget {
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 int quantity = int.parse(value) > 0 ? int.parse(value) : 1;
-                salesController.cart[index].quantity = quantity;
+                if (quantity <= item.product.quantity!){
+                  salesController.cart[index].quantity = quantity;
+                }else{
+                  Get.back();
+                  Get.snackbar(
+                    "Alert!","Not enough stock!",
+                    backgroundColor: Colors.black.withOpacity(.5),
+                    colorText: Colors.white,
+                  );
+                }
                 salesController.cart.refresh();
                 salesController.getTotal();
               },
@@ -209,8 +229,17 @@ class SalesScreen extends StatelessWidget {
               onPressed: () {
                 int qty = int.parse(qtyController.text);
                 qty++;
-                qtyController.text = qty.toString();
-                salesController.cart[index].quantity++;
+                if (qty <= item.product.quantity!){
+                  qtyController.text = qty.toString();
+                  salesController.cart[index].quantity++;
+                }else{
+                  Get.back();
+                  Get.snackbar(
+                    "Alert!","Not enough stock!",
+                    backgroundColor: Colors.black.withOpacity(.5),
+                    colorText: Colors.white,
+                  );
+                }
                 salesController.cart.refresh();
                 salesController.getTotal();
               },
