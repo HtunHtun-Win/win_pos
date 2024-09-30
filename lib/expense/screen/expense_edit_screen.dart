@@ -23,7 +23,7 @@ class ExpenseEditScreen extends StatelessWidget {
     noteController.text = expense.note!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Income ~ Expense"),
+        title: const Text("Edit Expense"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
@@ -84,7 +84,7 @@ class ExpenseEditScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(5),
       child: DropdownMenu(
-        width: 150,
+        width: double.infinity,
         initialSelection: expense.type,
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: 1, label: "Income"),

@@ -49,14 +49,14 @@ class PurchaseDetail extends StatelessWidget {
             ),
             Row(
               children: [
-                const Expanded(child: Text("Customer")),
+                const Expanded(child: Text("Supplier")),
                 const Expanded(child: Text(":")),
                 Expanded(flex: 3, child: Text(voucher.supplier.toString())),
               ],
             ),
             Row(
               children: [
-                const Expanded(child: Text("Sale staff")),
+                const Expanded(child: Text("Staff")),
                 const Expanded(child: Text(":")),
                 Expanded(flex: 3, child: Text(voucher.user.toString())),
               ],

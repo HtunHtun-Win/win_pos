@@ -55,12 +55,34 @@ class SalesRepository {
       while (tempQty > 0) {
         var pprice = await getPprice(item.product.id!);
         if (pprice['quantity'] >= tempQty) {
-          addSaleDetail(saleId, item, pprice['price']);
-          updatePprice(item.product.id!, -item.quantity);
+          addSaleDetail(
+              saleId,
+              CartModel.fromMap(
+                  {
+                    'product': item.product,
+                    'quantity': tempQty,
+                    'sprice': item.sprice,
+                    'pprice': item.pprice,
+                  }
+              ),
+              pprice['price'],
+          );
+          updatePprice(item.product.id!, -tempQty);
           tempQty = 0;
         } else {
-          addSaleDetail(saleId, item, pprice['price']);
-          updatePprice(item.product.id!, -item.quantity);
+          addSaleDetail(
+            saleId,
+            CartModel.fromMap(
+              {
+                'product': item.product,
+                'quantity': pprice['quantity'],
+                'sprice': item.sprice,
+                'pprice': item.pprice,
+              }
+            ),
+            pprice['price'],
+          );
+          updatePprice(item.product.id!, -pprice['quantity']);
           tempQty -= pprice['quantity'] as int;
         }
       }
@@ -115,7 +137,7 @@ class SalesRepository {
   void updatePprice(int pid, int qty) async {
     final database = await dbObj.database;
     await database.rawQuery(
-        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid ORDER BY id ASC LIMIT 1)");
+        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND quantity!=0 ORDER BY id ASC LIMIT 1)");
   }
 
   void updateProductQty(int id, int qty) async {
