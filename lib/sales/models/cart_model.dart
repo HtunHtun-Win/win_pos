@@ -4,11 +4,13 @@ class CartModel {
   ProductModel product;
   int quantity;
   int? sprice;
+  int? pprice;
 
   CartModel({
     required this.product,
     required this.quantity,
     this.sprice,
+    this.pprice,
   });
 
   Map<String, dynamic> toMap() {
@@ -16,6 +18,7 @@ class CartModel {
       'productId': product,
       'quantity': quantity,
       'sprice': sprice,
+      'pprice': pprice,
     };
   }
 
@@ -23,7 +26,8 @@ class CartModel {
     return CartModel(
       product: map['product'] as ProductModel,
       quantity: map['quantity'] as int,
-      sprice: map['sprice'] as int,
+      sprice: map['sprice'],
+      pprice: map['pprice'],
     );
   }
 }

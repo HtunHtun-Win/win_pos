@@ -17,7 +17,7 @@ class ExpenseAddScreen extends StatelessWidget {
     amountController.text = '0';
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Income ~ Expense"),
+        title: const Text("Add Expense"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
@@ -77,7 +77,7 @@ class ExpenseAddScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(5),
       child: DropdownMenu(
-        width: 150,
+        width: double.infinity,
         initialSelection: 2,
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: 1, label: "Income"),
