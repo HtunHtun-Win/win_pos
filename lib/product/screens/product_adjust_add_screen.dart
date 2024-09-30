@@ -1,4 +1,6 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_common/get_reset.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -102,7 +104,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
   Widget typeChange() {
     return DropdownMenu(
       initialSelection: "adjust",
-      width: 350,
+      width: double.infinity,
       dropdownMenuEntries: const [
         DropdownMenuEntry(value: "adjust", label: "Adjust"),
         DropdownMenuEntry(value: "lose", label: "Lose"),
@@ -114,21 +116,54 @@ class ProductAdjustAddScreen extends StatelessWidget {
   }
 
   Widget productList() {
-    return DropdownMenu(
-      enableFilter: true,
-      requestFocusOnTap: true,
-      hintText: "Search...",
-      width: 350,
-      dropdownMenuEntries: productLogController.products.value.map((product) {
-        return DropdownMenuEntry(
-            value: product, label: "${product.name} (${product.quantity} pcs)");
-      }).toList(),
-      onSelected: (value) {
-        pId = value.id;
-        currentQty = value.quantity;
+    return DropdownSearch<String>(
+      dropdownDecoratorProps: const DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          labelText: "Select Item...",
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          border: OutlineInputBorder(),
+        ),
+      ),
+      items: productLogController.products.map((product) => product.name.toString()).toList(),
+      onChanged: (value) {
+        final item = productLogController.products.firstWhere(
+              (product) => product.name == value,
+        );
+        pId = item.id;
+        currentQty = item.quantity;
         productLogController.selectedProduct['pid'] = pId!;
         productLogController.selectedProduct['qty'] = currentQty!;
       },
+      selectedItem: null, // Optional: Can be null if no initial selection is required
+      popupProps: const PopupProps.menu(
+        showSearchBox: true,
+        searchFieldProps: TextFieldProps(
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: "Select Item",
+          ),
+        ),
+      ),
     );
   }
+
+  // Widget productList() {
+  //   return DropdownMenu(
+  //     enableFilter: true,
+  //     requestFocusOnTap: true,
+  //     hintText: "Search...",
+  //     width: 350,
+  //     dropdownMenuEntries: productLogController.products.value.map((product) {
+  //       return DropdownMenuEntry(
+  //           value: product, label: "${product.name} (${product.quantity} pcs)");
+  //     }).toList(),
+  //     onSelected: (value) {
+  //       pId = value.id;
+  //       currentQty = value.quantity;
+  //       productLogController.selectedProduct['pid'] = pId!;
+  //       productLogController.selectedProduct['qty'] = currentQty!;
+  //     },
+  //   );
+  // }
+
 }

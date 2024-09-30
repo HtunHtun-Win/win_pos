@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:win_pos/sales/models/sale_model.dart';
-import 'package:win_pos/sales/screens/sales_detail.dart';
+import 'package:win_pos/purchase/models/purchase_model.dart';
 
-class VoucherItem extends StatelessWidget {
-  VoucherItem({super.key, required this.voucher});
-  SaleModel voucher;
+import 'purchase_detail.dart';
+
+class PVoucherItem extends StatelessWidget {
+  PVoucherItem({super.key, required this.voucher});
+  PurchaseModel voucher;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class VoucherItem extends StatelessWidget {
     var fdate = DateFormat("yyyy-MM-dd h:m:s a");
     var finalDate = fdate.format(date);
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 3,horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -22,19 +23,19 @@ class VoucherItem extends StatelessWidget {
             color: Theme.of(context).colorScheme.inversePrimary,
             width: 1,
           ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(.5),
-            offset: const Offset(2, 2),
-            blurRadius: 5,
-          )
-        ]
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.5),
+              offset: const Offset(2, 2),
+              blurRadius: 5,
+            )
+          ]
       ),
       child: ListTile(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(voucher.sale_no!),
+            Text(voucher.purchaseNo!),
             Text(voucher.total_price.toString()),
           ],
         ),
@@ -42,11 +43,11 @@ class VoucherItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(finalDate),
-            Text(voucher.customer!),
+            Text(voucher.supplier!),
           ],
         ),
         onTap: () {
-          Get.to(() => SalesDetail(voucher: voucher));
+          Get.to(() => PurchaseDetail(voucher: voucher));
         },
       ),
     );

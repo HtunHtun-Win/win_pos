@@ -1,31 +1,28 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:win_pos/contact/customer/controller/customer_controller.dart';
-import 'package:win_pos/sales/models/sale_model.dart';
+import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
-import '../controller/sales_controller.dart';
+import '../controller/purchase_controller.dart';
 
-class SalesSaveScreen extends StatelessWidget {
-  SalesSaveScreen({super.key});
-  SalesController salesController = Get.find();
+class PurchaseSaveScreen extends StatelessWidget {
+  PurchaseSaveScreen({super.key});
+  PurchaseController purchaseController = Get.find();
   UserController userController = Get.find();
-  CustomerController customerController = CustomerController();
+  SupplierController supplierController = SupplierController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController netAmountController = TextEditingController();
   TextEditingController discountController = TextEditingController();
   TextEditingController totalController = TextEditingController();
-  int customerId = 1;
+  int supplierId = 1;
   int totalPrice = 0;
 
   @override
   Widget build(BuildContext context) {
-    customerController.getAll();
-    netAmountController.text = salesController.totalAmount.toString();
-    totalPrice = salesController.totalAmount.value;
+    supplierController.getAll();
+    netAmountController.text = purchaseController.totalAmount.toString();
+    totalPrice = purchaseController.totalAmount.value;
     totalController.text = totalPrice.toString();
     return Scaffold(
       appBar: AppBar(
@@ -44,7 +41,7 @@ class SalesSaveScreen extends StatelessWidget {
           margin: const EdgeInsets.all(10),
           child: Column(
             children: [
-              customersBox(),
+              suppliersBox(),
               const SizedBox(height: 10),
               infoBox(controller: phoneController, text: "Phone"),
               const SizedBox(height: 10),
@@ -63,22 +60,22 @@ class SalesSaveScreen extends StatelessWidget {
   }
 
   void onSave() async {
-    Map saleMap = {
-      "customer_id": customerId,
+    Map purchaseMap = {
+      "supplier_id": supplierId,
       "user_id": userController.current_user["id"],
-      "net_price": salesController.totalAmount.value,
-      "discount": salesController.discount.value,
+      "net_price": purchaseController.totalAmount.value,
+      "discount": purchaseController.discount.value,
       "total_price": totalPrice,
       "payment_type_id": 1,
     };
-    await salesController.addSale(saleMap, salesController.cart);
-    salesController.cart.clear();
-    salesController.getAllVouchers();
-    salesController.getTotal();
+    await purchaseController.addPurchase(purchaseMap, purchaseController.cart);
+    purchaseController.cart.clear();
+    purchaseController.getAllVouchers();
+    purchaseController.getTotal();
     Get.back();
   }
 
-  Widget customersBox() {
+  Widget suppliersBox() {
     return Obx((){
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
@@ -88,14 +85,14 @@ class SalesSaveScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: customerController.customers.map((customer) => customer.name.toString()).toList(),
+        items: supplierController.suppliers.map((customer) => customer.name.toString()).toList(),
         onChanged: (value) {
-          final customer = customerController.customers.firstWhere(
-                (customer) => customer.name == value,
+          final supplier = supplierController.suppliers.firstWhere(
+                (supplier) => supplier.name == value,
           );
-          customerId = customer.id;
-          phoneController.text = customer.phone.toString();
-          addressController.text = customer.address.toString();
+          supplierId = supplier.id;
+          phoneController.text = supplier.phone.toString();
+          addressController.text = supplier.address.toString();
         },
         selectedItem: "DefaultCustomer", // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
@@ -111,21 +108,19 @@ class SalesSaveScreen extends StatelessWidget {
     });
   }
 
-  // Widget customersBox() {
+  // Widget suppliersBox() {
   //   return Obx(() {
   //     return DropdownMenu(
-  //       label: const Text("Customer"),
   //       width: double.infinity,
   //       requestFocusOnTap: true,
   //       enableFilter: true,
-  //       enableSearch: true,
-  //       dropdownMenuEntries: customerController.customers.map((customer) {
+  //       dropdownMenuEntries: supplierController.suppliers.map((customer) {
   //         return DropdownMenuEntry(value: customer, label: customer.name);
   //       }).toList(),
-  //       onSelected: (customer) {
-  //         customerId = customer.id;
-  //         phoneController.text = customer.phone.toString();
-  //         addressController.text = customer.address.toString();
+  //       onSelected: (supplier) {
+  //         supplierId = supplier.id;
+  //         phoneController.text = supplier.phone.toString();
+  //         addressController.text = supplier.address.toString();
   //       },
   //     );
   //   });
@@ -152,19 +147,17 @@ class SalesSaveScreen extends StatelessWidget {
       child: TextField(
         controller: discountController,
         keyboardType: TextInputType.number,
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-        ],
         decoration: const InputDecoration(
             border: OutlineInputBorder(), label: Text("discount")),
         onChanged: (value) {
           if (value.isNotEmpty) {
-            totalPrice = salesController.totalAmount.value - int.parse(value);
-            salesController.discount.value = int.parse(value);
+            totalPrice =
+                purchaseController.totalAmount.value - int.parse(value);
+            purchaseController.discount.value = int.parse(value);
             totalController.text = totalPrice.toString();
           } else {
-            totalPrice = salesController.totalAmount.value - 0;
-            salesController.discount.value = 0;
+            totalPrice = purchaseController.totalAmount.value - 0;
+            purchaseController.discount.value = 0;
             totalController.text = totalPrice.toString();
           }
         },

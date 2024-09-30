@@ -111,7 +111,7 @@ class ProductAddScreen extends StatelessWidget {
         );
         category_id = selected.id;
       },
-      selectedItem: "Select Category", // Optional: Can be null if no initial selection is required
+      selectedItem: "Default Category", // Optional: Can be null if no initial selection is required
       popupProps: const PopupProps.menu(
         showSearchBox: true,
         searchFieldProps: TextFieldProps(
