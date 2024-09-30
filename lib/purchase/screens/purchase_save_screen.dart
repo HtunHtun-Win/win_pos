@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
@@ -75,26 +76,59 @@ class PurchaseSaveScreen extends StatelessWidget {
   }
 
   Widget suppliersBox() {
-    return Obx(() {
-      return DropdownMenu(
-        width: 200,
-        requestFocusOnTap: true,
-        enableFilter: true,
-        dropdownMenuEntries: supplierController.suppliers.map((customer) {
-          return DropdownMenuEntry(value: customer, label: customer.name);
-        }).toList(),
-        onSelected: (supplier) {
+    return Obx((){
+      return DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            labelText: "Customer",
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: supplierController.suppliers.map((customer) => customer.name.toString()).toList(),
+        onChanged: (value) {
+          final supplier = supplierController.suppliers.firstWhere(
+                (supplier) => supplier.name == value,
+          );
           supplierId = supplier.id;
           phoneController.text = supplier.phone.toString();
           addressController.text = supplier.address.toString();
         },
+        selectedItem: "DefaultCustomer", // Optional: Can be null if no initial selection is required
+        popupProps: const PopupProps.menu(
+          showSearchBox: true,
+          searchFieldProps: TextFieldProps(
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: "Customer",
+            ),
+          ),
+        ),
       );
     });
   }
 
+  // Widget suppliersBox() {
+  //   return Obx(() {
+  //     return DropdownMenu(
+  //       width: double.infinity,
+  //       requestFocusOnTap: true,
+  //       enableFilter: true,
+  //       dropdownMenuEntries: supplierController.suppliers.map((customer) {
+  //         return DropdownMenuEntry(value: customer, label: customer.name);
+  //       }).toList(),
+  //       onSelected: (supplier) {
+  //         supplierId = supplier.id;
+  //         phoneController.text = supplier.phone.toString();
+  //         addressController.text = supplier.address.toString();
+  //       },
+  //     );
+  //   });
+  // }
+
   Widget infoBox({controller, line, text}) {
     return SizedBox(
-      width: 200,
+      width: double.infinity,
       child: TextField(
         controller: controller,
         readOnly: true,
@@ -109,7 +143,7 @@ class PurchaseSaveScreen extends StatelessWidget {
 
   Widget discountBox() {
     return SizedBox(
-      width: 200,
+      width: double.infinity,
       child: TextField(
         controller: discountController,
         keyboardType: TextInputType.number,

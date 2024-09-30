@@ -12,6 +12,7 @@ class PurchaseScreen extends StatelessWidget {
   PurchaseController purchaseController = Get.find();
   TextEditingController searchController = TextEditingController();
   TextEditingController qtyController = TextEditingController();
+  TextEditingController ppriceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +116,7 @@ class PurchaseScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(product.name.toString()),
-            Text(product.sale_price.toString())
+            Text(product.purchase_price.toString())
           ],
         ),
         subtitle: Row(
@@ -136,7 +137,7 @@ class PurchaseScreen extends StatelessWidget {
   }
 
   Widget selectedItem(CartModel item, index) {
-    var total = item.sprice! * item.quantity;
+    var total = item.pprice! * item.quantity;
     return Slidable(
       endActionPane: ActionPane(
         motion: const StretchMotion(),
@@ -168,7 +169,7 @@ class PurchaseScreen extends StatelessWidget {
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("${item.sprice}x${item.quantity}"),
+            Text("${item.pprice}x${item.quantity}"),
           ],
         ),
       ),
@@ -186,10 +187,29 @@ class PurchaseScreen extends StatelessWidget {
   }
 
   void quantityAlert(CartModel item, index) {
+    ppriceController.text = item.pprice.toString();
     qtyController.text = item.quantity.toString();
     Get.defaultDialog(
         title: "${item.product.name!} (${item.product.quantity!} pcs)",
-        content: Row(
+        content: Column(
+          children: [
+          Row(
+            children: [
+              Expanded(
+                  child: TextField(
+                    controller: ppriceController,
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      int price = int.parse(value) > 0 ? int.parse(value) : 1;
+                      purchaseController.cart[index].pprice = price;
+                      purchaseController.cart.refresh();
+                      purchaseController.getTotal();
+                    },
+                    textAlign: TextAlign.center,
+                  )),
+            ],
+          ),
+          Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
@@ -207,16 +227,16 @@ class PurchaseScreen extends StatelessWidget {
             ),
             Expanded(
                 child: TextField(
-              controller: qtyController,
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                int quantity = int.parse(value) > 0 ? int.parse(value) : 1;
-                purchaseController.cart[index].quantity = quantity;
-                purchaseController.cart.refresh();
-                purchaseController.getTotal();
-              },
-              textAlign: TextAlign.center,
-            )),
+                  controller: qtyController,
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    int quantity = int.parse(value) > 0 ? int.parse(value) : 1;
+                    purchaseController.cart[index].quantity = quantity;
+                    purchaseController.cart.refresh();
+                    purchaseController.getTotal();
+                  },
+                  textAlign: TextAlign.center,
+                )),
             IconButton(
               onPressed: () {
                 int qty = int.parse(qtyController.text);
@@ -229,6 +249,9 @@ class PurchaseScreen extends StatelessWidget {
               icon: const Icon(Icons.add),
             ),
           ],
-        ));
+        )
+          ],
+        )
+    );
   }
 }

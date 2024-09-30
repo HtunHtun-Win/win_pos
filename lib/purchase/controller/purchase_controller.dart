@@ -40,7 +40,7 @@ class PurchaseController extends GetxController {
       cart.add(CartModel.fromMap({
         "product": product,
         'quantity': 1,
-        'sprice': product.purchase_price,
+        'pprice': product.purchase_price,
       }));
     }
   }
@@ -53,7 +53,7 @@ class PurchaseController extends GetxController {
   void getTotal() {
     totalAmount.value = 0;
     for (var item in cart) {
-      totalAmount += item.product.purchase_price! * item.quantity;
+      totalAmount += item.pprice! * item.quantity;
     }
   }
 }

@@ -16,11 +16,20 @@ class VoucherItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 3,horizontal: 8),
       decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: Theme.of(context).colorScheme.inversePrimary,
-            width: 3,
-          )),
+            width: 1,
+          ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.5),
+            offset: const Offset(2, 2),
+            blurRadius: 5,
+          )
+        ]
+      ),
       child: ListTile(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

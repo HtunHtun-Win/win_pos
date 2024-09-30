@@ -11,7 +11,7 @@ class PurchaseRepository {
       products.category_id,categories.name as category_name,products.purchase_price,products.sale_price
       from products inner join categories on categories.id=products.category_id 
       where (products.name like '%$input%' OR products.code like '%$input%') 
-      AND products.isdeleted=0 AND products.quantity!=0;
+      AND products.isdeleted=0;
     ''';
     return await database.rawQuery(sql);
   }
@@ -47,7 +47,8 @@ class PurchaseRepository {
     });
     for (var item in cart) {
       addPurchaseDetail(purchaseId, item);
-      updateProductQty(item.product.id!, item.quantity);
+      updateProduct(item.product.id!, item.quantity, item.pprice!);
+      addPurchasePrice(item.product.id!, item.quantity, item.pprice!);
       addProductLog(item.product.id!, item.quantity, "purchase", 1);
     }
     return purchaseId;
@@ -81,7 +82,7 @@ class PurchaseRepository {
         "purchase_id": saleId,
         "product_id": item.product.id,
         "quantity": item.quantity,
-        "price": item.sprice,
+        "price": item.pprice,
         "created_at": DateTime.now().toString()
       },
     );
@@ -95,10 +96,10 @@ class PurchaseRepository {
     );
   }
 
-  void updateProductQty(int id, int qty) async {
+  void updateProduct(int id, int qty, int price) async {
     final database = await dbObj.database;
     await database.rawUpdate(
-        'update products set quantity=quantity+? where id=?', [qty, id]);
+        'update products set quantity=quantity+?,purchase_price=? where id=?', [qty, price, id]);
   }
 
   Future<void> addProductLog(
