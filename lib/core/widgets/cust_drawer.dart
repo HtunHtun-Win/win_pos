@@ -4,6 +4,7 @@ import 'package:win_pos/contact/contact_screen.dart';
 import 'package:win_pos/expense/screen/expense_screen.dart';
 import 'package:win_pos/product/screens/product_screen.dart';
 import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
+import 'package:win_pos/reports/reports_screen.dart';
 import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/setting/setting_screen.dart';
 import 'package:win_pos/user/screens/login_screen.dart';
@@ -79,7 +80,9 @@ class CustDrawer extends StatelessWidget {
                   () {
                 Get.off(() => ExpenseScreen());
               }),
-              ListItem(context, const Icon(Icons.menu_book), "Report", () {}),
+              ListItem(context, const Icon(Icons.menu_book), "Report", () {
+                Get.off(() => const ReportsScreen());
+              }),
               ListItem(context, const Icon(Icons.settings), "Setting", () {
                 Get.off(() => const SettingScreen());
               }),
