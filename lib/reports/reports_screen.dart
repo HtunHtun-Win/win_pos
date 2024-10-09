@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/reports/purchase_reports/screens/purchase_report_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_report_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
@@ -23,7 +24,7 @@ class ReportsScreen extends StatelessWidget {
             Get.to(() => const SalesReportScreen());
           }),
           ListItem(context, const Icon(Icons.add_shopping_cart), "Purchase", () {
-            // Get.to(() => UserScreen());
+            Get.to(() => const PurchaseReportScreen());
           }),
           ListItem(context, const Icon(Icons.inventory), "Inventory", () {
             // Get.to(() => CategoryScreen());
