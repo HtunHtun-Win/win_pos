@@ -7,6 +7,8 @@ import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 import 'package:win_pos/user/screens/user_screen.dart';
 
+import '../payment/screens/payment_screen.dart';
+
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
@@ -29,6 +31,9 @@ class SettingScreen extends StatelessWidget {
           }),
           ListItem(context, const Icon(Icons.category), "Category", () {
             Get.to(() => CategoryScreen());
+          }),
+          ListItem(context, const Icon(Icons.payment), "Payment Method", () {
+            Get.to(() => PaymentScreen());
           }),
         ],
       ),
