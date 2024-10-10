@@ -110,7 +110,7 @@ class SalesProductScreen extends StatelessWidget {
             date: date!='all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem: "Default Category", // Optional: Can be null if no initial selection is required
+        selectedItem: "All", // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
