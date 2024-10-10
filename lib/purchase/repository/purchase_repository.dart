@@ -18,10 +18,12 @@ class PurchaseRepository {
 
   Future<List> getAllVouchers() async {
     final database = await dbObj.database;
-    return await database.rawQuery("""
+    return await database.rawQuery(
+        """
       SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,purchase.created_at 
       FROM purchase,suppliers,users WHERE purchase.supplier_id=suppliers.id AND purchase.user_id=users.id ORDER BY purchase.id DESC;
-      """);
+      """
+    );
   }
 
   Future<List> getVouchersDate(Map date) async {
