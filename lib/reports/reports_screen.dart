@@ -6,6 +6,8 @@ import 'package:win_pos/reports/sale_reports/screens/sales_report_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
+import 'inventory_reports/screens/inventory_report_screen.dart';
+
 class ReportsScreen extends StatelessWidget {
   const ReportsScreen({super.key});
 
@@ -27,7 +29,7 @@ class ReportsScreen extends StatelessWidget {
             Get.to(() => const PurchaseReportScreen());
           }),
           ListItem(context, const Icon(Icons.inventory), "Inventory", () {
-            // Get.to(() => CategoryScreen());
+            Get.to(() => const InventoryReportScreen());
           }),
           ListItem(context, const Icon(Icons.attach_money), "Financial", () {
             // Get.to(() => CategoryScreen());
