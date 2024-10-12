@@ -6,6 +6,7 @@ import 'package:win_pos/reports/sale_reports/screens/sales_report_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
+import 'financial_reports/screens/financial_report_screen.dart';
 import 'inventory_reports/screens/inventory_report_screen.dart';
 
 class ReportsScreen extends StatelessWidget {
@@ -32,7 +33,7 @@ class ReportsScreen extends StatelessWidget {
             Get.to(() => const InventoryReportScreen());
           }),
           ListItem(context, const Icon(Icons.attach_money), "Financial", () {
-            // Get.to(() => CategoryScreen());
+            Get.to(() => const FinancialReportScreen());
           }),
         ],
       ),

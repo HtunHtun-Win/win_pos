@@ -21,7 +21,8 @@ class InventoryReportRepository{
     String sql = '''
       SELECT products.name,purchase_price.quantity,purchase_price.price,
       (purchase_price.quantity*purchase_price.price) as total 
-      FROM products,purchase_price WHERE products.id=purchase_price.product_id 
+      FROM products,purchase_price WHERE products.id=purchase_price.product_id
+      AND purchase_price.quantity!=0 
     ''';
     String endSql = "ORDER BY products.name;";
     if(catId!=null){

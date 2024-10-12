@@ -11,7 +11,7 @@ class InventoryReportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Reports"),
+        title: const Text("Inventory Reports"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: ListView(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/screens/user_screen.dart';
@@ -39,7 +40,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
               height: 5,
             ),
             userInput(context, "Password", const Icon(Icons.lock),
-                passwordController, type: TextInputType.number),
+                passwordController, type: TextInputType.number,filter: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ]),
             const SizedBox(
               height: 5,
             ),
@@ -129,12 +132,13 @@ class _AddUserScreenState extends State<AddUserScreen> {
   }
 
   Widget userInput(
-      context, String hintText, Icon icon, TextEditingController tController,{type}) {
+      context, String hintText, Icon icon, TextEditingController tController,{type,filter}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
         controller: tController,
         keyboardType: type,
+        inputFormatters: filter,
         decoration: InputDecoration(
             border: const OutlineInputBorder(), hintText: hintText, icon: icon),
       ),

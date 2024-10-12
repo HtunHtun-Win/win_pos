@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/controller/category_controller.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
@@ -51,16 +52,33 @@ class ProductAddScreen extends StatelessWidget {
             userInput("Name", nameController),
             userInput("Code", codeController),
             userInput("Description", descController, num: 2),
-            userInput("Quantity", quantityController, type: TextInputType.number),
+            userInput(
+                "Quantity",
+                quantityController,
+                type: TextInputType.number,
+              filter: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ]
+            ),
             Row(
               children: [
                 Expanded(
-                    child: userInput("Purchase Price", ppriceController,
-                        type: TextInputType.number)),
+                    child: userInput(
+                        "Purchase Price", ppriceController,
+                        type: TextInputType.number,
+                        filter: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ]
+                    )),
                 const SizedBox(width: 10),
                 Expanded(
-                    child: userInput("Sale Price", spriceController,
-                        type: TextInputType.number)),
+                    child: userInput(
+                        "Sale Price", spriceController,
+                        type: TextInputType.number,
+                        filter: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ]
+                    )),
               ],
             )
           ],
@@ -82,13 +100,14 @@ class ProductAddScreen extends StatelessWidget {
     }
   }
 
-  Widget userInput(text, controller, {type, num}) {
+  Widget userInput(text, controller, {type, num,filter}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 7),
       child: TextField(
         controller: controller,
         keyboardType: type,
         maxLines: num,
+        inputFormatters: filter,
         decoration: InputDecoration(
             labelText: text, border: const OutlineInputBorder()),
       ),

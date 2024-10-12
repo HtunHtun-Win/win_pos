@@ -37,7 +37,7 @@ class PurchaseDetail extends StatelessWidget {
     var finalDate = fdate.format(date);
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Row(
@@ -59,6 +59,13 @@ class PurchaseDetail extends StatelessWidget {
                 const Expanded(child: Text("Staff")),
                 const Expanded(child: Text(":")),
                 Expanded(flex: 3, child: Text(voucher.user.toString())),
+              ],
+            ),
+            Row(
+              children: [
+                const Expanded(child: Text("Payment")),
+                const Expanded(child: Text(":")),
+                Expanded(flex: 3, child: Text(voucher.payment.toString())),
               ],
             ),
             Row(
