@@ -29,7 +29,7 @@ class ShopInfoScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             inputField("Name", nameController),
-            inputField("Phone", phoneController),
+            inputField("Phone", phoneController,type: TextInputType.number),
             inputField("Address", addressController,maxLine: 3),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -46,7 +46,7 @@ class ShopInfoScreen extends StatelessWidget {
     );
   }
 
-  Widget inputField(title, controller,{maxLine}) {
+  Widget inputField(title, controller,{maxLine,type}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
       child: Column(
@@ -58,6 +58,7 @@ class ShopInfoScreen extends StatelessWidget {
           ),
           TextField(
             controller: controller,
+            keyboardType: type,
             maxLines: maxLine,
             decoration: const InputDecoration(border: OutlineInputBorder()),
           )

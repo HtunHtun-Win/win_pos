@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
-import 'package:win_pos/user/screens/user_screen.dart';
-import '../models/user.dart';
 
 class EditUserScreen extends StatefulWidget {
   const EditUserScreen({super.key});
@@ -50,7 +49,11 @@ class _EditUserScreenState extends State<EditUserScreen> {
               height: 5,
             ),
             userInput(context, "Password", const Icon(Icons.lock),
-                passwordController, type: TextInputType.number),
+                passwordController, type: TextInputType.number,
+              filer: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ]
+            ),
             const SizedBox(
               height: 5,
             ),
@@ -141,12 +144,13 @@ class _EditUserScreenState extends State<EditUserScreen> {
   }
 
   Widget userInput(
-      context, String hintText, Icon icon, TextEditingController tController,{type}) {
+      context, String hintText, Icon icon, TextEditingController tController,{type,filer}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
         controller: tController,
         keyboardType: type,
+        inputFormatters: filer,
         decoration: InputDecoration(
             border: const OutlineInputBorder(), hintText: hintText, icon: icon),
       ),

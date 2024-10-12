@@ -29,8 +29,8 @@ class PurchaseRepository {
   Future<List> getVouchersDate(Map date) async {
     final database = await dbObj.database;
     return await database.rawQuery("""
-      SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,purchase.created_at 
-      FROM purchase,suppliers,users WHERE purchase.supplier_id=suppliers.id AND purchase.user_id=users.id
+      SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,payment_type.name as payment,purchase.created_at 
+      FROM purchase,suppliers,users,payment_type WHERE purchase.supplier_id=suppliers.id AND purchase.user_id=users.id AND purchase.payment_type_id=payment_type.id
       AND purchase.created_at>'${date['start']}' AND purchase.created_at<'${date['end']}' ORDER BY purchase.id DESC;
       """);
   }
@@ -45,7 +45,8 @@ class PurchaseRepository {
       "net_price": map["net_price"],
       "discount": map["discount"],
       "total_price": map["total_price"],
-      "created_at": DateTime.now().toString()
+      "created_at": DateTime.now().toString(),
+      "payment_type_id" : map["payment_type_id"],
     });
     for (var item in cart) {
       addPurchaseDetail(purchaseId, item);
