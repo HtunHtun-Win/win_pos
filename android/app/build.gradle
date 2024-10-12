@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "com.example.lightpos"
+    namespace = "com.example.win_pos"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
