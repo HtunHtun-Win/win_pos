@@ -12,8 +12,8 @@ class LoginScreen extends StatelessWidget {
     TextEditingController useridController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     //pre setup userid and password
-    useridController.text = "admin";
-    passwordController.text = "admin";
+    // useridController.text = "admin";
+    // passwordController.text = "admin";
     return Scaffold(
       body: Stack(
         children: [
@@ -54,7 +54,7 @@ class LoginScreen extends StatelessWidget {
                     child: Image.asset("assets/images/shop_logo.png"),
                   ),
                   const Text(
-                    "WinPos",
+                    "LightPos",
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
