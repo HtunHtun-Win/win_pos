@@ -66,7 +66,8 @@ class ProductRepository {
   Future<int> updateProductQty(int id, int qty) async {
     final database = await dbObj.database;
     var num = await database.rawUpdate(
-        'update $TABLE_NAME set quantity=quantity+? where id=?', [qty, id]);
+        'update $TABLE_NAME set quantity=quantity+? where id=?',
+        [qty, id]);
     return num;
   }
 
@@ -94,10 +95,17 @@ class ProductRepository {
         {"product_id": productId, "quantity": quantity, "price": price});
   }
 
+  Future<Map<String, dynamic>> getPprice(int pid) async {
+    final database = await dbObj.database;
+    var datas = await database.rawQuery(
+        "SELECT quantity, price FROM purchase_price WHERE product_id=$pid AND quantity!=0 ORDER BY id desc LIMIT 1");
+    return datas[0];
+  }
+
   Future<void> updatePurchasePriceQty(int productId, int quantity) async {
     final database = await dbObj.database;
     await database.rawUpdate(
-        "UPDATE purchase_price set quantity=quantity+? where id=(select id from purchase_price where product_id=? order by id desc limit 1)",
+        "UPDATE purchase_price set quantity=quantity+? where id=(select id from purchase_price where product_id=? AND quantity!=0 order by id desc limit 1)",
         [quantity, productId]);
   }
 }
