@@ -22,7 +22,23 @@ class ProductLogService {
 
   Future<int> updateProductQty(int id, int qty) async{
     final num = await productRepository.updateProductQty(id, qty);
-    await productRepository.updatePurchasePriceQty(id, qty);
+      if(qty>0){
+        await productRepository.updatePurchasePriceQty(id, qty);
+      }else{
+        int tempQty = qty.abs();
+        bool flag = true;
+        while(flag){
+          var pprice = await productRepository.getPprice(id);
+          if(pprice['quantity'] >= tempQty){
+            await productRepository.updatePurchasePriceQty(id, -tempQty);
+            tempQty = 0;
+          }else{
+            await productRepository.updatePurchasePriceQty(id, -pprice['quantity']);
+            tempQty -= pprice['quantity'] as int;
+          }
+          if(tempQty==0) flag = false;
+      }
+    }
     return num;
   }
 }
