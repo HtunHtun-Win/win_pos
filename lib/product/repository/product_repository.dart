@@ -48,7 +48,7 @@ class ProductRepository {
   }
 
   Future<int> updateProduct(int id, String code, String name,
-      String description, int categoryId) async {
+      String description, int categoryId,int salePrice) async {
     final database = await dbObj.database;
     var num = await database.update(
         TABLE_NAME,
@@ -57,6 +57,7 @@ class ProductRepository {
           "name": name,
           "description": description,
           "category_id": categoryId,
+          "sale_price" : salePrice,
         },
         where: "id=?",
         whereArgs: [id]);

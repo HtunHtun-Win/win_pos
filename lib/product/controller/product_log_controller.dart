@@ -30,10 +30,15 @@ class ProductLogController extends GetxController {
     }
   }
 
+  void clearSelected(){
+    selectedProduct = {'pid': 0, 'qty': 0}.obs;
+  }
+
   Future<void> addProductLog(
       int productId, int quantity, String note, int userId) async {
     await productLogService.addProductLog(productId, quantity, note, userId);
     await productLogService.updateProductQty(productId, quantity);
+    clearSelected();
     await productController.getAll();
     getAll();
   }
