@@ -77,7 +77,7 @@ class DataManagementScreen extends StatelessWidget {
         String dbPath = join(documentsDirectory.path, "winpos.db");
 
         // Get the external storage directory path for Android
-        var externalPath = await getPath();
+        String externalPath = await getPath();
 
         // Copy the database to the backup location
         await File(dbPath).copy(externalPath);
@@ -88,6 +88,7 @@ class DataManagementScreen extends StatelessWidget {
           middleTextStyle: const TextStyle(color: Colors.black),
         );
       } catch (e) {
+        print(e.toString());
         Get.snackbar("Error", "$e");
       }
   }
