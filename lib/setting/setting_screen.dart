@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/screens/category_screen.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/setting/data_management_screen.dart';
 import 'package:win_pos/shop/shop_info_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
@@ -34,6 +35,9 @@ class SettingScreen extends StatelessWidget {
           }),
           ListItem(context, const Icon(Icons.payment), "Payment Method", () {
             Get.to(() => PaymentScreen());
+          }),
+          ListItem(context, const Icon(Icons.backup), "Data Management", () {
+            Get.to(() => const DataManagementScreen());
           }),
         ],
       ),
