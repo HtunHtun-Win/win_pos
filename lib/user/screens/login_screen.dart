@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
 import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 
@@ -80,7 +81,12 @@ class LoginScreen extends StatelessWidget {
                           var user =
                               await controller.validUser(loginId, password);
                           if (user.isNotEmpty) {
-                            Get.off(() => SalesVoucherScreen());
+                            print(user);
+                            if(user['role_id']==3){
+                              Get.off(() => PurchaseVoucherScreen());
+                            }else{
+                              Get.off(() => SalesVoucherScreen());
+                            }
                           } else {
                             Get.snackbar(
                               "Invalid Credentials",

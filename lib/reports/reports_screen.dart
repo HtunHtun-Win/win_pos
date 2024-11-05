@@ -15,23 +15,27 @@ class ReportsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserController controller = Get.find();
+    var user = User.fromMap(controller.current_user.toJson());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Reports"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
+      drawer: CustDrawer(user: user),
       body: ListView(
         children: [
+          if(user.role_id!=3)
           ListItem(context, const Icon(Icons.shopping_cart), "Sales", () {
             Get.to(() => const SalesReportScreen());
           }),
+          if(user.role_id!=2)
           ListItem(context, const Icon(Icons.add_shopping_cart), "Purchase", () {
             Get.to(() => const PurchaseReportScreen());
           }),
           ListItem(context, const Icon(Icons.inventory), "Inventory", () {
             Get.to(() => const InventoryReportScreen());
           }),
+          if(user.role_id==1)
           ListItem(context, const Icon(Icons.attach_money), "Financial", () {
             Get.to(() => const FinancialReportScreen());
           }),
