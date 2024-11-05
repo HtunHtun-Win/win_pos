@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
@@ -15,31 +17,72 @@ class SalesVoucherScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     UserController controller = Get.find();
     salesController.getAllVouchers(map: daterangeCalculate('today'));
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Sales Vouchers"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          datePicker(),
-          Expanded(child: Obx(() {
-            return ListView.builder(
-                itemCount: salesController.vouchers.length,
-                itemBuilder: (context, index) {
-                  var voucher = salesController.vouchers[index];
-                  return VoucherItem(voucher: voucher);
-                });
-          }))
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => SalesScreen());
-        },
-        child: const Icon(Icons.add),
+
+    Future<bool> popAction() async {
+      bool state = false;
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                "Are you sure to exit?",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                    state = false;
+                  },
+                  child: const Text("No"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                    state = true;
+                  },
+                  child: const Text("Yes"),
+                ),
+              ],
+            );
+          });
+      return state;
+    }
+    
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        bool state = await popAction();
+        if (state) {
+          exit(0);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Sales Vouchers"),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        ),
+        drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            datePicker(),
+            Expanded(child: Obx(() {
+              return ListView.builder(
+                  itemCount: salesController.vouchers.length,
+                  itemBuilder: (context, index) {
+                    var voucher = salesController.vouchers[index];
+                    return VoucherItem(voucher: voucher);
+                  });
+            }))
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Get.to(() => SalesScreen());
+          },
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

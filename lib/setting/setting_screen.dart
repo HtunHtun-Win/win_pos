@@ -9,6 +9,7 @@ import 'package:win_pos/user/models/user.dart';
 import 'package:win_pos/user/screens/user_screen.dart';
 
 import '../payment/screens/payment_screen.dart';
+import '../sales/screens/sales_voucher_screen.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -16,30 +17,38 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserController controller = Get.find();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Setting"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
-      body: ListView(
-        children: [
-          ListItem(context, const Icon(Icons.house), "Shop", () {
-            Get.to(() => ShopInfoScreen());
-          }),
-          ListItem(context, const Icon(Icons.people), "Users", () {
-            Get.to(() => UserScreen());
-          }),
-          ListItem(context, const Icon(Icons.category), "Category", () {
-            Get.to(() => CategoryScreen());
-          }),
-          ListItem(context, const Icon(Icons.payment), "Payment Method", () {
-            Get.to(() => PaymentScreen());
-          }),
-          ListItem(context, const Icon(Icons.backup), "Data Management", () {
-            Get.to(() => const DataManagementScreen());
-          }),
-        ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Get.off(() => SalesVoucherScreen());
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Setting"),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        ),
+        drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
+        body: ListView(
+          children: [
+            ListItem(context, const Icon(Icons.house), "Shop", () {
+              Get.to(() => ShopInfoScreen());
+            }),
+            ListItem(context, const Icon(Icons.people), "Users", () {
+              Get.to(() => UserScreen());
+            }),
+            ListItem(context, const Icon(Icons.category), "Category", () {
+              Get.to(() => CategoryScreen());
+            }),
+            ListItem(context, const Icon(Icons.payment), "Payment Method", () {
+              Get.to(() => PaymentScreen());
+            }),
+            ListItem(context, const Icon(Icons.backup), "Data Management", () {
+              Get.to(() => const DataManagementScreen());
+            }),
+          ],
+        ),
       ),
     );
   }

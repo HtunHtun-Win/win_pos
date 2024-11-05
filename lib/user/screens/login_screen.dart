@@ -81,7 +81,6 @@ class LoginScreen extends StatelessWidget {
                           var user =
                               await controller.validUser(loginId, password);
                           if (user.isNotEmpty) {
-                            print(user);
                             if(user['role_id']==3){
                               Get.off(() => PurchaseVoucherScreen());
                             }else{

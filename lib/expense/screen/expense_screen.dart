@@ -15,6 +15,9 @@ import 'package:win_pos/expense/screen/expense_edit_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
+import '../../purchase/screens/purchase_voucher_screen.dart';
+import '../../sales/screens/sales_voucher_screen.dart';
+
 class ExpenseScreen extends StatelessWidget {
   ExpenseScreen({super.key});
   UserController userController = Get.find();
@@ -22,55 +25,68 @@ class ExpenseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Income ~ Expense"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-              onPressed: () => Get.to(() => ExpenseAddScreen()),
-              icon: const Icon(Icons.add))
-        ],
-      ),
-      drawer:
-          CustDrawer(user: User.fromMap(userController.current_user.toJson())),
-      body: Obx(() {
-        return Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Income : ${_expenseController.totalIncome}",
-                    style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Expense : ${_expenseController.totalExpense}",
-                    style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _expenseController.expense_list.length,
-                itemBuilder: (context, index) {
-                  var expense = _expenseController.expense_list[index];
-                  return listItem(expense);
-                },
-              ),
-            )
+    final user = User.fromMap(userController.current_user.toJson());
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          if(user.role_id==3){
+            Get.off(() => PurchaseVoucherScreen());
+          }else{
+            Get.off(() => SalesVoucherScreen());
+          }
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Income ~ Expense"),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          actions: [
+            IconButton(
+                onPressed: () => Get.to(() => ExpenseAddScreen()),
+                icon: const Icon(Icons.add))
           ],
-        );
-      }),
+        ),
+        drawer:
+            CustDrawer(user: user),
+        body: Obx(() {
+          return Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Income : ${_expenseController.totalIncome}",
+                      style: const TextStyle(
+                          color: Colors.green,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      "Expense : ${_expenseController.totalExpense}",
+                      style: const TextStyle(
+                          color: Colors.red,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _expenseController.expense_list.length,
+                  itemBuilder: (context, index) {
+                    var expense = _expenseController.expense_list[index];
+                    return listItem(expense);
+                  },
+                ),
+              )
+            ],
+          );
+        }),
+      ),
     );
   }
 
