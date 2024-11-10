@@ -9,8 +9,18 @@ class ExpenseRepository{
     return await database.query(
       TABLE_NAME,
       where: "isdeleted=0",
-      orderBy: "id desc"
+      orderBy: "id desc",
       );
+  }
+
+  Future<List> getAllByDate(String startDate,String endDate) async{
+    final database = await dbObj.database;
+    return await database.query(
+      TABLE_NAME,
+      where: "isdeleted=0 AND created_at>? AND created_at<?",
+      whereArgs: [startDate,endDate],
+      orderBy: "id desc",
+    );
   }
 
   Future<int> addExpense(int amount, String description, String note, int type, int userId) async{

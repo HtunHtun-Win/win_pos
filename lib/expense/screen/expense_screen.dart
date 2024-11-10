@@ -40,7 +40,7 @@ class ExpenseScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Income ~ Expense"),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           actions: [
             IconButton(
                 onPressed: () => Get.to(() => ExpenseAddScreen()),
@@ -51,6 +51,7 @@ class ExpenseScreen extends StatelessWidget {
             CustDrawer(user: user),
         body: Obx(() {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -74,6 +75,7 @@ class ExpenseScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              datePicker(),
               Expanded(
                 child: ListView.builder(
                   itemCount: _expenseController.expense_list.length,
@@ -138,5 +140,57 @@ class ExpenseScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget datePicker() {
+    return Container(
+      padding: const EdgeInsets.only(top: 5, right: 10),
+      child: DropdownMenu(
+        initialSelection: "all",
+        dropdownMenuEntries: const [
+          DropdownMenuEntry(value: "all", label: "All"),
+          DropdownMenuEntry(value: "today", label: "Today"),
+          DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
+          DropdownMenuEntry(value: "thismonth", label: "This month"),
+          DropdownMenuEntry(value: "lastmonth", label: "Last month"),
+          DropdownMenuEntry(value: "thisyear", label: "This year"),
+          DropdownMenuEntry(value: "lastyear", label: "Last year"),
+        ],
+        onSelected: (value) {
+          if (value == 'all') {
+            _expenseController.getAll();
+          } else {
+            _expenseController.getAll(date: daterangeCalculate(value!));
+          }
+        },
+      ),
+    );
+  }
+
+  Map daterangeCalculate(String selectedDate) {
+    String startDate = "";
+    String endDate = "";
+    var now = DateTime.now();
+    var today = DateTime(now.year, now.month, now.day);
+    if (selectedDate == "today") {
+      startDate = today.toString();
+      endDate = DateTime(now.year, now.month, now.day + 1).toString();
+    } else if (selectedDate == "yesterday") {
+      startDate = DateTime(now.year, now.month, now.day - 1).toString();
+      endDate = DateTime(now.year, now.month, now.day).toString();
+    } else if (selectedDate == "thismonth") {
+      startDate = DateTime(now.year, now.month, 1).toString();
+      endDate = DateTime(now.year, now.month, now.day + 1).toString();
+    } else if (selectedDate == "lastmonth") {
+      startDate = DateTime(now.year, now.month - 1, 1).toString();
+      endDate = DateTime(now.year, now.month, 1).toString();
+    } else if (selectedDate == "thisyear") {
+      startDate = DateTime(now.year, 1, 1).toString();
+      endDate = DateTime(now.year, now.month, now.day + 1).toString();
+    } else if (selectedDate == "lastyear") {
+      startDate = DateTime(now.year - 1, 1, 1).toString();
+      endDate = DateTime(now.year, 1, 1).toString();
+    }
+    return {'start': startDate, 'end': endDate};
   }
 }

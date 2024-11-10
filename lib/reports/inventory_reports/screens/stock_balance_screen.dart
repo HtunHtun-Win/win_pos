@@ -15,7 +15,7 @@ class StockBalanceScreen extends StatelessWidget {
     reportController.getAll();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Stock Balance"),
       ),
       body: Column(

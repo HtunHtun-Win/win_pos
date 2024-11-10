@@ -27,7 +27,7 @@ class SettingScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Setting"),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
         body: ListView(

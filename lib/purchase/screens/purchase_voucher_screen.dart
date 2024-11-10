@@ -8,17 +8,19 @@ import 'package:win_pos/purchase/screens/purchase_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
+import '../../shop/shop_info_controller.dart';
 import 'pvoucher_item.dart';
 
 class PurchaseVoucherScreen extends StatelessWidget {
   PurchaseVoucherScreen({super.key});
   PurchaseController purchaseController = Get.put(PurchaseController());
+  ShopInfoController shopInfoController = Get.put(ShopInfoController());
 
   @override
   Widget build(BuildContext context) {
     UserController controller = Get.find();
     purchaseController.getAllVouchers(map: daterangeCalculate('today'));
-
+    shopInfoController.getAll();
     Future<bool> popAction() async {
       bool state = false;
       await showDialog(
@@ -61,7 +63,7 @@ class PurchaseVoucherScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Purchase Vouchers"),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
         body: Column(

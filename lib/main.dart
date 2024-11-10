@@ -19,6 +19,17 @@ class MyApp extends StatelessWidget {
       title: 'WinPos',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(fontSize: 20,color: Colors.white),
+          backgroundColor: Colors.blueAccent,
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          )
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.blueAccent,
+          foregroundColor: Colors.white,
+        ),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         primaryColor: Colors.blueAccent,
         useMaterial3: true,

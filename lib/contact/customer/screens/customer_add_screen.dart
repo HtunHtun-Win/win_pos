@@ -15,7 +15,7 @@ class CustomerAddScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add New Customer'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () {

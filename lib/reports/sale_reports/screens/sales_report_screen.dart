@@ -13,7 +13,7 @@ class SalesReportScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sales Reports"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: ListView(
         children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 import 'package:win_pos/shop/shop_model.dart';
@@ -16,7 +17,7 @@ class ShopInfoScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Shop'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Obx(() {
         if (shopInfoController.shop.isNotEmpty) {
@@ -34,11 +35,13 @@ class ShopInfoScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextButton(
-                  onPressed: () {
-                    shopInfoController.updateInfo(nameController.text,
+                  onPressed: () async{
+                    await shopInfoController.updateInfo(nameController.text,
                         addressController.text, phoneController.text);
+                    Get.snackbar("Success!", "Update Success!");
                   },
-                  child: const Text("Update")),
+                  child: const Text("Update"),
+              ),
             )
           ],
         );

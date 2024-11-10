@@ -15,8 +15,13 @@ class ExpenseController extends GetxController {
     getAll();
   }
 
-  Future<void> getAll() async {
-    var datas = await _expenseService.getAll();
+  Future<void> getAll({Map? date}) async {
+    late var datas;
+    if(date==null){
+      datas = await _expenseService.getAll();
+    }else{
+      datas = await _expenseService.getAllByDate(date["start"], date["end"]);
+    }
     expense_list.clear();
     totalIncome = 0.obs;
     totalExpense = 0.obs;

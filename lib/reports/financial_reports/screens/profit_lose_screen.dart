@@ -15,7 +15,7 @@ class ProfitLoseScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Profit / Lose"),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         body: Column(
             crossAxisAlignment: CrossAxisAlignment.end,

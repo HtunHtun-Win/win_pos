@@ -21,7 +21,7 @@ class BankPaymentScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Bank Payment"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
     body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
