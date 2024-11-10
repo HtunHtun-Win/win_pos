@@ -32,7 +32,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit User"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

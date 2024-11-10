@@ -27,7 +27,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
       },
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: const Text("Product Adjustment"),
             actions: [
               IconButton(

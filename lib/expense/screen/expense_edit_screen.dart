@@ -24,7 +24,7 @@ class ExpenseEditScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Expense"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () {

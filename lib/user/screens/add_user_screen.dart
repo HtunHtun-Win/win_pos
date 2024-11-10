@@ -23,7 +23,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add New User"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

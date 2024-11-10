@@ -19,7 +19,7 @@ class PaymentEditScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Category"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),

@@ -21,7 +21,7 @@ class PurchaseScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Purchase"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () {

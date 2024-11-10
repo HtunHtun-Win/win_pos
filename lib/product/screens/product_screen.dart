@@ -30,8 +30,10 @@ class ProductScreen extends StatelessWidget {
           child: Scaffold(
             appBar: AppBar(
               title: const Text("Inventory"),
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               bottom: const TabBar(
+                labelStyle: TextStyle(color: Colors.white),
+                unselectedLabelColor: Colors.white,
                 tabs: [
                   Tab(
                     text: "List",

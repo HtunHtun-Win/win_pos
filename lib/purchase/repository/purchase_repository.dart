@@ -20,8 +20,8 @@ class PurchaseRepository {
     final database = await dbObj.database;
     return await database.rawQuery(
         """
-      SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,purchase.created_at 
-      FROM purchase,suppliers,users WHERE purchase.supplier_id=suppliers.id AND purchase.user_id=users.id ORDER BY purchase.id DESC;
+      SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,payment_type.name as payment,purchase.created_at 
+      FROM purchase,suppliers,users,payment_type WHERE purchase.supplier_id=suppliers.id AND purchase.user_id=users.id AND purchase.payment_type_id=payment_type.id ORDER BY purchase.id DESC;
       """
     );
   }

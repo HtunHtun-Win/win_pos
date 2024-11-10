@@ -13,7 +13,7 @@ class PaymentAddScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add New Payment"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),

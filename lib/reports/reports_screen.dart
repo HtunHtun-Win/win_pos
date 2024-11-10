@@ -32,7 +32,7 @@ class ReportsScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Reports"),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         drawer: CustDrawer(user: user),
         body: ListView(

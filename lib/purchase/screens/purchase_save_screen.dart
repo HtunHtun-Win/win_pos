@@ -32,7 +32,7 @@ class PurchaseSaveScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Save Vouchers"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () {

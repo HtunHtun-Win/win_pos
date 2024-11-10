@@ -33,10 +33,12 @@ class ContactScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Contacts'),
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             bottom: const TabBar(
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white,
               tabs: [
-                Tab(text: "Customers"),
+                Tab(text: "Customers",),
                 Tab(
                   text: "Suppliers",
                 ),
