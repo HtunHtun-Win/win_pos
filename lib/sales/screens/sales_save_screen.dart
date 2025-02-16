@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/customer/controller/customer_controller.dart';
+import 'package:win_pos/payment/controller/payment_controller.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import '../controller/sales_controller.dart';
@@ -13,6 +14,7 @@ class SalesSaveScreen extends StatelessWidget {
   SalesController salesController = Get.find();
   UserController userController = Get.find();
   CustomerController customerController = CustomerController();
+  PaymentController paymentController = PaymentController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController netAmountController = TextEditingController();
@@ -20,17 +22,19 @@ class SalesSaveScreen extends StatelessWidget {
   TextEditingController totalController = TextEditingController();
   int customerId = 1;
   int totalPrice = 0;
+  int paymentId = 1;
 
   @override
   Widget build(BuildContext context) {
     customerController.getAll();
+    paymentController.getAll();
     netAmountController.text = salesController.totalAmount.toString();
     totalPrice = salesController.totalAmount.value;
     totalController.text = totalPrice.toString();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Save Vouchers"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () {
@@ -49,6 +53,8 @@ class SalesSaveScreen extends StatelessWidget {
               infoBox(controller: phoneController, text: "Phone"),
               const SizedBox(height: 10),
               infoBox(controller: addressController, line: 2, text: "Address"),
+              const SizedBox(height: 10),
+              paymentBox(),
               const SizedBox(height: 10),
               infoBox(controller: netAmountController, text: "Net Price"),
               const SizedBox(height: 10),
@@ -69,7 +75,7 @@ class SalesSaveScreen extends StatelessWidget {
       "net_price": salesController.totalAmount.value,
       "discount": salesController.discount.value,
       "total_price": totalPrice,
-      "payment_type_id": 1,
+      "payment_type_id": paymentId,
     };
     await salesController.addSale(saleMap, salesController.cart);
     salesController.cart.clear();
@@ -111,25 +117,36 @@ class SalesSaveScreen extends StatelessWidget {
     });
   }
 
-  // Widget customersBox() {
-  //   return Obx(() {
-  //     return DropdownMenu(
-  //       label: const Text("Customer"),
-  //       width: double.infinity,
-  //       requestFocusOnTap: true,
-  //       enableFilter: true,
-  //       enableSearch: true,
-  //       dropdownMenuEntries: customerController.customers.map((customer) {
-  //         return DropdownMenuEntry(value: customer, label: customer.name);
-  //       }).toList(),
-  //       onSelected: (customer) {
-  //         customerId = customer.id;
-  //         phoneController.text = customer.phone.toString();
-  //         addressController.text = customer.address.toString();
-  //       },
-  //     );
-  //   });
-  // }
+  Widget paymentBox() {
+    return Obx((){
+      return DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            labelText: "Payment Type",
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: paymentController.payments.map((payment) => payment.name.toString()).toList(),
+        onChanged: (value) {
+          final payment = paymentController.payments.firstWhere(
+                (payment) => payment.name == value,
+          );
+          paymentId = payment.id;
+        },
+        selectedItem: "Cash", // Optional: Can be null if no initial selection is required
+        popupProps: const PopupProps.menu(
+          showSearchBox: true,
+          searchFieldProps: TextFieldProps(
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: "Payment Type",
+            ),
+          ),
+        ),
+      );
+    });
+  }
 
   Widget infoBox({controller, line, text}) {
     return SizedBox(

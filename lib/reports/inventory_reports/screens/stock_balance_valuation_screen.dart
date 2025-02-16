@@ -15,7 +15,7 @@ class StockBalanceValuationScreen extends StatelessWidget {
     reportController.getWithValue();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Balance With Valuation"),
       ),
       body: Column(
@@ -116,7 +116,7 @@ class StockBalanceValuationScreen extends StatelessWidget {
             reportController.getWithValue();
           }
         },
-        selectedItem: "Default Category", // Optional: Can be null if no initial selection is required
+        selectedItem: "All", // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(

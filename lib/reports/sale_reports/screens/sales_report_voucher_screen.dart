@@ -21,7 +21,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sales Report"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -110,7 +110,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
             date: date!='all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem: "", // Optional: Can be null if no initial selection is required
+        selectedItem: "All", // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/product/models/product_model.dart';
@@ -19,7 +20,7 @@ class SalesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sales"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () {
@@ -208,6 +209,9 @@ class SalesScreen extends StatelessWidget {
                 child: TextField(
               controller: qtyController,
               keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
               onChanged: (value) {
                 int quantity = int.parse(value) > 0 ? int.parse(value) : 1;
                 if (quantity <= item.product.quantity!){

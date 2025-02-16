@@ -12,8 +12,8 @@ class SalesReportScreen extends StatelessWidget {
     UserController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Reports"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Sales Reports"),
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: ListView(
         children: [

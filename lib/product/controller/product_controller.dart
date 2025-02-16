@@ -35,9 +35,10 @@ class ProductController extends GetxController {
     String name,
     String description,
     int categoryId,
+      int salePrice
   ) async {
     var map = await productService.updateProduct(
-        id, code, name, description, categoryId);
+        id, code, name, description, categoryId,salePrice);
     getAll();
     return map;
   }

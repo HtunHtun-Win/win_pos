@@ -4,7 +4,6 @@ import 'package:win_pos/category/controller/category_controller.dart';
 import 'package:win_pos/category/models/category_model.dart';
 import 'package:win_pos/category/screens/category_add_screen.dart';
 import 'package:win_pos/category/screens/category_edit_screen.dart';
-import 'package:win_pos/core/widgets/cust_drawer.dart';
 
 class CategoryScreen extends StatelessWidget {
   CategoryScreen({super.key});
@@ -15,7 +14,7 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Category"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () => Get.to(() => CategoryAddScreen()),

@@ -7,6 +7,10 @@ class ExpenseService {
     return _expenseRepository.getAll();
   }
 
+  Future<List> getAllByDate(String startDate,String endDate) async {
+    return _expenseRepository.getAllByDate(startDate, endDate);
+  }
+
   Future<Map> addExpense(
       int amount, String description, String note, int type, int userId) async {
     print(amount);
