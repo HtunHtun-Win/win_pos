@@ -11,8 +11,8 @@ import 'package:win_pos/user/screens/login_screen.dart';
 import '../../user/models/user.dart';
 
 class CustDrawer extends StatelessWidget {
-  User user;
-  CustDrawer({super.key, required this.user});
+  final User user;
+  const CustDrawer({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class CustDrawer extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "WinPos",
+                            "LightPos",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -62,13 +62,16 @@ class CustDrawer extends StatelessWidget {
           Expanded(
               child: ListView(
             children: [
+              if(user.role_id!=3)
               ListItem(context, const Icon(Icons.shopping_cart), "Sales", () {
                 Get.off(() => SalesVoucherScreen());
               }),
+              if(user.role_id!=2)
               ListItem(context, const Icon(Icons.add_shopping_cart), "Purchase",
                   () {
                     Get.off(() => PurchaseVoucherScreen());
                   }),
+              if(user.role_id==1)
               ListItem(context, const Icon(Icons.inventory), "Inventory", () {
                 Get.off(() => ProductScreen());
               }),
@@ -83,6 +86,7 @@ class CustDrawer extends StatelessWidget {
               ListItem(context, const Icon(Icons.menu_book), "Report", () {
                 Get.off(() => const ReportsScreen());
               }),
+              if(user.role_id==1)
               ListItem(context, const Icon(Icons.settings), "Setting", () {
                 Get.off(() => const SettingScreen());
               }),

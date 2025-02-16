@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 import 'package:win_pos/shop/shop_model.dart';
@@ -16,7 +17,7 @@ class ShopInfoScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Shop'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Obx(() {
         if (shopInfoController.shop.isNotEmpty) {
@@ -29,16 +30,18 @@ class ShopInfoScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             inputField("Name", nameController),
-            inputField("Phone", phoneController),
+            inputField("Phone", phoneController,type: TextInputType.number),
             inputField("Address", addressController,maxLine: 3),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextButton(
-                  onPressed: () {
-                    shopInfoController.updateInfo(nameController.text,
+                  onPressed: () async{
+                    await shopInfoController.updateInfo(nameController.text,
                         addressController.text, phoneController.text);
+                    Get.snackbar("Success!", "Update Success!");
                   },
-                  child: const Text("Update")),
+                  child: const Text("Update"),
+              ),
             )
           ],
         );
@@ -46,7 +49,7 @@ class ShopInfoScreen extends StatelessWidget {
     );
   }
 
-  Widget inputField(title, controller,{maxLine}) {
+  Widget inputField(title, controller,{maxLine,type}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
       child: Column(
@@ -58,6 +61,7 @@ class ShopInfoScreen extends StatelessWidget {
           ),
           TextField(
             controller: controller,
+            keyboardType: type,
             maxLines: maxLine,
             decoration: const InputDecoration(border: OutlineInputBorder()),
           )

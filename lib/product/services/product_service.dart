@@ -43,6 +43,7 @@ class ProductService {
     String name,
     String description,
     int categoryId,
+      int salePrice,
   ) async {
     if (code.isEmpty || name.isEmpty) {
       return {'msg': 'null'};
@@ -52,7 +53,7 @@ class ProductService {
       if (product['id'] != id) return {'msg': 'duplicate'};
     }
     var num = await productRepository.updateProduct(
-        id, code, name, description, categoryId);
+        id, code, name, description, categoryId, salePrice);
     return {'msg': num};
   }
 

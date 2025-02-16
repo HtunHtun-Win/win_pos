@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -18,7 +19,7 @@ class ExpenseAddScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Expense"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () {
@@ -32,7 +33,14 @@ class ExpenseAddScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            userInput("Amount", amountController, type: TextInputType.number),
+            userInput(
+                "Amount",
+                amountController,
+                type: TextInputType.number,
+                filter: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ]
+            ),
             userInput("Description", descController, type: TextInputType.text),
             userInput("Note", noteController, type: TextInputType.text),
             flowDropdown()
@@ -59,11 +67,12 @@ class ExpenseAddScreen extends StatelessWidget {
     }
   }
 
-  Widget userInput(text, controller, {type}) {
+  Widget userInput(text, controller, {type,filter}) {
     return Container(
       margin: const EdgeInsets.all(5),
       child: TextField(
         keyboardType: type,
+        inputFormatters: filter,
         controller: controller,
         decoration: InputDecoration(
           label: Text(text),

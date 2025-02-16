@@ -31,7 +31,7 @@ class ProductEditScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Product"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
               onPressed: () {
@@ -40,7 +40,8 @@ class ProductEditScreen extends StatelessWidget {
                   codeController.text,
                   nameController.text,
                   descController.text,
-                  category_id,
+                  category_id, 
+                  int.parse(spriceController.text),
                 );
               },
               icon: const Icon(Icons.save))
@@ -65,7 +66,7 @@ class ProductEditScreen extends StatelessWidget {
                 const SizedBox(width: 10,),
                 Expanded(
                     child: userInput("Sale Price", spriceController,
-                        type: TextInputType.number, state: true)),
+                        type: TextInputType.number, state: false)),
               ],
             )
           ],
@@ -75,9 +76,9 @@ class ProductEditScreen extends StatelessWidget {
   }
 
   Future<void> updateProduct(int id, String code, String name,
-      String description, int categoryId) async {
+      String description, int categoryId, int salePrice) async {
     var map = await productController.updateProduct(
-        id, code, name, description, categoryId);
+        id, code, name, description, categoryId, salePrice);
     if (map["msg"] == "null") {
       Get.snackbar("Empty!", "Name and code can't be empty...");
     } else if (map["msg"] == "duplicate") {
@@ -130,20 +131,4 @@ class ProductEditScreen extends StatelessWidget {
     );
   }
 
-  // Widget categoryBox(context) {
-  //   return DropdownMenu(
-  //     initialSelection: category_id,
-  //     label: const Text("Category"),
-  //     enableFilter: true,
-  //     requestFocusOnTap: true,
-  //     width: 180,
-  //     dropdownMenuEntries: categoryController.categories.map((category) {
-  //       return DropdownMenuEntry(value: category.id, label: category.name);
-  //     }).toList(),
-  //     onSelected: (value) {
-  //       category_id = value;
-  //       print(category_id);
-  //     },
-  //   );
-  // }
 }

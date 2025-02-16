@@ -11,7 +11,7 @@ class ProductDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name.toString()),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
