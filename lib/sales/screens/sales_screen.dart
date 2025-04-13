@@ -38,7 +38,7 @@ class SalesScreen extends StatelessWidget {
         ],
       ),
       body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 0),
         child: Column(children: [
           userInput(),
           Expanded(
@@ -78,30 +78,34 @@ class SalesScreen extends StatelessWidget {
   }
 
   Widget userInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: searchController,
-            decoration: const InputDecoration(
-              hintText: "Search...",
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: searchController,
+              decoration: const InputDecoration(
+                hintText: "Search...",
+              ),
+              onChanged: (value) {
+                salesController.getAllProduct(input: value);
+              },
             ),
-            onChanged: (value) {
-              salesController.getAllProduct(input: value);
-            },
           ),
-        ),
-        IconButton(
-            onPressed: () {
-              searchController.text = "";
-            },
-            icon: const Icon(Icons.cancel))
-      ],
+          IconButton(
+              onPressed: () {
+                searchController.text = "";
+              },
+              icon: const Icon(Icons.cancel))
+        ],
+      ),
     );
   }
 
   Widget searchItem(context, ProductModel product) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.inversePrimary,
           boxShadow: [
@@ -180,7 +184,9 @@ class SalesScreen extends StatelessWidget {
       width: double.infinity,
       color: Theme.of(context).colorScheme.inversePrimary,
       child: ListTile(
-        title: Text("Total : $amount"),
+        title: Text("Total : $amount",
+          style: const TextStyle(color: Colors.black),
+        ),
       ),
     );
   }
