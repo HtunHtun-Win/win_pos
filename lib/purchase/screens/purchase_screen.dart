@@ -40,7 +40,7 @@ class PurchaseScreen extends StatelessWidget {
         ],
       ),
       body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 0),
         child: Column(children: [
           userInput(),
           Expanded(
@@ -80,30 +80,34 @@ class PurchaseScreen extends StatelessWidget {
   }
 
   Widget userInput() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: searchController,
-            decoration: const InputDecoration(
-              hintText: "Search...",
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: searchController,
+              decoration: const InputDecoration(
+                hintText: "Search...",
+              ),
+              onChanged: (value) {
+                purchaseController.getAllProduct(input: value);
+              },
             ),
-            onChanged: (value) {
-              purchaseController.getAllProduct(input: value);
-            },
           ),
-        ),
-        IconButton(
-            onPressed: () {
-              searchController.text = "";
-            },
-            icon: const Icon(Icons.cancel))
-      ],
+          IconButton(
+              onPressed: () {
+                searchController.text = "";
+              },
+              icon: const Icon(Icons.cancel))
+        ],
+      ),
     );
   }
 
   Widget searchItem(context, ProductModel product) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.inversePrimary,
           boxShadow: [
