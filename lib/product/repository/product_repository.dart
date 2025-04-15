@@ -106,7 +106,7 @@ class ProductRepository {
   Future<void> updatePurchasePriceQty(int productId, int quantity) async {
     final database = await dbObj.database;
     await database.rawUpdate(
-        "UPDATE purchase_price set quantity=quantity+? where id=(select id from purchase_price where product_id=? AND quantity!=0 order by id desc limit 1)",
+        "UPDATE purchase_price set quantity=quantity+? where id=(select id from purchase_price where product_id=? order by id desc limit 1)",
         [quantity, productId]);
   }
 }

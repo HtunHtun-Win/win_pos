@@ -7,7 +7,7 @@ class SalesReportRepository {
     final database = await dbObj.database;
     String sql = """
       SELECT sales.id,sales.sale_no,customers.name as customer,users.name as user,sales.net_price,sales.discount,sales.total_price,payment_type.name as payment,sales.created_at 
-      FROM sales,customers,users,payment_type WHERE sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id """;
+      FROM sales,customers,users,payment_type WHERE sales.isdeleted=0 AND sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id """;
     String endSql = "ORDER BY sales.id DESC;";
     if(customerId!=null){
       sql+="AND customers.id=$customerId ";

@@ -1,5 +1,6 @@
 import 'package:win_pos/sales/repository/sales_repository.dart';
 import '../models/cart_model.dart';
+import '../models/sale_detail_model.dart';
 
 class SalesService {
   SalesRepository salesRepository = SalesRepository();
@@ -21,6 +22,17 @@ class SalesService {
   Future<int> addSale(Map sale, List<CartModel> cart) async {
     int saleId = await salesRepository.addSale(sale, cart);
     return saleId;
+  }
+
+  Future<int> deleteSale(int sid,List<SaleDetailModel> items) async {
+    salesRepository.deleteSaleVoucher(sid);
+    salesRepository.deleteSaleDetail(sid);
+    for (var item in items) {
+      salesRepository.updateProductQty(item.id!, item.quantity!);
+      salesRepository.updatePprice(item.id!, item.quantity!);
+      salesRepository.addProductLog(item.id!, item.quantity!, "sale return", 1);
+    }
+    return 0;
   }
 
 }

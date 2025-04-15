@@ -122,7 +122,10 @@ class ProfitLoseScreen extends StatelessWidget {
     String endDate = "";
     var now = DateTime.now();
     var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == "today") {
+    if (selectedDate == "all") {
+      startDate = DateTime(now.year-50, now.month, now.day).toString();
+      endDate = DateTime(now.year, now.month, now.day+1).toString();
+    }else if (selectedDate == "today") {
       startDate = today.toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
     } else if (selectedDate == "yesterday") {
