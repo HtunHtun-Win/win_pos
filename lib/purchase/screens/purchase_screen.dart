@@ -31,7 +31,7 @@ class PurchaseScreen extends StatelessWidget {
                   Get.snackbar(
                     "Cart is empty!",
                     "Select product!",
-                    backgroundColor: Colors.black.withOpacity(.5),
+                    backgroundColor: Colors.black.withValues(alpha: 0.5),
                     colorText: Colors.white,
                   );
                 }

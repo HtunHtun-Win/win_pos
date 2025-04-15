@@ -21,7 +21,7 @@ class SalesRepository {
     return await database.rawQuery(
       """
       SELECT sales.id,sales.sale_no,customers.name as customer,users.name as user,sales.net_price,sales.discount,sales.total_price,payment_type.name as payment,sales.created_at 
-      FROM sales,customers,users,payment_type WHERE sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id ORDER BY sales.id DESC;
+      FROM sales,customers,users,payment_type WHERE sales.isdeleted=0 AND sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id ORDER BY sales.id DESC;
       """
     );
   }
@@ -31,7 +31,7 @@ class SalesRepository {
     return await database.rawQuery(
         """
       SELECT sales.id,sales.sale_no,customers.name as customer,users.name as user,sales.net_price,sales.discount,sales.total_price,payment_type.name as payment,sales.created_at 
-      FROM sales,customers,users,payment_type WHERE sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id
+      FROM sales,customers,users,payment_type WHERE sales.isdeleted=0 AND sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id
       AND sales.created_at>'${date['start']}' AND sales.created_at<'${date['end']}' ORDER BY sales.id DESC;
       """
     );
@@ -127,6 +127,18 @@ class SalesRepository {
     );
   }
 
+  void deleteSaleVoucher(int vid) async {
+    final database = await dbObj.database;
+    await database.rawUpdate("UPDATE sales SET isdeleted=1 WHERE id=$vid");
+  }
+
+  void deleteSaleDetail(int sid) async {
+    final database = await dbObj.database;
+    await database.delete(
+      "sales_detail",where: "sales_id=?",whereArgs: [sid],
+    );
+  }
+
   Future<Map<String, dynamic>> getPprice(int pid) async {
     final database = await dbObj.database;
     var datas = await database.rawQuery(
@@ -137,21 +149,14 @@ class SalesRepository {
   void updatePprice(int pid, int qty) async {
     final database = await dbObj.database;
     await database.rawQuery(
-        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND quantity!=0 ORDER BY id ASC LIMIT 1)");
+        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND quantity!=0 ORDER BY id ASC LIMIT 1)"
+    );
   }
 
   void updateProductQty(int id, int qty) async {
     final database = await dbObj.database;
     await database.rawUpdate(
         'update products set quantity=quantity+? where id=?', [qty, id]);
-  }
-
-  void updatePurchaseQty(int pid, int qty) async {
-    final database = await dbObj.database;
-    await database.rawUpdate(
-      'UPDATE purchase_price SET quantity=quantity+? WHERE product_id=? AND quantity!=0 ORDER BY id LIMIT 1',
-      [qty, pid],
-    );
   }
 
   Future<void> addProductLog(

@@ -7,6 +7,7 @@ class SaleModel{
   int? discount;
   int? total_price;
   String? payment;
+  int? isdeleted;
   String? created_at;
 
   SaleModel({
@@ -18,6 +19,7 @@ class SaleModel{
     this.discount,
     this.total_price,
     this.payment,
+    this.isdeleted,
     this.created_at,
   });
 
@@ -31,6 +33,7 @@ class SaleModel{
       'discount': discount,
       'total_price': total_price,
       'payment_type_id': payment,
+      'isdeleted' : isdeleted,
       'created_at': created_at,
     };
   }
@@ -45,6 +48,7 @@ class SaleModel{
       discount: map['discount'] as int,
       total_price: map['total_price'] as int,
       payment: map['payment'],
+      isdeleted: map['isdeleted'],
       created_at: map['created_at'] as String,
     );
   }

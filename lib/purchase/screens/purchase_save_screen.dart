@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
+import '../../core/functions/date_range_calc.dart';
 import '../../payment/controller/payment_controller.dart';
 import '../controller/purchase_controller.dart';
 
@@ -77,7 +78,7 @@ class PurchaseSaveScreen extends StatelessWidget {
     };
     await purchaseController.addPurchase(purchaseMap, purchaseController.cart);
     purchaseController.cart.clear();
-    purchaseController.getAllVouchers();
+    purchaseController.getAllVouchers(map: daterangeCalculate("today"));
     purchaseController.getTotal();
     Get.back();
   }

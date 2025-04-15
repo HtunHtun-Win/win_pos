@@ -1,12 +1,11 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/customer/controller/customer_controller.dart';
 import 'package:win_pos/payment/controller/payment_controller.dart';
-import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
+import '../../core/functions/date_range_calc.dart';
 import '../controller/sales_controller.dart';
 
 class SalesSaveScreen extends StatelessWidget {
@@ -79,7 +78,7 @@ class SalesSaveScreen extends StatelessWidget {
     };
     await salesController.addSale(saleMap, salesController.cart);
     salesController.cart.clear();
-    salesController.getAllVouchers();
+    salesController.getAllVouchers(map: daterangeCalculate("today"));
     salesController.getTotal();
     Get.back();
   }
