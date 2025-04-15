@@ -149,7 +149,7 @@ class SalesRepository {
   void updatePprice(int pid, int qty) async {
     final database = await dbObj.database;
     await database.rawQuery(
-        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND quantity!=0 ORDER BY id ASC LIMIT 1)"
+        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND quantity!=0 ORDER BY id DESC LIMIT 1)"
     );
   }
 
