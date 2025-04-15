@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:win_pos/core/functions/date_range_calc.dart';
+import 'package:win_pos/purchase/controller/purchase_controller.dart';
+import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
 import '../controller/purchase_detail_controller.dart';
 import '../models/purchase_model.dart';
 import '../../shop/shop_info_controller.dart';
@@ -13,6 +16,7 @@ class PurchaseDetail extends StatelessWidget {
   PurchaseDetailController purchaseDetailController =
       Get.put(PurchaseDetailController());
   ShopInfoController shopInfoController = Get.find();
+  PurchaseController purchaseController = Get.put(PurchaseController());
   late ShopModel shopModel;
 
   @override
@@ -26,6 +30,33 @@ class PurchaseDetail extends StatelessWidget {
         title: const Text("Purchase Detail"),
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
+          // IconButton(
+          //     onPressed: () async {
+          //       Get.defaultDialog(
+          //           title: "Delete!",
+          //           content: const Text("This process can't undo!"),
+          //           actions: [
+          //             TextButton(onPressed: (){
+          //               Get.back();
+          //             }, child: const Text("Cancel")),
+          //             TextButton(onPressed: () async{
+          //               int flag = await purchaseController.deletePurchase(
+          //                 voucher.id!,
+          //                 purchaseDetailController.saleDatas,
+          //               );
+          //               purchaseController.getAllVouchers(
+          //                 map: daterangeCalculate("today"),
+          //               );
+          //               if(flag==0){
+          //                 Get.to(()=>PurchaseVoucherScreen());
+          //               }
+          //             }, child: const Text("Delete"))
+          //           ]
+          //       );
+          //     },
+          //     icon: const Icon(
+          //       Icons.delete,
+          //     )),
           IconButton(
               onPressed: () async {
               },

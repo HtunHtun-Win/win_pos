@@ -21,7 +21,7 @@ class PurchaseRepository {
     return await database.rawQuery(
         """
       SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,payment_type.name as payment,purchase.created_at 
-      FROM purchase,suppliers,users,payment_type WHERE purchase.supplier_id=suppliers.id AND purchase.user_id=users.id AND purchase.payment_type_id=payment_type.id ORDER BY purchase.id DESC;
+      FROM purchase,suppliers,users,payment_type WHERE purchase.isdeleted=0 AND purchase.supplier_id=suppliers.id AND purchase.user_id=users.id AND purchase.payment_type_id=payment_type.id ORDER BY purchase.id DESC;
       """
     );
   }
@@ -30,7 +30,7 @@ class PurchaseRepository {
     final database = await dbObj.database;
     return await database.rawQuery("""
       SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,payment_type.name as payment,purchase.created_at 
-      FROM purchase,suppliers,users,payment_type WHERE purchase.supplier_id=suppliers.id AND purchase.user_id=users.id AND purchase.payment_type_id=payment_type.id
+      FROM purchase,suppliers,users,payment_type WHERE purchase.isdeleted=0 AND purchase.supplier_id=suppliers.id AND purchase.user_id=users.id AND purchase.payment_type_id=payment_type.id
       AND purchase.created_at>'${date['start']}' AND purchase.created_at<'${date['end']}' ORDER BY purchase.id DESC;
       """);
   }
@@ -91,12 +91,52 @@ class PurchaseRepository {
     );
   }
 
+  void deletePurchaseVoucher(int vid) async {
+    final database = await dbObj.database;
+    await database.rawUpdate("UPDATE purchase SET isdeleted=1 WHERE id=$vid");
+  }
+
+  void deletePurchaseDetail(int vid) async {
+    final database = await dbObj.database;
+    await database.delete(
+      "purchase_detail",where: "purchase_id=?",whereArgs: [vid],
+    );
+  }
+
   Future<void> addPurchasePrice(int productId, int quantity, int price) async {
     final database = await dbObj.database;
     await database.insert(
       "purchase_price",
       {"product_id": productId, "quantity": quantity, "price": price},
     );
+  }
+
+  Future<Map<String, dynamic>> getPprice(int pid) async {
+    final database = await dbObj.database;
+    var datas = await database.rawQuery(
+        "SELECT quantity, price FROM purchase_price WHERE product_id=$pid AND quantity!=0 ORDER BY id LIMIT 1");
+    return datas[0];
+  }
+
+  void updatePprice(int pid, int qty) async {
+    final database = await dbObj.database;
+    await database.rawQuery(
+        "UPDATE purchase_price SET quantity=quantity-$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid ORDER BY id DESC LIMIT 1)"
+    );
+  }
+
+  void removePprice(int pid, int qty) async {
+    int tempQty = qty;
+    while (tempQty > 0) {
+      var pprice = await getPprice(pid);
+      if (pprice['quantity'] >= tempQty) {
+        updatePprice(pid, -tempQty);
+        tempQty = 0;
+      } else {
+        updatePprice(pid, -pprice['quantity']);
+        tempQty -= pprice['quantity'] as int;
+      }
+    }
   }
 
   void updateProduct(int id, int qty, int price) async {

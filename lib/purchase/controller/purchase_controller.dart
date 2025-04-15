@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:win_pos/product/models/product_model.dart';
+import 'package:win_pos/purchase/models/purchase_detail_model.dart';
 import 'package:win_pos/sales/models/cart_model.dart';
 import '../models/purchase_model.dart';
 import '../services/purchase_service.dart';
@@ -47,6 +48,11 @@ class PurchaseController extends GetxController {
 
   Future<int> addPurchase(Map purchase, List<CartModel> cart) async {
     int saleId = await purchaseService.addPurchase(purchase, cart);
+    return saleId;
+  }
+
+  Future<int> deletePurchase(int vid,List<PurchaseDetailModel> items) async {
+    int saleId = await purchaseService.deletePurchase(vid,items);
     return saleId;
   }
 
