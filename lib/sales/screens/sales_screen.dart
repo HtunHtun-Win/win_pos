@@ -29,7 +29,7 @@ class SalesScreen extends StatelessWidget {
                 }else{
                   Get.snackbar(
                   "Cart is empty!", "Select product!",
-                    backgroundColor: Colors.black.withOpacity(.5),
+                    backgroundColor: Colors.black.withValues(alpha: .5),
                     colorText: Colors.white,
                   );
                 }
@@ -110,7 +110,7 @@ class SalesScreen extends StatelessWidget {
           color: Theme.of(context).colorScheme.inversePrimary,
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(.5),
+                color: Colors.black.withValues(alpha: .5),
                 offset: const Offset(5, 5),
                 blurRadius: 10)
           ]),
@@ -226,7 +226,7 @@ class SalesScreen extends StatelessWidget {
                   Get.back();
                   Get.snackbar(
                     "Alert!","Not enough stock!",
-                    backgroundColor: Colors.black.withOpacity(.5),
+                    backgroundColor: Colors.black.withValues(alpha: .5),
                     colorText: Colors.white,
                   );
                 }
@@ -246,7 +246,7 @@ class SalesScreen extends StatelessWidget {
                   Get.back();
                   Get.snackbar(
                     "Alert!","Not enough stock!",
-                    backgroundColor: Colors.black.withOpacity(.5),
+                    backgroundColor: Colors.black.withValues(alpha: .5),
                     colorText: Colors.white,
                   );
                 }

@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:win_pos/expense/model/expense_model.dart';
 import 'package:win_pos/expense/service/expense_service.dart';
 

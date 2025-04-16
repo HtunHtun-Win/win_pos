@@ -13,7 +13,7 @@ class ExpenseService {
 
   Future<Map> addExpense(
       int amount, String description, String note, int type, int userId) async {
-    print(amount);
+    // print(amount);
     if (amount > 0 && description.isNotEmpty) {
       var num = await _expenseRepository.addExpense(
           amount, description, note, type, userId);
@@ -25,7 +25,7 @@ class ExpenseService {
 
   Future<Map> updateExpense(int id, int amount, String description, String note,
       int type, int userId) async {
-    print(amount);
+    // print(amount);
     if (amount > 0 && description.isNotEmpty) {
       var num = await _expenseRepository.updateExpense(
           id, amount, description, note, type, userId);

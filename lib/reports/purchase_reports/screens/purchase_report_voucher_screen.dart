@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 import 'package:win_pos/purchase/models/purchase_model.dart';
-import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import '../controller/purchase_report_controller.dart';
 
@@ -28,7 +27,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: customersBox(),
           ),
           datePicker(),
@@ -63,7 +62,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(purchaseController.totalAmount.toString(),style: TextStyle(color: Colors.white),),
+                    Text(purchaseController.totalAmount.toString(),style: const TextStyle(color: Colors.white),),
                   ],
                 ),
               ),

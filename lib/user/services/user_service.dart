@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:win_pos/user/repository/user_repository.dart';
 
 class UserService {
