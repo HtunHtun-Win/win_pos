@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:win_pos/reports/financial_reports/controller/financial_report_controller.dart';
-import 'package:win_pos/reports/financial_reports/models/profit_lose_model.dart';
 
 class ProfitLoseScreen extends StatelessWidget {
   ProfitLoseScreen({super.key});
@@ -21,7 +20,7 @@ class ProfitLoseScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Container(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 child: datePicker(),
               ),
               Expanded(
@@ -83,7 +82,7 @@ class ProfitLoseScreen extends StatelessWidget {
 
   Widget itemValue({required String label,required var value}){
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
       child: Row(
           children: [
             Expanded(flex: 2,child: Text(label)),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:win_pos/reports/inventory_reports/screens/stock_balance_screen.dart';
 import 'package:win_pos/reports/inventory_reports/screens/stock_balance_valuation_screen.dart';
 
@@ -37,7 +36,7 @@ class InventoryReportScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(1),
+          color: Theme.of(context).primaryColor.withValues(alpha: 1),
           borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: icon,

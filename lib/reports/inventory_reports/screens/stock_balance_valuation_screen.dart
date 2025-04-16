@@ -49,7 +49,7 @@ class StockBalanceValuationScreen extends StatelessWidget {
                     const Text("Total",style: TextStyle(color: Colors.white),),
                     Text(
                       "${reportController.totalValue.toString()} MMK",
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),

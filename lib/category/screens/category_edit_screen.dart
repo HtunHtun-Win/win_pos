@@ -48,12 +48,12 @@ class CategoryEditScreen extends StatelessWidget {
                         Get.snackbar(
                             "Empty name!", "Name field can't be empty!",
                             colorText: Colors.white,
-                            backgroundColor: Colors.black.withOpacity(.4));
+                            backgroundColor: Colors.black.withValues(alpha: .4));
                       } else if (msg["msg"] == 'duplicate') {
                         Get.snackbar(
                             "Duplicate!", "This category is already exists!",
                             colorText: Colors.white,
-                            backgroundColor: Colors.black.withOpacity(.4));
+                            backgroundColor: Colors.black.withValues(alpha: .4));
                       } else {
                         Get.back();
                       }
