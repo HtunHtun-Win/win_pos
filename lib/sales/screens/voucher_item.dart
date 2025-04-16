@@ -24,7 +24,7 @@ class VoucherItem extends StatelessWidget {
           ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.5),
+            color: Colors.black.withValues(alpha: .5),
             offset: const Offset(2, 2),
             blurRadius: 5,
           )

@@ -27,7 +27,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: customersBox(),
           ),
           datePicker(),
@@ -62,7 +62,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(salesController.totalAmount.toString(),style: TextStyle(color: Colors.white),),
+                    Text(salesController.totalAmount.toString(),style: const TextStyle(color: Colors.white),),
                   ],
                 ),
               ),

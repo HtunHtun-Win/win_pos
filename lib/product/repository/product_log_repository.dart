@@ -1,5 +1,4 @@
 import 'package:win_pos/core/database/db_helper.dart';
-import 'dart:developer' as dev;
 
 class ProductLogRepository {
   DbHelper dbObj = DbHelper();

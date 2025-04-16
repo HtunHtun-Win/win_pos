@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:win_pos/core/functions/date_range_calc.dart';
 import 'package:win_pos/purchase/controller/purchase_controller.dart';
-import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
 import '../controller/purchase_detail_controller.dart';
 import '../models/purchase_model.dart';
 import '../../shop/shop_info_controller.dart';
@@ -90,19 +88,19 @@ class PurchaseDetail extends StatelessWidget {
             Column(
               children: [
                 Text(
-                  shopModel?.name ?? "-",
+                  shopModel.name ?? "-",
                   style: const TextStyle(
                     fontSize: 18,
                   ),
                 ),
                 Text(
-                  shopModel?.phone ?? "-",
+                  shopModel.phone ?? "-",
                   style: const TextStyle(
                     fontSize: 18,
                   ),
                 ),
                 Text(
-                  shopModel?.address ?? "-",
+                  shopModel.address ?? "-",
                   style: const TextStyle(
                     fontSize: 18,
                   ),

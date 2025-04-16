@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/reports/financial_reports/screens/bank_payment_screen.dart';
-import 'package:win_pos/reports/financial_reports/screens/cash_flow_screen.dart';
 import 'package:win_pos/reports/financial_reports/screens/profit_lose_screen.dart';
 
 class FinancialReportScreen extends StatelessWidget {
@@ -34,7 +33,7 @@ class FinancialReportScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(1),
+          color: Theme.of(context).primaryColor.withValues(alpha: 1),
           borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: icon,

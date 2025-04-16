@@ -32,8 +32,9 @@ class ProductAdjustAddScreen extends StatelessWidget {
             actions: [
               IconButton(
                   onPressed: () async {
-                    if (type == 'lose')
+                    if (type == 'lose') {
                       qtyController.text = '-${qtyController.text}';
+                    }
                     await productLogController.addProductLog(
                         pId!,
                         int.parse(qtyController.text),

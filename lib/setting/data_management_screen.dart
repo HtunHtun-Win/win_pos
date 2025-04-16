@@ -31,12 +31,12 @@ class DataManagementScreen extends StatelessWidget {
               title: "Format Everything",
               middleText: "Are you sure?",
               actions: [
-                TextButton(onPressed: () async{
-                  await format();
-                }, child: const Text("Yes")),
                 TextButton(onPressed: (){
                   Get.back();
                 }, child: const Text("No")),
+                TextButton(onPressed: () async{
+                  await format();
+                }, child: const Text("Yes")),
               ]
             );
           }),
@@ -88,7 +88,7 @@ class DataManagementScreen extends StatelessWidget {
           middleTextStyle: const TextStyle(color: Colors.black),
         );
       } catch (e) {
-        print(e.toString());
+        // print(e.toString());
         Get.snackbar("Error", "$e");
       }
   }
@@ -172,7 +172,7 @@ class DataManagementScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(1),
+          color: Theme.of(context).primaryColor.withValues(alpha: 1),
           borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: icon,

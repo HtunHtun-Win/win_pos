@@ -25,7 +25,7 @@ class PVoucherItem extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(.5),
+              color: Colors.black.withValues(alpha: .4),
               offset: const Offset(2, 2),
               blurRadius: 5,
             )

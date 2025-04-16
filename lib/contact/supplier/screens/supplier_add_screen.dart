@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:win_pos/contact/customer/controller/customer_controller.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 
 class SupplierAddScreen extends StatelessWidget {
