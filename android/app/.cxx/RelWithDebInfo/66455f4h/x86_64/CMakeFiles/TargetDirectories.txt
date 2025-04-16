@@ -1,0 +1,2 @@
+/home/htun/IdeaProjects/win_pos/android/app/.cxx/RelWithDebInfo/66455f4h/x86_64/CMakeFiles/edit_cache.dir
+/home/htun/IdeaProjects/win_pos/android/app/.cxx/RelWithDebInfo/66455f4h/x86_64/CMakeFiles/rebuild_cache.dir

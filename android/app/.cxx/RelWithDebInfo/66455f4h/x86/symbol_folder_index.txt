@@ -1,0 +1,1 @@
+/home/htun/IdeaProjects/win_pos/build/app/intermediates/cxx/RelWithDebInfo/66455f4h/obj/x86
