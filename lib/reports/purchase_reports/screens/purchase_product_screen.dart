@@ -2,7 +2,6 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/reports/purchase_reports/models/purchase_item_model.dart';
-import 'package:win_pos/reports/sale_reports/models/sale_item_model.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import '../../../category/controller/category_controller.dart';
 import '../controller/purchase_report_controller.dart';
@@ -28,7 +27,7 @@ class PurchaseProductScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: categoryBox(context),
           ),
           datePicker(),
@@ -62,7 +61,7 @@ class PurchaseProductScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(purchaseController.itemTotalAmount.toString(),style: TextStyle(color: Colors.white),),
+                    Text(purchaseController.itemTotalAmount.toString(),style: const TextStyle(color: Colors.white),),
                   ],
                 ),
               ),

@@ -1,4 +1,3 @@
-import 'package:win_pos/reports/financial_reports/models/profit_lose_model.dart';
 import 'package:win_pos/reports/financial_reports/repository/financial_report_repository.dart';
 import '../../../sales/models/sale_model.dart';
 

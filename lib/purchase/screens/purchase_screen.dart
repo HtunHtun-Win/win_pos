@@ -112,7 +112,7 @@ class PurchaseScreen extends StatelessWidget {
           color: Theme.of(context).colorScheme.inversePrimary,
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(.5),
+                color: Colors.black.withValues(alpha: .4),
                 offset: const Offset(5, 5),
                 blurRadius: 10)
           ]),

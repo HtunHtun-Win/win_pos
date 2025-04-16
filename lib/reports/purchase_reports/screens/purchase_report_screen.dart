@@ -32,7 +32,7 @@ class PurchaseReportScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withOpacity(1),
+          color: Theme.of(context).primaryColor.withValues(alpha: 1),
           borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: icon,

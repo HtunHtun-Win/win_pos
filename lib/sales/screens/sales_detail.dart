@@ -89,19 +89,19 @@ class SalesDetail extends StatelessWidget {
             Column(
               children: [
                 Text(
-                  shopModel?.name ?? "-",
+                  shopModel.name ?? "-",
                   style: const TextStyle(
                     fontSize: 18,
                   ),
                 ),
                 Text(
-                  shopModel?.phone ?? "-",
+                  shopModel.phone ?? "-",
                   style: const TextStyle(
                     fontSize: 18,
                   ),
                 ),
                 Text(
-                  shopModel?.address ?? "-",
+                  shopModel.address ?? "-",
                   style: const TextStyle(
                     fontSize: 18,
                   ),

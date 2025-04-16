@@ -27,7 +27,7 @@ class BankPaymentScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: paymentBox(),
           ),
           datePicker(),
@@ -63,7 +63,7 @@ class BankPaymentScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(controller.totalAmount.toString(),style: TextStyle(color: Colors.white),),
+                    Text(controller.totalAmount.toString(),style: const TextStyle(color: Colors.white),),
                   ],
                 ),
               ),

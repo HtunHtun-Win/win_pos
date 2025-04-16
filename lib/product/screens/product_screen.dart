@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_common/get_reset.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/get_instance.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
 import 'package:win_pos/product/screens/product_adjust_screen.dart';
 import 'package:win_pos/product/screens/product_list_screen.dart';
-import 'package:win_pos/sales/screens/sales_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 

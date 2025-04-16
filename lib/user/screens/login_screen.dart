@@ -91,7 +91,7 @@ class LoginScreen extends StatelessWidget {
                               "Invalid Credentials",
                               "Wrong UserId or Password!",
                               colorText: Colors.white,
-                              backgroundColor: Colors.black.withOpacity(.3),
+                              backgroundColor: Colors.black.withValues(alpha:.3),
                             );
                           }
                         },
@@ -118,10 +118,10 @@ class LoginScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.3),
+        color: Colors.white.withValues(alpha: 0.3),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               offset: const Offset(5, 5),
               blurRadius: 20)
         ],

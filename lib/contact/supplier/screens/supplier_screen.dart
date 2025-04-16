@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:win_pos/contact/customer/screens/customer_add_screen.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 import 'package:win_pos/contact/supplier/model/supplier_model.dart';
 import 'package:win_pos/contact/supplier/screens/supplier_add_screen.dart';
