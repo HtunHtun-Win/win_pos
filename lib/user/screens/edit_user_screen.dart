@@ -119,7 +119,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                   var num = await controller.updateUser(
                       controller.edit_user.value.id!,
                       nameController.text,
-                      loginIdController.text,
+                      loginIdController.text.trim(),
                       passwordController.text,
                       currentOpt);
                   if (num == -1) {
