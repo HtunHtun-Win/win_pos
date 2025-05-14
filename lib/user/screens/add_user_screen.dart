@@ -107,7 +107,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 onPressed: () async {
                   var num = await controller.insertUser(
                       nameController.text,
-                      loginIdController.text,
+                      loginIdController.text.trim(),
                       passwordController.text,
                       currentOpt);
                   if (num == -1) {
