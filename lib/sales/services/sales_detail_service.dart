@@ -6,4 +6,8 @@ class SalesDetailService {
   Future<List> getSaleDetail(int sid) async {
     return await saleDetailRepository.getSaleDetail(sid);
   }
+
+  Future<List> getSaleDetailToDelete(int sid) async {
+    return await saleDetailRepository.getSaleDetailToDelete(sid);
+  }
 }

@@ -12,7 +12,7 @@ import '../../shop/shop_model.dart';
 // ignore: must_be_immutable
 class SalesDetail extends StatelessWidget {
   SalesDetail({super.key, required this.voucher});
-  SaleModel voucher;
+  SaleModel voucher; // to get voucher id
 
   SalesDetailController salesDetailController =
       Get.put(SalesDetailController());
@@ -23,6 +23,7 @@ class SalesDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     salesDetailController.getSaleDetail(voucher.id!);
+    salesDetailController.getSaleDetailToDelete(voucher.id!);
     if (shopInfoController.shop.isNotEmpty) {
       shopModel = ShopModel.fromMap(shopInfoController.shop);
     }
@@ -43,8 +44,9 @@ class SalesDetail extends StatelessWidget {
                     TextButton(onPressed: () async{
                       int flag = await salesController.deleteSale(
                           voucher.id!,
-                          salesDetailController.saleDatas,
+                          salesDetailController.saleDataToDel,
                       );
+                      //request all voucher after delete
                       salesController.getAllVouchers(
                           map: daterangeCalculate("today"),
                       );
