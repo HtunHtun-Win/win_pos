@@ -3,12 +3,14 @@ class SaleDetailModel {
   String? product;
   int? quantity;
   int? price;
+  int? pprice;
 
   SaleDetailModel({
       this.id,
       this.product,
       this.quantity,
-      this.price
+      this.price,
+      this.pprice,
       });
 
   factory SaleDetailModel.fromMap(Map map) {
@@ -17,6 +19,7 @@ class SaleDetailModel {
       product: map['name'],
       quantity: map['quantity'],
       price: map['price'],
+      pprice: map['pprice'],
     );
   }
 }

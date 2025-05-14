@@ -30,7 +30,7 @@ class SalesService {
     for (var item in items) {
       salesRepository.updateProductQty(item.id!, item.quantity!);
       salesRepository.addProductLog(item.id!, item.quantity!, "sale return", 1);
-      salesRepository.updatePprice(item.id!, item.quantity!);
+      salesRepository.returnPprice(item.id!, item.quantity!, item.pprice!);
     }
     return 0;
   }
