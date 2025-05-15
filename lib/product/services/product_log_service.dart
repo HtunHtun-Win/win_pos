@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:win_pos/product/repository/product_log_repository.dart';
 import 'package:win_pos/product/repository/product_repository.dart';
 
@@ -10,6 +12,13 @@ class ProductLogService {
       return await productLogRepository.getByDate(map);
     }
     return await productLogRepository.getAll();
+  }
+
+  Future<List> getAllLog({Map? map,required int pid}) async {
+    if(map!=null){
+      return await productLogRepository.getAllLogByDate(map,pid);
+    }
+    return await productLogRepository.getAllLog(pid: pid);
   }
 
   Future<List> getAllProduct() async {

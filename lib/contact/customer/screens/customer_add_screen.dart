@@ -4,7 +4,7 @@ import 'package:win_pos/contact/customer/controller/customer_controller.dart';
 
 class CustomerAddScreen extends StatelessWidget {
   CustomerAddScreen({super.key});
-  CustomerController customerController = Get.find();
+  final CustomerController customerController = Get.find();
 
   @override
   Widget build(BuildContext context) {

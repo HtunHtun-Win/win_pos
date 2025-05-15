@@ -18,7 +18,7 @@ import '../../sales/screens/sales_voucher_screen.dart';
 
 class ExpenseScreen extends StatelessWidget {
   ExpenseScreen({super.key});
-  UserController userController = Get.find();
+  final UserController userController = Get.find();
   final ExpenseController _expenseController = Get.put(ExpenseController());
 
   @override

@@ -5,16 +5,17 @@ import 'package:win_pos/category/controller/category_controller.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
+// ignore: must_be_immutable
 class ProductAddScreen extends StatelessWidget {
   ProductAddScreen({super.key});
-  ProductController productController = Get.find();
-  CategoryController categoryController = Get.find();
-  TextEditingController codeController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController descController = TextEditingController();
-  TextEditingController quantityController = TextEditingController();
-  TextEditingController ppriceController = TextEditingController();
-  TextEditingController spriceController = TextEditingController();
+  final ProductController productController = Get.find();
+  final CategoryController categoryController = Get.find();
+  final TextEditingController codeController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
+  final TextEditingController ppriceController = TextEditingController();
+  final TextEditingController spriceController = TextEditingController();
   int category_id = 1;
 
   @override

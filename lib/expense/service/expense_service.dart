@@ -15,7 +15,7 @@ class ExpenseService {
       int amount, String description, String note, int type, int userId) async {
     // print(amount);
     if (amount > 0 && description.isNotEmpty) {
-      var num = await _expenseRepository.addExpense(
+      await _expenseRepository.addExpense(
           amount, description, note, type, userId);
       return {'msg': 'success'};
     } else {
@@ -27,7 +27,7 @@ class ExpenseService {
       int type, int userId) async {
     // print(amount);
     if (amount > 0 && description.isNotEmpty) {
-      var num = await _expenseRepository.updateExpense(
+      await _expenseRepository.updateExpense(
           id, amount, description, note, type, userId);
       return {'msg': 'success'};
     } else {

@@ -1,3 +1,4 @@
+import 'package:sqflite/sqflite.dart';
 import 'package:win_pos/core/database/db_helper.dart';
 import 'package:win_pos/sales/models/cart_model.dart';
 
@@ -18,12 +19,10 @@ class PurchaseRepository {
 
   Future<List> getAllVouchers() async {
     final database = await dbObj.database;
-    return await database.rawQuery(
-        """
+    return await database.rawQuery("""
       SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,payment_type.name as payment,purchase.created_at 
       FROM purchase,suppliers,users,payment_type WHERE purchase.isdeleted=0 AND purchase.supplier_id=suppliers.id AND purchase.user_id=users.id AND purchase.payment_type_id=payment_type.id ORDER BY purchase.id DESC;
-      """
-    );
+      """);
   }
 
   Future<List> getVouchersDate(Map date) async {
@@ -46,7 +45,7 @@ class PurchaseRepository {
       "discount": map["discount"],
       "total_price": map["total_price"],
       "created_at": DateTime.now().toString(),
-      "payment_type_id" : map["payment_type_id"],
+      "payment_type_id": map["payment_type_id"],
     });
     for (var item in cart) {
       addPurchaseDetail(purchaseId, item);
@@ -99,16 +98,30 @@ class PurchaseRepository {
   void deletePurchaseDetail(int vid) async {
     final database = await dbObj.database;
     await database.delete(
-      "purchase_detail",where: "purchase_id=?",whereArgs: [vid],
+      "purchase_detail",
+      where: "purchase_id=?",
+      whereArgs: [vid],
     );
   }
 
+  //update if exist
   Future<void> addPurchasePrice(int productId, int quantity, int price) async {
     final database = await dbObj.database;
-    await database.insert(
+
+    final existing = await database.query(
       "purchase_price",
-      {"product_id": productId, "quantity": quantity, "price": price},
+      where: 'product_id=? and price=?',
+      whereArgs: [productId, price],
     );
+    if (existing.isNotEmpty) {
+      await database.rawQuery(
+          "UPDATE purchase_price SET quantity=quantity+$quantity WHERE id=(SELECT id FROM purchase_price where product_id=$productId AND price=$price ORDER BY id DESC LIMIT 1)");
+    } else {
+      await database.insert(
+        "purchase_price",
+        {"product_id": productId, "quantity": quantity, "price": price},
+      );
+    }
   }
 
   Future<Map<String, dynamic>> getPprice(int pid) async {
@@ -121,8 +134,7 @@ class PurchaseRepository {
   void updatePprice(int pid, int qty) async {
     final database = await dbObj.database;
     await database.rawQuery(
-        "UPDATE purchase_price SET quantity=quantity-$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid ORDER BY id DESC LIMIT 1)"
-    );
+        "UPDATE purchase_price SET quantity=quantity-$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid ORDER BY id DESC LIMIT 1)");
   }
 
   void removePprice(int pid, int qty) async {
@@ -142,7 +154,8 @@ class PurchaseRepository {
   void updateProduct(int id, int qty, int price) async {
     final database = await dbObj.database;
     await database.rawUpdate(
-        'update products set quantity=quantity+?,purchase_price=? where id=?', [qty, price, id]);
+        'update products set quantity=quantity+?,purchase_price=? where id=?',
+        [qty, price, id]);
   }
 
   Future<void> addProductLog(
