@@ -27,6 +27,7 @@ class ProductEditScreen extends StatelessWidget {
     ppriceController.text = productModel.purchase_price.toString();
     spriceController.text = productModel.sale_price.toString();
     category_id = productModel.category_id!;
+    int oldPrice = int.parse(productModel.sale_price.toString());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Product"),
@@ -41,6 +42,7 @@ class ProductEditScreen extends StatelessWidget {
                   descController.text,
                   category_id, 
                   int.parse(spriceController.text),
+                  oldPrice,
                 );
               },
               icon: const Icon(Icons.save))
@@ -75,9 +77,9 @@ class ProductEditScreen extends StatelessWidget {
   }
 
   Future<void> updateProduct(int id, String code, String name,
-      String description, int categoryId, int salePrice) async {
+      String description, int categoryId, int salePrice,int oldPrice) async {
     var map = await productController.updateProduct(
-        id, code, name, description, categoryId, salePrice);
+        id, code, name, description, categoryId, salePrice,oldPrice);
     if (map["msg"] == "null") {
       Get.snackbar("Empty!", "Name and code can't be empty...");
     } else if (map["msg"] == "duplicate") {

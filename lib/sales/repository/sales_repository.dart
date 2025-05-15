@@ -18,23 +18,19 @@ class SalesRepository {
 
   Future<List> getAllVouchers() async {
     final database = await dbObj.database;
-    return await database.rawQuery(
-      """
+    return await database.rawQuery("""
       SELECT sales.id,sales.sale_no,customers.name as customer,users.name as user,sales.net_price,sales.discount,sales.total_price,payment_type.name as payment,sales.created_at 
       FROM sales,customers,users,payment_type WHERE sales.isdeleted=0 AND sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id ORDER BY sales.id DESC;
-      """
-    );
+      """);
   }
 
   Future<List> getVouchersDate(Map date) async {
     final database = await dbObj.database;
-    return await database.rawQuery(
-        """
+    return await database.rawQuery("""
       SELECT sales.id,sales.sale_no,customers.name as customer,users.name as user,sales.net_price,sales.discount,sales.total_price,payment_type.name as payment,sales.created_at 
       FROM sales,customers,users,payment_type WHERE sales.isdeleted=0 AND sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id
       AND sales.created_at>'${date['start']}' AND sales.created_at<'${date['end']}' ORDER BY sales.id DESC;
-      """
-    );
+      """);
   }
 
   Future<int> addSale(Map map, List<CartModel> cart) async {
@@ -48,7 +44,7 @@ class SalesRepository {
       "discount": map["discount"],
       "total_price": map["total_price"],
       "payment_type_id": map["payment_type_id"],
-      "created_at" : DateTime.now().toString()
+      "created_at": DateTime.now().toString()
     });
     for (var item in cart) {
       int tempQty = item.quantity;
@@ -56,30 +52,26 @@ class SalesRepository {
         var pprice = await getPprice(item.product.id!);
         if (pprice['quantity'] >= tempQty) {
           addSaleDetail(
-              saleId,
-              CartModel.fromMap(
-                  {
-                    'product': item.product,
-                    'quantity': tempQty,
-                    'sprice': item.sprice,
-                    'pprice': item.pprice,
-                  }
-              ),
-              pprice['price'],
+            saleId,
+            CartModel.fromMap({
+              'product': item.product,
+              'quantity': tempQty,
+              'sprice': item.sprice,
+              'pprice': item.pprice,
+            }),
+            pprice['price'],
           );
           updatePprice(item.product.id!, -tempQty);
           tempQty = 0;
         } else {
           addSaleDetail(
             saleId,
-            CartModel.fromMap(
-              {
-                'product': item.product,
-                'quantity': pprice['quantity'],
-                'sprice': item.sprice,
-                'pprice': item.pprice,
-              }
-            ),
+            CartModel.fromMap({
+              'product': item.product,
+              'quantity': pprice['quantity'],
+              'sprice': item.sprice,
+              'pprice': item.pprice,
+            }),
             pprice['price'],
           );
           updatePprice(item.product.id!, -pprice['quantity']);
@@ -87,7 +79,7 @@ class SalesRepository {
         }
       }
       updateProductQty(item.product.id!, -item.quantity);
-      addProductLog(item.product.id!, -item.quantity, "sales", 1);
+      addProductLog(item.product.id!, -item.quantity, "sales", map["user_id"]);
     }
     return saleId;
   }
@@ -122,7 +114,7 @@ class SalesRepository {
         "quantity": item.quantity,
         "price": item.sprice,
         "pprice": pprice,
-        "created_at" : DateTime.now().toString()
+        "created_at": DateTime.now().toString()
       },
     );
   }
@@ -135,7 +127,9 @@ class SalesRepository {
   void deleteSaleDetail(int sid) async {
     final database = await dbObj.database;
     await database.delete(
-      "sales_detail",where: "sales_id=?",whereArgs: [sid],
+      "sales_detail",
+      where: "sales_id=?",
+      whereArgs: [sid],
     );
   }
 
@@ -150,16 +144,29 @@ class SalesRepository {
   void updatePprice(int pid, int qty) async {
     final database = await dbObj.database;
     await database.rawQuery(
-        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND quantity!=0 LIMIT 1)"
-    );
+        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND quantity!=0 LIMIT 1)");
   }
 
   //for sale return
   void returnPprice(int pid, int qty, int price) async {
     final database = await dbObj.database;
-    await database.rawQuery(
-        "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND price=$price ORDER BY id DESC LIMIT 1)"
+    // await database.rawQuery(
+    //     "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND price=$price ORDER BY id DESC LIMIT 1)"
+    // );
+    final existing = await database.query(
+      "purchase_price",
+      where: 'product_id=? and price=?',
+      whereArgs: [pid, price],
     );
+    if (existing.isNotEmpty) {
+      await database.rawQuery(
+          "UPDATE purchase_price SET quantity=quantity+$qty WHERE id=(SELECT id FROM purchase_price where product_id=$pid AND price=$price ORDER BY id DESC LIMIT 1)");
+    } else {
+      await database.insert(
+        "purchase_price",
+        {"product_id": pid, "quantity": qty, "price": price},
+      );
+    }
   }
 
   void updateProductQty(int id, int qty) async {

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:win_pos/category/controller/category_controller.dart';
 import '../models/category_model.dart';
 
+// ignore: must_be_immutable
 class CategoryEditScreen extends StatelessWidget {
   CategoryModel category;
   CategoryEditScreen(this.category, {super.key});

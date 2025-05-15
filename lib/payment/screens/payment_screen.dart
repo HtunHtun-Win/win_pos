@@ -7,7 +7,7 @@ import 'package:win_pos/payment/screens/payment_edit_screen.dart';
 
 class PaymentScreen extends StatelessWidget {
   PaymentScreen({super.key});
-  PaymentController paymentController = Get.put(PaymentController());
+  final PaymentController paymentController = Get.put(PaymentController());
 
   @override
   Widget build(BuildContext context) {

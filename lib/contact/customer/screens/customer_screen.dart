@@ -8,7 +8,7 @@ import 'customer_edit_screen.dart';
 
 class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
-  CustomerController customerController = Get.put(CustomerController());
+  final CustomerController customerController = Get.put(CustomerController());
 
   @override
   Widget build(BuildContext context) {

@@ -4,12 +4,12 @@ import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 import 'package:win_pos/contact/supplier/model/supplier_model.dart';
 
 class SupplierEditScreen extends StatelessWidget {
-  SupplierModel supplier;
+  final SupplierModel supplier;
   SupplierEditScreen(this.supplier, {super.key});
-  SupplierController supplierController = Get.find();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
+  final SupplierController supplierController = Get.find();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

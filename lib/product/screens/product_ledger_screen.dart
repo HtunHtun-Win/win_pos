@@ -5,27 +5,32 @@ import 'package:win_pos/product/models/product_log_model.dart';
 import 'package:intl/intl.dart';
 import 'package:win_pos/product/screens/product_adjust_add_screen.dart';
 
-class ProductAdjustScreen extends StatelessWidget {
-  ProductAdjustScreen({super.key});
+class ProductLedgerScreen extends StatelessWidget {
+  int id;
+  ProductLedgerScreen({super.key,required this.id});
   ProductLogController productLogController = Get.put(ProductLogController());
 
   @override
   Widget build(BuildContext context) {
     // productLogController.getAll();
-    productLogController.getAll(map: daterangeCalculate("today"));
+    productLogController.getAllLog(map: daterangeCalculate("today"),pid: id);
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Ledger"),
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           datePicker(),
           Expanded(
             child: Obx(() => ListView.builder(
-                  itemCount: productLogController.logs.length,
-                  itemBuilder: (context, index) {
-                    var productLog = productLogController.logs[index];
-                    return listItem(productLog);
-                  },
-                )),
+              itemCount: productLogController.logs.length,
+              itemBuilder: (context, index) {
+                var productLog = productLogController.logs[index];
+                return listItem(productLog);
+              },
+            )),
           )
         ],
       ),
@@ -78,9 +83,9 @@ class ProductAdjustScreen extends StatelessWidget {
         ],
         onSelected: (value) {
           if (value == 'all') {
-            productLogController.getAll();
+            productLogController.getAllLog(pid: id);
           } else {
-            productLogController.getAll(map: daterangeCalculate(value!));
+            productLogController.getAllLog(map: daterangeCalculate(value!),pid: id);
           }
         },
       ),
