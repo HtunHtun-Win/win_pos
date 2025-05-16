@@ -22,6 +22,10 @@ class ProductService {
     return {};
   }
 
+  Future<List> getPurchasePriceLog(int pid) async {
+    return await productRepository.getPurchasePriceLog(pid);
+  }
+
   Future<Map> addProduct(String code, String name, String description,
       int quantity, int categoryId, int purchasePrice, int salePrice) async {
     if (code.isEmpty || name.isEmpty || purchasePrice == 0) {
@@ -43,7 +47,8 @@ class ProductService {
     String name,
     String description,
     int categoryId,
-      int salePrice,
+    int salePrice,
+    int oldPrice,
   ) async {
     if (code.isEmpty || name.isEmpty) {
       return {'msg': 'null'};
@@ -53,11 +58,23 @@ class ProductService {
       if (product['id'] != id) return {'msg': 'duplicate'};
     }
     var num = await productRepository.updateProduct(
-        id, code, name, description, categoryId, salePrice);
+      id,
+      code,
+      name,
+      description,
+      categoryId,
+      salePrice,
+      oldPrice,
+    );
     return {'msg': num};
   }
 
   Future<void> deleteProduct(int id) async {
     await productRepository.deleteProduct(id);
+  }
+
+  //clear 0 quantity in purchase price
+  Future<void> clearZeroQty() async {
+    await productRepository.clearZeroQty();
   }
 }

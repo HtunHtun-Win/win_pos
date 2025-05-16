@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
 import 'package:win_pos/core/functions/date_range_calc.dart';
+import 'package:win_pos/core/screens/print_screen.dart';
 import 'package:win_pos/sales/controller/sales_controller.dart';
 import 'package:win_pos/sales/controller/sales_detail_controller.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
@@ -12,6 +14,7 @@ import '../../shop/shop_model.dart';
 // ignore: must_be_immutable
 class SalesDetail extends StatelessWidget {
   SalesDetail({super.key, required this.voucher});
+
   SaleModel voucher; // to get voucher id
 
   SalesDetailController salesDetailController =
@@ -35,33 +38,41 @@ class SalesDetail extends StatelessWidget {
           IconButton(
               onPressed: () async {
                 Get.defaultDialog(
-                  title: "Delete!",
-                  content: const Text("This process can't undo!"),
-                  actions: [
-                    TextButton(onPressed: (){
-                      Get.back();
-                    }, child: const Text("Cancel")),
-                    TextButton(onPressed: () async{
-                      int flag = await salesController.deleteSale(
-                          voucher.id!,
-                          salesDetailController.saleDataToDel,
-                      );
-                      //request all voucher after delete
-                      salesController.getAllVouchers(
-                          map: daterangeCalculate("today"),
-                      );
-                      if(flag==0){
-                        Get.to(()=>SalesVoucherScreen());
-                      }
-                    }, child: const Text("Delete"))
-                  ]
-                );
+                    title: "Delete!",
+                    content: const Text("This process can't undo!"),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text("Cancel")),
+                      TextButton(
+                          onPressed: () async {
+                            int flag = await salesController.deleteSale(
+                              voucher.id!,
+                              salesDetailController.saleDataToDel,
+                            );
+                            //request all voucher after delete
+                            salesController.getAllVouchers(
+                              map: daterangeCalculate("today"),
+                            );
+                            if (flag == 0) {
+                              Get.to(() => SalesVoucherScreen());
+                            }
+                          },
+                          child: const Text("Delete"))
+                    ]);
               },
               icon: const Icon(
                 Icons.delete,
               )),
           IconButton(
               onPressed: () async {
+                Get.to(() => PrintScreen(
+                      shopModel: shopModel,
+                      voucher: voucher,
+                      saleDetailModels: salesDetailController.saleDatas,
+                    ));
               },
               icon: const Icon(
                 Icons.print,

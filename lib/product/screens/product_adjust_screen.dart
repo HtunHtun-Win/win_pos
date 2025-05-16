@@ -11,7 +11,8 @@ class ProductAdjustScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    productLogController.getAll();
+    // productLogController.getAll();
+    productLogController.getAll(map: daterangeCalculate("today"));
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -65,7 +66,7 @@ class ProductAdjustScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 5, right: 10),
       child: DropdownMenu(
-        initialSelection: "all",
+        initialSelection: "today",
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: "all", label: "All"),
           DropdownMenuEntry(value: "today", label: "Today"),

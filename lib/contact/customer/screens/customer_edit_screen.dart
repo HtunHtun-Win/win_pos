@@ -4,12 +4,12 @@ import 'package:win_pos/contact/customer/controller/customer_controller.dart';
 import 'package:win_pos/contact/customer/model/customer_model.dart';
 
 class CustomerEditScreen extends StatelessWidget {
-  CustomerModel customer;
+  final CustomerModel customer;
   CustomerEditScreen(this.customer, {super.key});
-  CustomerController customerController = Get.find();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
+  final CustomerController customerController = Get.find();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

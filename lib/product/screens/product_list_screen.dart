@@ -8,6 +8,7 @@ import 'package:win_pos/product/screens/product_detail_screen.dart';
 import 'package:win_pos/product/screens/product_edit_screen.dart';
 import '../../category/controller/category_controller.dart';
 
+// ignore: must_be_immutable
 class ProductListScreen extends StatelessWidget {
   ProductListScreen({super.key});
   ProductController productController = Get.put(ProductController());

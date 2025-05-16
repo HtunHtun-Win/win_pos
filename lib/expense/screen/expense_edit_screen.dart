@@ -6,8 +6,9 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
 import 'package:win_pos/expense/model/expense_model.dart';
 
+// ignore: must_be_immutable
 class ExpenseEditScreen extends StatelessWidget {
-  ExpenseModel expense;
+  final ExpenseModel expense;
   ExpenseEditScreen(this.expense, {super.key});
   final ExpenseController _expenseController = Get.find();
   int flowType = 2;

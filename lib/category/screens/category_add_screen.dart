@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/controller/category_controller.dart';
 
+// ignore: must_be_immutable
 class CategoryAddScreen extends StatelessWidget {
   CategoryAddScreen({super.key});
   CategoryController categoryController = Get.find();
