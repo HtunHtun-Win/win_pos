@@ -5,6 +5,7 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
 
+// ignore: must_be_immutable
 class ExpenseAddScreen extends StatelessWidget {
   ExpenseAddScreen({super.key});
   final ExpenseController _expenseController = Get.find();

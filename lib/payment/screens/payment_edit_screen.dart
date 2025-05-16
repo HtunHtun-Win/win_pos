@@ -4,12 +4,12 @@ import 'package:win_pos/payment/controller/payment_controller.dart';
 import 'package:win_pos/payment/models/payment_model.dart';
 
 class PaymentEditScreen extends StatelessWidget {
-  PaymentModel payment;
+  final PaymentModel payment;
   PaymentEditScreen(this.payment, {super.key});
 
-  PaymentController paymentController = Get.find();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController descController = TextEditingController();
+  final PaymentController paymentController = Get.find();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

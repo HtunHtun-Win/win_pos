@@ -7,7 +7,7 @@ import 'package:win_pos/contact/supplier/screens/supplier_edit_screen.dart';
 
 class SupplierScreen extends StatelessWidget {
   SupplierScreen({super.key});
-  SupplierController supplierController = Get.put(SupplierController());
+  final SupplierController supplierController = Get.put(SupplierController());
 
   @override
   Widget build(BuildContext context) {

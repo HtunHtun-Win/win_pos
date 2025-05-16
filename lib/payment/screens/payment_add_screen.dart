@@ -4,9 +4,9 @@ import '../controller/payment_controller.dart';
 
 class PaymentAddScreen extends StatelessWidget {
   PaymentAddScreen({super.key});
-  PaymentController paymentController = Get.find();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController descController = TextEditingController();
+  final PaymentController paymentController = Get.find();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

@@ -30,6 +30,19 @@ class ProductLogController extends GetxController {
     }
   }
 
+  Future<void> getAllLog({Map? map,required int pid}) async {
+    var datas = await productLogService.getAllLog(map: map,pid: pid);
+    var pdatas = await productLogService.getAllProduct();
+    logs.clear();
+    products.clear();
+    for (var data in datas) {
+      logs.add(ProductLogModel.fromMap(data));
+    }
+    for (var pdata in pdatas) {
+      products.add(ProductModel.fromMap(pdata));
+    }
+  }
+
   void clearSelected(){
     selectedProduct = {'pid': 0, 'qty': 0}.obs;
   }

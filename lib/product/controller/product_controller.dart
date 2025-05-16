@@ -6,6 +6,7 @@ class ProductController extends GetxController {
   ProductService productService = ProductService();
 
   var products = [].obs;
+  var purchasePriceLog = [].obs;
 
   @override
   void onInit() {
@@ -18,6 +19,14 @@ class ProductController extends GetxController {
     products.clear();
     for (var data in datas) {
       products.add(ProductModel.fromMap(data));
+    }
+  }
+
+  Future<void> getPurchasePriceLog(int pid) async {
+    var datas = await productService.getPurchasePriceLog(pid);
+    purchasePriceLog.clear();
+    for (var data in datas) {
+      purchasePriceLog.add(data);
     }
   }
 
@@ -35,15 +44,28 @@ class ProductController extends GetxController {
     String name,
     String description,
     int categoryId,
-      int salePrice
+    int salePrice,
+    int oldPrice,
   ) async {
     var map = await productService.updateProduct(
-        id, code, name, description, categoryId,salePrice);
+      id,
+      code,
+      name,
+      description,
+      categoryId,
+      salePrice,
+      oldPrice,
+    );
     getAll();
     return map;
   }
 
   Future<void> deleteProduct(ProductModel product) async {
     await productService.deleteProduct(product.id!);
+  }
+
+  //clear 0 quantity in purchase price
+  Future<void> clearZeroQty() async {
+    await productService.clearZeroQty();
   }
 }

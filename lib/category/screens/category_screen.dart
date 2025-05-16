@@ -7,7 +7,7 @@ import 'package:win_pos/category/screens/category_edit_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
   CategoryScreen({super.key});
-  CategoryController categoryController = Get.put(CategoryController());
+  final CategoryController categoryController = Get.put(CategoryController());
 
   @override
   Widget build(BuildContext context) {

@@ -76,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                         onPressed: () async {
-                          var loginId = useridController.text;
+                          var loginId = useridController.text.trim();
                           var password = passwordController.text;
                           var user =
                               await controller.validUser(loginId, password);

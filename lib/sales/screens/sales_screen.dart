@@ -6,17 +6,17 @@ import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/sales/controller/sales_controller.dart';
 import 'package:win_pos/sales/models/cart_model.dart';
 import 'package:win_pos/sales/screens/sales_save_screen.dart';
-import 'package:win_pos/user/controllers/user_controller.dart';
+// import 'package:win_pos/user/controllers/user_controller.dart';
 
 class SalesScreen extends StatelessWidget {
   SalesScreen({super.key});
-  SalesController salesController = Get.find();
-  TextEditingController searchController = TextEditingController();
-  TextEditingController qtyController = TextEditingController();
+  final SalesController salesController = Get.find();
+  final TextEditingController searchController = TextEditingController();
+  final TextEditingController qtyController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    UserController controller = Get.find();
+    // UserController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sales"),
