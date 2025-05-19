@@ -6,6 +6,7 @@ import 'package:win_pos/user/screens/edit_user_screen.dart';
 
 import '../models/user.dart';
 
+// ignore: must_be_immutable
 class UserScreen extends StatelessWidget {
   // const UserScreen({super.key});
   UserController controller = Get.find();

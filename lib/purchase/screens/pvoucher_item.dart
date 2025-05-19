@@ -5,6 +5,7 @@ import 'package:win_pos/purchase/models/purchase_model.dart';
 
 import 'purchase_detail.dart';
 
+// ignore: must_be_immutable
 class PVoucherItem extends StatelessWidget {
   PVoucherItem({super.key, required this.voucher});
   PurchaseModel voucher;

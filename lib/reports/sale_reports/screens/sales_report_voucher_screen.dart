@@ -2,10 +2,10 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
-import 'package:win_pos/user/controllers/user_controller.dart';
 import '../../../contact/customer/controller/customer_controller.dart';
 import '../controller/sales_report_controller.dart';
 
+// ignore: must_be_immutable
 class SalesReportVoucherScreen extends StatelessWidget {
   SalesReportVoucherScreen({super.key});
   SalesReportController salesController = Get.put(SalesReportController());
@@ -15,7 +15,6 @@ class SalesReportVoucherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserController controller = Get.find();
     salesController.getAllVouchers(date: daterangeCalculate('today'));
     customerController.getAll();
     return Scaffold(

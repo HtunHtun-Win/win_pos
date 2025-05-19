@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_report_voucher_screen.dart';
-import '../../../user/controllers/user_controller.dart';
 
 class SalesReportScreen extends StatelessWidget {
   const SalesReportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    UserController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sales Reports"),

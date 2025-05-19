@@ -5,6 +5,7 @@ import 'package:win_pos/reports/inventory_reports/controller/inventory_report_co
 import '../../../category/controller/category_controller.dart';
 import '../../../product/models/product_model.dart';
 
+// ignore: must_be_immutable
 class StockBalanceScreen extends StatelessWidget {
   StockBalanceScreen({super.key});
   InventoryReportController reportController = InventoryReportController();

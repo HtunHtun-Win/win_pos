@@ -6,6 +6,7 @@ import 'package:win_pos/reports/financial_reports/controller/financial_report_co
 
 import '../../../sales/models/sale_model.dart';
 
+// ignore: must_be_immutable
 class BankPaymentScreen extends StatelessWidget {
   BankPaymentScreen({super.key});
 

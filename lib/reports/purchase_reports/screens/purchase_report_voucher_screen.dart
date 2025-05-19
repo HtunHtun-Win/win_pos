@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 import 'package:win_pos/purchase/models/purchase_model.dart';
-import 'package:win_pos/user/controllers/user_controller.dart';
 import '../controller/purchase_report_controller.dart';
 
+// ignore: must_be_immutable
 class PurchaseReportVoucherScreen extends StatelessWidget {
   PurchaseReportVoucherScreen({super.key});
   PurchaseReportController purchaseController = Get.put(PurchaseReportController());
@@ -15,7 +15,6 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserController controller = Get.find();
     purchaseController.getAllVouchers(date: daterangeCalculate('today'));
     supplierController.getAll();
     return Scaffold(

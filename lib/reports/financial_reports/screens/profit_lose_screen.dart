@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:win_pos/reports/financial_reports/controller/financial_report_controller.dart';
 
+// ignore: must_be_immutable
 class ProfitLoseScreen extends StatelessWidget {
   ProfitLoseScreen({super.key});
 

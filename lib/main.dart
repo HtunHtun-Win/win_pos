@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:win_pos/core/database/db_helper.dart';
-import 'package:win_pos/user/screens/login_screen.dart';
+import 'package:win_pos/user/screens/splash_screen.dart';
 
 void main() {
   if (Platform.isWindows || Platform.isLinux) {
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Colors.blueAccent,
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home: SplashScreen(),
     );
   }
 }
