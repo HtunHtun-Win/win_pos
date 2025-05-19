@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../user/controllers/user_controller.dart';
 import 'purchase_product_screen.dart';
 import 'purchase_report_voucher_screen.dart';
 
@@ -9,7 +8,6 @@ class PurchaseReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Purchase Reports"),

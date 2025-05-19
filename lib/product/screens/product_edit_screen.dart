@@ -5,6 +5,7 @@ import 'package:win_pos/category/controller/category_controller.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:win_pos/product/models/product_model.dart';
 
+// ignore: must_be_immutable
 class ProductEditScreen extends StatelessWidget {
   ProductEditScreen(this.productModel, {super.key});
   ProductModel productModel;

@@ -2,10 +2,10 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/reports/purchase_reports/models/purchase_item_model.dart';
-import 'package:win_pos/user/controllers/user_controller.dart';
 import '../../../category/controller/category_controller.dart';
 import '../controller/purchase_report_controller.dart';
 
+// ignore: must_be_immutable
 class PurchaseProductScreen extends StatelessWidget {
   PurchaseProductScreen({super.key});
   PurchaseReportController purchaseController = Get.put(PurchaseReportController());
@@ -15,7 +15,6 @@ class PurchaseProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserController controller = Get.find();
     purchaseController.getPurchaseItems(date: daterangeCalculate('today'));
     categoryController.getAll();
     return Scaffold(

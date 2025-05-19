@@ -18,10 +18,15 @@ class UserController extends GetxController {
     }
   }
 
+  void setCurrentUser(data){
+    current_user.value = data;
+  }
+
   Future<Map> validUser(String loginId, String password) async {
     var data = await service.validUser(loginId, password);
     if (data.isNotEmpty) {
       current_user.value = data[0];
+      // ignore: invalid_use_of_protected_member
       return current_user.value;
     }
     return {};

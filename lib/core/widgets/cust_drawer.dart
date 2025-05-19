@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:win_pos/contact/contact_screen.dart';
 import 'package:win_pos/expense/screen/expense_screen.dart';
 import 'package:win_pos/product/screens/product_screen.dart';
@@ -90,7 +91,9 @@ class CustDrawer extends StatelessWidget {
               ListItem(context, const Icon(Icons.settings), "Setting", () {
                 Get.off(() => const SettingScreen());
               }),
-              ListItem(context, const Icon(Icons.exit_to_app), "Logout", () {
+              ListItem(context, const Icon(Icons.exit_to_app), "Logout", () async{
+                final SharedPreferences pref = await SharedPreferences.getInstance();
+                pref.setBool("remember_me", false);
                 Get.offAll(() => const LoginScreen());
               }),
             ],

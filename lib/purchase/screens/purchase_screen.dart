@@ -6,8 +6,8 @@ import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/purchase/controller/purchase_controller.dart';
 import 'package:win_pos/purchase/screens/purchase_save_screen.dart';
 import 'package:win_pos/sales/models/cart_model.dart';
-import 'package:win_pos/user/controllers/user_controller.dart';
 
+// ignore: must_be_immutable
 class PurchaseScreen extends StatelessWidget {
   PurchaseScreen({super.key});
   PurchaseController purchaseController = Get.find();
@@ -17,7 +17,6 @@ class PurchaseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserController controller = Get.find();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Purchase"),
