@@ -7,6 +7,7 @@ import '../models/purchase_model.dart';
 import '../../shop/shop_info_controller.dart';
 import '../../shop/shop_model.dart';
 
+// ignore: must_be_immutable
 class PurchaseDetail extends StatelessWidget {
   PurchaseDetail({super.key, required this.voucher});
   PurchaseModel voucher;

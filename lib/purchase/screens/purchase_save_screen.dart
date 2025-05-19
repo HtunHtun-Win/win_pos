@@ -8,6 +8,7 @@ import '../../core/functions/date_range_calc.dart';
 import '../../payment/controller/payment_controller.dart';
 import '../controller/purchase_controller.dart';
 
+// ignore: must_be_immutable
 class PurchaseSaveScreen extends StatelessWidget {
   PurchaseSaveScreen({super.key});
   PurchaseController purchaseController = Get.find();

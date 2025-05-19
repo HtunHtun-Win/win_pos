@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 import 'package:win_pos/shop/shop_model.dart';
 
+// ignore: must_be_immutable
 class ShopInfoScreen extends StatelessWidget {
   ShopInfoScreen({super.key});
   ShopInfoController shopInfoController = ShopInfoController();

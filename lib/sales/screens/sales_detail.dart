@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pdf/pdf.dart';
 import 'package:win_pos/core/functions/date_range_calc.dart';
 import 'package:win_pos/core/screens/print_screen.dart';
 import 'package:win_pos/sales/controller/sales_controller.dart';

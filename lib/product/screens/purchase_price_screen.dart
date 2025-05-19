@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
-import 'package:win_pos/product/screens/product_screen.dart';
 import '../models/product_model.dart';
 
 // ignore: unused_import
