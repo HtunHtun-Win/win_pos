@@ -8,6 +8,7 @@ import 'package:win_pos/user/controllers/user_controller.dart';
 import '../../core/functions/date_range_calc.dart';
 import '../controller/sales_controller.dart';
 
+// ignore: must_be_immutable
 class SalesSaveScreen extends StatelessWidget {
   SalesSaveScreen({super.key});
   SalesController salesController = Get.find();

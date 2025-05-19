@@ -12,6 +12,7 @@ import '../../core/functions/date_range_calc.dart';
 import '../../shop/shop_info_controller.dart';
 import 'pvoucher_item.dart';
 
+// ignore: must_be_immutable
 class PurchaseVoucherScreen extends StatelessWidget {
   PurchaseVoucherScreen({super.key});
   PurchaseController purchaseController = Get.put(PurchaseController());

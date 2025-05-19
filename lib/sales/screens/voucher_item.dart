@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/sales/screens/sales_detail.dart';
 
+// ignore: must_be_immutable
 class VoucherItem extends StatelessWidget {
   VoucherItem({super.key, required this.voucher});
   SaleModel voucher;

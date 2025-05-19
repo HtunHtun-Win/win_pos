@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:win_pos/core/database/db_helper.dart';
 import 'package:win_pos/sales/models/cart_model.dart';
 

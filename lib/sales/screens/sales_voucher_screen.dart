@@ -12,6 +12,7 @@ import 'package:win_pos/user/models/user.dart';
 import '../../core/functions/date_range_calc.dart';
 import '../../shop/shop_info_controller.dart';
 
+// ignore: must_be_immutable
 class SalesVoucherScreen extends StatelessWidget {
   SalesVoucherScreen({super.key});
   SalesController salesController = Get.put(SalesController());

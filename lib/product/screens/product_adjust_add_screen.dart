@@ -7,6 +7,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:win_pos/product/controller/product_log_controller.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 
+// ignore: must_be_immutable
 class ProductAdjustAddScreen extends StatelessWidget {
   ProductAdjustAddScreen({super.key});
   ProductLogController productLogController = Get.find();

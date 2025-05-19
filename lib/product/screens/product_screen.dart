@@ -8,6 +8,7 @@ import 'package:win_pos/user/models/user.dart';
 
 import '../../sales/screens/sales_voucher_screen.dart';
 
+// ignore: must_be_immutable
 class ProductScreen extends StatelessWidget {
   ProductScreen({super.key});
   UserController userController = Get.find();

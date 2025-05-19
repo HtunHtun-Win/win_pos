@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
 import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
@@ -55,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                     child: Image.asset("assets/images/shop_logo.png"),
                   ),
                   const Text(
-                    "LightPos",
+                    "LightPOS",
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -81,9 +83,13 @@ class LoginScreen extends StatelessWidget {
                           var user =
                               await controller.validUser(loginId, password);
                           if (user.isNotEmpty) {
-                            if(user['role_id']==3){
+                            final SharedPreferences pref = await SharedPreferences.getInstance();
+                            pref.setBool("remember_me", true);
+                            String userString = jsonEncode(user);
+                            pref.setString("user",userString);
+                            if (user['role_id'] == 3) {
                               Get.off(() => PurchaseVoucherScreen());
-                            }else{
+                            } else {
                               Get.off(() => SalesVoucherScreen());
                             }
                           } else {
@@ -91,7 +97,8 @@ class LoginScreen extends StatelessWidget {
                               "Invalid Credentials",
                               "Wrong UserId or Password!",
                               colorText: Colors.white,
-                              backgroundColor: Colors.black.withValues(alpha:.3),
+                              backgroundColor:
+                                  Colors.black.withValues(alpha: .3),
                             );
                           }
                         },

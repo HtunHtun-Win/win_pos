@@ -5,6 +5,7 @@ import 'package:win_pos/product/models/product_log_model.dart';
 import 'package:intl/intl.dart';
 import 'package:win_pos/product/screens/product_adjust_add_screen.dart';
 
+// ignore: must_be_immutable
 class ProductLedgerScreen extends StatelessWidget {
   int id;
   ProductLedgerScreen({super.key,required this.id});

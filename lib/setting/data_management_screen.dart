@@ -83,7 +83,7 @@ class DataManagementScreen extends StatelessWidget {
         await File(dbPath).copy(externalPath);
         await Get.defaultDialog(
           title: "Success!",
-          middleText: "Operation Success ! ",
+          middleText: "Backup file saved in download folder",
           titleStyle: const TextStyle(color: Colors.black),
           middleTextStyle: const TextStyle(color: Colors.black),
         );
