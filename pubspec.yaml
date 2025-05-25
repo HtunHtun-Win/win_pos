@@ -50,6 +50,7 @@ dependencies:
   pdf: ^3.11.3
   shared_preferences: ^2.5.3
   animate_do: ^4.2.0
+  pull_to_refresh: ^2.0.0
 
 dev_dependencies:
   flutter_test:

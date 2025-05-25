@@ -7,6 +7,7 @@ import 'package:win_pos/contact/supplier/screens/supplier_edit_screen.dart';
 
 class SupplierScreen extends StatelessWidget {
   SupplierScreen({super.key});
+
   final SupplierController supplierController = Get.put(SupplierController());
 
   @override
@@ -32,17 +33,25 @@ class SupplierScreen extends StatelessWidget {
   }
 
   Widget listItem(context, SupplierModel supplier) {
-    Color color = Colors.white;
+    Color color = Theme.of(context).primaryColor;
+    Color textColor = Colors.black;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
       width: double.infinity,
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(10)),
+          color: Theme.of(context).canvasColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(5, 5),
+              blurRadius: 10,
+            ),
+          ]),
       child: ListTile(
         title: Text(
           supplier.name.toString(),
-          style: TextStyle(color: color, fontWeight: FontWeight.bold),
+          style: TextStyle(color: textColor),
         ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,13 +59,13 @@ class SupplierScreen extends StatelessWidget {
             Text(
               supplier.phone.toString(),
               style: TextStyle(
-                color: color,
+                color: textColor,
               ),
             ),
             Text(
               supplier.address.toString(),
               style: TextStyle(
-                color: color,
+                color: textColor,
               ),
             ),
           ],

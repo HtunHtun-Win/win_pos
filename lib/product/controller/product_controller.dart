@@ -5,8 +5,11 @@ import 'package:win_pos/product/services/product_service.dart';
 class ProductController extends GetxController {
   ProductService productService = ProductService();
 
-  var products = [].obs;
+  var products = [];
   var purchasePriceLog = [].obs;
+  //for pull to refresh
+  var showProducts = [].obs;
+  var maxCount = 10;
 
   @override
   void onInit() {
@@ -19,6 +22,13 @@ class ProductController extends GetxController {
     products.clear();
     for (var data in datas) {
       products.add(ProductModel.fromMap(data));
+    }
+    if (products.isNotEmpty) {
+      showProducts.clear();
+      maxCount = products.length < maxCount ? products.length : maxCount;
+      for (int i = 0; i < maxCount; i++) {
+        showProducts.add(products[i]);
+      }
     }
   }
 
@@ -67,5 +77,16 @@ class ProductController extends GetxController {
   //clear 0 quantity in purchase price
   Future<void> clearZeroQty() async {
     await productService.clearZeroQty();
+  }
+
+  void loadMore() {
+    Future.delayed(const Duration(microseconds: 1000), () {
+      int rmData = products.length - maxCount;
+      int nextCount = rmData >= 10 ? 10 : rmData;
+      for (int i = maxCount; i < maxCount + nextCount; i++) {
+        showProducts.add(products[i]);
+      }
+      maxCount += nextCount;
+    });
   }
 }

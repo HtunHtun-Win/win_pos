@@ -9,9 +9,13 @@ class PurchaseController extends GetxController {
   PurchaseService purchaseService = PurchaseService();
   var products = [].obs;
   var cart = <CartModel>[].obs;
-  var vouchers = <PurchaseModel>[].obs;
+  var vouchers = <PurchaseModel>[];
   var totalAmount = 0.obs;
   var discount = 0.obs;
+
+  //for pull to refresh
+  var showVouchers = <PurchaseModel>[].obs;
+  var maxCount = 10;
 
   Future<void> getAllProduct({String? input = ''}) async {
     var datas = await purchaseService.getAllProduct(input: input);
@@ -26,6 +30,15 @@ class PurchaseController extends GetxController {
     vouchers.clear();
     for (var data in datas) {
       vouchers.add(PurchaseModel.fromMap(data));
+    }
+    if (vouchers.isNotEmpty) {
+      showVouchers.clear();
+      maxCount = vouchers.length < maxCount ? vouchers.length : maxCount;
+      for (int i = 0; i < maxCount; i++) {
+        showVouchers.add(vouchers[i]);
+      }
+    }else{
+      showVouchers.clear();
     }
   }
 
@@ -51,8 +64,8 @@ class PurchaseController extends GetxController {
     return saleId;
   }
 
-  Future<int> deletePurchase(int vid,List<PurchaseDetailModel> items) async {
-    int saleId = await purchaseService.deletePurchase(vid,items);
+  Future<int> deletePurchase(int vid, List<PurchaseDetailModel> items) async {
+    int saleId = await purchaseService.deletePurchase(vid, items);
     return saleId;
   }
 
@@ -61,5 +74,16 @@ class PurchaseController extends GetxController {
     for (var item in cart) {
       totalAmount += item.pprice! * item.quantity;
     }
+  }
+
+  void loadMore() {
+    Future.delayed(const Duration(microseconds: 1000), () {
+      int rmData = vouchers.length - maxCount;
+      int nextCount = rmData >= 10 ? 10 : rmData;
+      for (int i = maxCount; i < maxCount + nextCount; i++) {
+        showVouchers.add(vouchers[i]);
+      }
+      maxCount += nextCount;
+    });
   }
 }
