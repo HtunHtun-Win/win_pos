@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
 import 'package:win_pos/sales/controller/sales_controller.dart';
 import 'package:win_pos/sales/screens/sales_screen.dart';
@@ -15,8 +16,10 @@ import '../../shop/shop_info_controller.dart';
 // ignore: must_be_immutable
 class SalesVoucherScreen extends StatelessWidget {
   SalesVoucherScreen({super.key});
+
   SalesController salesController = Get.put(SalesController());
   ShopInfoController shopInfoController = Get.put(ShopInfoController());
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +57,7 @@ class SalesVoucherScreen extends StatelessWidget {
           });
       return state;
     }
-    
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -68,18 +71,47 @@ class SalesVoucherScreen extends StatelessWidget {
           title: const Text("Sales Vouchers"),
           // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
-        drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
+        drawer:
+            CustDrawer(user: User.fromMap(controller.current_user.toJson())),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             datePicker(),
             Expanded(child: Obx(() {
-              return ListView.builder(
-                  itemCount: salesController.vouchers.length,
-                  itemBuilder: (context, index) {
-                    var voucher = salesController.vouchers[index];
-                    return VoucherItem(voucher: voucher);
-                  });
+              return SmartRefresher(
+                controller: refreshController,
+                enablePullUp: true,
+                enablePullDown: false,
+                footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                  Widget body = Container();
+                  if (mode == LoadStatus.loading) {
+                    body = const CircularProgressIndicator();
+                  } else if (mode == LoadStatus.noMore) {
+                    body = const Text("No More Data...");
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: Center(
+                      child: body,
+                    ),
+                  );
+                }),
+                onLoading: () {
+                  if (salesController.maxCount ==
+                      salesController.vouchers.length) {
+                    refreshController.loadNoData();
+                  } else {
+                    salesController.loadMore();
+                    refreshController.loadComplete();
+                  }
+                },
+                child: ListView.builder(
+                    itemCount: salesController.showVouchers.length,
+                    itemBuilder: (context, index) {
+                      var voucher = salesController.showVouchers[index];
+                      return VoucherItem(voucher: voucher);
+                    }),
+              );
             }))
           ],
         ),
@@ -108,6 +140,8 @@ class SalesVoucherScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          salesController.maxCount=10;
+          refreshController.loadFailed();
           if (value == 'all') {
             salesController.getAllVouchers();
           } else {

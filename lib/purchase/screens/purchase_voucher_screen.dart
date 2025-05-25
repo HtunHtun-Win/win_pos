@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
 import 'package:win_pos/purchase/controller/purchase_controller.dart';
 import 'package:win_pos/purchase/screens/purchase_screen.dart';
@@ -15,8 +16,10 @@ import 'pvoucher_item.dart';
 // ignore: must_be_immutable
 class PurchaseVoucherScreen extends StatelessWidget {
   PurchaseVoucherScreen({super.key});
+
   PurchaseController purchaseController = Get.put(PurchaseController());
   ShopInfoController shopInfoController = Get.put(ShopInfoController());
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,18 +70,47 @@ class PurchaseVoucherScreen extends StatelessWidget {
           title: const Text("Purchase Vouchers"),
           // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
-        drawer: CustDrawer(user: User.fromMap(controller.current_user.toJson())),
+        drawer:
+            CustDrawer(user: User.fromMap(controller.current_user.toJson())),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             datePicker(),
             Expanded(child: Obx(() {
-              return ListView.builder(
-                  itemCount: purchaseController.vouchers.length,
-                  itemBuilder: (context, index) {
-                    var voucher = purchaseController.vouchers[index];
-                    return PVoucherItem(voucher: voucher);
-                  });
+              return SmartRefresher(
+                controller: refreshController,
+                enablePullUp: true,
+                enablePullDown: false,
+                footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                  Widget body = Container();
+                  if (mode == LoadStatus.loading) {
+                    body = const CircularProgressIndicator();
+                  } else if (mode == LoadStatus.noMore) {
+                    body = const Text("No More Data...");
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: Center(
+                      child: body,
+                    ),
+                  );
+                }),
+                onLoading: () {
+                  if (purchaseController.maxCount ==
+                      purchaseController.vouchers.length) {
+                    refreshController.loadNoData();
+                  } else {
+                    purchaseController.loadMore();
+                    refreshController.loadComplete();
+                  }
+                },
+                child: ListView.builder(
+                    itemCount: purchaseController.showVouchers.length,
+                    itemBuilder: (context, index) {
+                      var voucher = purchaseController.showVouchers[index];
+                      return PVoucherItem(voucher: voucher);
+                    }),
+              );
             }))
           ],
         ),
@@ -107,6 +139,8 @@ class PurchaseVoucherScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          purchaseController.maxCount=10;
+          refreshController.loadFailed();
           if (value == 'all') {
             purchaseController.getAllVouchers();
           } else {

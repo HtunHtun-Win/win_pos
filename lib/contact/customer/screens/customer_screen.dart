@@ -8,6 +8,7 @@ import 'customer_edit_screen.dart';
 
 class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
+
   final CustomerController customerController = Get.put(CustomerController());
 
   @override
@@ -33,17 +34,25 @@ class CustomerScreen extends StatelessWidget {
   }
 
   Widget listItem(context, CustomerModel customer) {
-    Color color = Colors.white;
+    Color color = Theme.of(context).primaryColor;
+    Color textColor = Colors.black;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
       width: double.infinity,
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(10)),
+          color: Theme.of(context).canvasColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(5, 5),
+              blurRadius: 10,
+            ),
+          ]),
       child: ListTile(
         title: Text(
           customer.name.toString(),
-          style: TextStyle(color: color, fontWeight: FontWeight.bold),
+          style: TextStyle(color: textColor),
         ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,13 +60,13 @@ class CustomerScreen extends StatelessWidget {
             Text(
               customer.phone.toString(),
               style: TextStyle(
-                color: color,
+                color: textColor,
               ),
             ),
             Text(
               customer.address.toString(),
               style: TextStyle(
-                color: color,
+                color: textColor,
               ),
             ),
           ],

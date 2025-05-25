@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/product/controller/product_log_controller.dart';
 import 'package:win_pos/product/models/product_log_model.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +9,9 @@ import 'package:win_pos/product/screens/product_adjust_add_screen.dart';
 // ignore: must_be_immutable
 class ProductAdjustScreen extends StatelessWidget {
   ProductAdjustScreen({super.key});
+
   ProductLogController productLogController = Get.put(ProductLogController());
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +23,40 @@ class ProductAdjustScreen extends StatelessWidget {
         children: [
           datePicker(),
           Expanded(
-            child: Obx(() => ListView.builder(
-                  itemCount: productLogController.logs.length,
-                  itemBuilder: (context, index) {
-                    var productLog = productLogController.logs[index];
-                    return listItem(productLog);
+            child: Obx(() => SmartRefresher(
+                  controller: refreshController,
+                  enablePullUp: true,
+                  enablePullDown: false,
+                  footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                    Widget body = Container();
+                    if (mode == LoadStatus.loading) {
+                      body = const CircularProgressIndicator();
+                    } else if (mode == LoadStatus.noMore) {
+                      body = const Text("No More Data...");
+                    }
+                    return SizedBox(
+                      height: 55,
+                      child: Center(
+                        child: body,
+                      ),
+                    );
+                  }),
+                  onLoading: () {
+                    if (productLogController.maxCount ==
+                        productLogController.logs.length) {
+                      refreshController.loadNoData();
+                    } else {
+                      productLogController.loadMore();
+                      refreshController.loadComplete();
+                    }
                   },
+                  child: ListView.builder(
+                    itemCount: productLogController.showLogs.length,
+                    itemBuilder: (context, index) {
+                      var productLog = productLogController.showLogs[index];
+                      return listItem(productLog);
+                    },
+                  ),
                 )),
           )
         ],
@@ -78,6 +109,8 @@ class ProductAdjustScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          productLogController.maxCount=10;
+          refreshController.loadFailed();
           if (value == 'all') {
             productLogController.getAll();
           } else {
