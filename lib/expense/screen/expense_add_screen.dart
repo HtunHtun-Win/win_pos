@@ -8,6 +8,7 @@ import 'package:win_pos/expense/controller/expense_controller.dart';
 // ignore: must_be_immutable
 class ExpenseAddScreen extends StatelessWidget {
   ExpenseAddScreen({super.key});
+
   final ExpenseController _expenseController = Get.find();
   int flowType = 2;
 
@@ -34,14 +35,11 @@ class ExpenseAddScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            userInput(
-                "Amount",
-                amountController,
+            userInput("Amount", amountController,
                 type: TextInputType.number,
                 filter: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
-                ]
-            ),
+                ]),
             userInput("Description", descController, type: TextInputType.text),
             userInput("Note", noteController, type: TextInputType.text),
             flowDropdown()
@@ -56,11 +54,12 @@ class ExpenseAddScreen extends StatelessWidget {
       TextEditingController descController,
       TextEditingController noteController) async {
     var result = await _expenseController.addExpense(
-        int.parse(amountController.text),
-        descController.text,
-        noteController.text,
-        flowType,
-        1);
+      int.parse(amountController.text),
+      descController.text,
+      noteController.text,
+      flowType,
+      1,
+    );
     if (result['msg'] == "null") {
       Get.snackbar("Null!", "Amount and description can't be empty");
     } else if (result['msg'] == 'success') {
@@ -68,7 +67,7 @@ class ExpenseAddScreen extends StatelessWidget {
     }
   }
 
-  Widget userInput(text, controller, {type,filter}) {
+  Widget userInput(text, controller, {type, filter}) {
     return Container(
       margin: const EdgeInsets.all(5),
       child: TextField(

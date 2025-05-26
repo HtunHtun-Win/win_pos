@@ -24,7 +24,12 @@ class SalesVoucherScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserController controller = Get.find();
-    salesController.getAllVouchers(map: daterangeCalculate('today'));
+    if(salesController.selectedDate == 'all') {
+      salesController.getAllVouchers();
+    } else {
+      salesController.getAllVouchers(map: daterangeCalculate(salesController.selectedDate));
+    }
+    
     shopInfoController.getAll();
 
     Future<bool> popAction() async {
@@ -117,6 +122,7 @@ class SalesVoucherScreen extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            refreshController.loadFailed();
             Get.to(() => SalesScreen());
           },
           child: const Icon(Icons.add),
@@ -129,7 +135,7 @@ class SalesVoucherScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 5, right: 10),
       child: DropdownMenu(
-        initialSelection: "today",
+        initialSelection: salesController.selectedDate,
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: "all", label: "All"),
           DropdownMenuEntry(value: "today", label: "Today"),
@@ -140,12 +146,13 @@ class SalesVoucherScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
-          salesController.maxCount=10;
+          salesController.selectedDate = value!;
+          salesController.maxCount = 10;
           refreshController.loadFailed();
           if (value == 'all') {
             salesController.getAllVouchers();
           } else {
-            salesController.getAllVouchers(map: daterangeCalculate(value!));
+            salesController.getAllVouchers(map: daterangeCalculate(value));
           }
         },
       ),

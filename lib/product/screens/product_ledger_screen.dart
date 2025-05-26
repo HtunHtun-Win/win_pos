@@ -65,12 +65,6 @@ class ProductLedgerScreen extends StatelessWidget {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => ProductAdjustAddScreen());
-        },
-        child: const Icon(Icons.add),
-      ),
     );
   }
 
@@ -78,22 +72,20 @@ class ProductLedgerScreen extends StatelessWidget {
     DateTime date = DateTime.parse(log.date.toString());
     var fdate = DateFormat("yyyy-MM-dd h:m:s a");
     var finalDate = fdate.format(date);
-    return Container(
-      child: ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(log.product.toString()),
-            Text(log.user.toString()),
-          ],
-        ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('${log.quantity.toString()} : pcs (${log.note.toString()})'),
-            Text(finalDate),
-          ],
-        ),
+    return ListTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(log.product.toString()),
+          Text(log.user.toString()),
+        ],
+      ),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${log.quantity.toString()} : pcs (${log.note.toString()})'),
+          Text(finalDate),
+        ],
       ),
     );
   }

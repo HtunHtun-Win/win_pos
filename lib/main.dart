@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     DbHelper dbObj = DbHelper();
     dbObj.copyDatabase();
     return GetMaterialApp(
-      title: 'WinPos',
+      title: 'LightPOS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(

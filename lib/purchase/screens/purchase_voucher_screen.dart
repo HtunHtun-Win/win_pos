@@ -116,6 +116,7 @@ class PurchaseVoucherScreen extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            refreshController.loadFailed();
             Get.to(() => PurchaseScreen());
           },
           child: const Icon(Icons.add),
@@ -128,7 +129,7 @@ class PurchaseVoucherScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 5, right: 10),
       child: DropdownMenu(
-        initialSelection: "today",
+        initialSelection: purchaseController.selectedDate,
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: "all", label: "All"),
           DropdownMenuEntry(value: "today", label: "Today"),
@@ -139,12 +140,13 @@ class PurchaseVoucherScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          purchaseController.selectedDate=value!;
           purchaseController.maxCount=10;
           refreshController.loadFailed();
           if (value == 'all') {
             purchaseController.getAllVouchers();
           } else {
-            purchaseController.getAllVouchers(map: daterangeCalculate(value!));
+            purchaseController.getAllVouchers(map: daterangeCalculate(value));
           }
         },
       ),

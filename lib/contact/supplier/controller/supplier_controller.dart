@@ -6,6 +6,10 @@ class SupplierController extends GetxController {
   SupplierService supplierService = SupplierService();
   var suppliers = [].obs;
 
+  //for pull to refresh
+  var showSuppliers = [].obs;
+  var maxCount = 10;
+
   @override
   void onInit() {
     super.onInit();
@@ -13,10 +17,34 @@ class SupplierController extends GetxController {
   }
 
   Future<void> getAll() async {
+    maxCount = 10; // reset maxCount for new fetch
     var datas = await supplierService.getAll();
     suppliers.clear();
     for (var data in datas) {
       suppliers.add(SupplierModel.fromMap(data));
+    }
+    if (suppliers.isNotEmpty) {
+      showSuppliers.clear();
+      maxCount = suppliers.length < maxCount ? suppliers.length : maxCount;
+      for (int i = 0; i < maxCount; i++) {
+        showSuppliers.add(suppliers[i]);
+      }
+    }
+  }
+
+  Future<void> searchByKeyWork(String keyWork) async {
+    maxCount = 10; // reset maxCount for new fetch
+    var datas = await supplierService.searchByKeyWork(keyWork);
+    suppliers.clear();
+    for (var data in datas) {
+      suppliers.add(SupplierModel.fromMap(data));
+    }
+    if (suppliers.isNotEmpty) {
+      showSuppliers.clear();
+      maxCount = suppliers.length < maxCount ? suppliers.length : maxCount;
+      for (int i = 0; i < maxCount; i++) {
+        showSuppliers.add(suppliers[i]);
+      }
     }
   }
 
@@ -39,6 +67,16 @@ class SupplierController extends GetxController {
 
   Future<void> delete(int id) async {
     await supplierService.delete(id);
-    getAll();
+  }
+
+  void loadMore() {
+    Future.delayed(const Duration(microseconds: 1000), () {
+      int rmData = suppliers.length - maxCount;
+      int nextCount = rmData >= 10 ? 10 : rmData;
+      for (int i = maxCount; i < maxCount + nextCount; i++) {
+        showSuppliers.add(suppliers[i]);
+      }
+      maxCount += nextCount;
+    });
   }
 }

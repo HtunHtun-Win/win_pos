@@ -12,6 +12,7 @@ class SalesController extends GetxController {
   var vouchers = <SaleModel>[];
   var totalAmount = 0.obs;
   var discount = 0.obs;
+  String selectedDate = 'today';
 
   //for pull to refresh
   var showVouchers = <SaleModel>[].obs;
@@ -26,6 +27,7 @@ class SalesController extends GetxController {
   }
 
   Future<void> getAllVouchers({Map? map}) async {
+    maxCount = 10; // reset maxCount for new fetch
     var datas = await salesService.getAllVouchers(map: map);
     vouchers.clear();
     for (var data in datas) {

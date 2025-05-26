@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
+import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import '../../core/functions/date_range_calc.dart';
 import '../../payment/controller/payment_controller.dart';
@@ -79,13 +80,18 @@ class PurchaseSaveScreen extends StatelessWidget {
     };
     await purchaseController.addPurchase(purchaseMap, purchaseController.cart);
     purchaseController.cart.clear();
-    purchaseController.getAllVouchers(map: daterangeCalculate("today"));
+    if (purchaseController.selectedDate == 'all') {
+      purchaseController.getAllVouchers();
+    } else {
+      purchaseController.getAllVouchers(map: daterangeCalculate(purchaseController.selectedDate));
+    }
+
     purchaseController.getTotal();
     Get.back();
   }
 
   Widget suppliersBox() {
-    return Obx((){
+    return Obx(() {
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
@@ -94,16 +100,19 @@ class PurchaseSaveScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: supplierController.suppliers.map((customer) => customer.name.toString()).toList(),
+        items: supplierController.suppliers
+            .map((customer) => customer.name.toString())
+            .toList(),
         onChanged: (value) {
           final supplier = supplierController.suppliers.firstWhere(
-                (supplier) => supplier.name == value,
+            (supplier) => supplier.name == value,
           );
           supplierId = supplier.id;
           phoneController.text = supplier.phone.toString();
           addressController.text = supplier.address.toString();
         },
-        selectedItem: "DefaultCustomer", // Optional: Can be null if no initial selection is required
+        selectedItem:
+            "DefaultCustomer", // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
@@ -118,7 +127,7 @@ class PurchaseSaveScreen extends StatelessWidget {
   }
 
   Widget paymentBox() {
-    return Obx((){
+    return Obx(() {
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
@@ -127,14 +136,17 @@ class PurchaseSaveScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: paymentController.payments.map((payment) => payment.name.toString()).toList(),
+        items: paymentController.payments
+            .map((payment) => payment.name.toString())
+            .toList(),
         onChanged: (value) {
           final payment = paymentController.payments.firstWhere(
-                (payment) => payment.name == value,
+            (payment) => payment.name == value,
           );
           paymentId = payment.id;
         },
-        selectedItem: "Cash", // Optional: Can be null if no initial selection is required
+        selectedItem:
+            "Cash", // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
