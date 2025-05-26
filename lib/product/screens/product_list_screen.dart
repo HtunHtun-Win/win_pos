@@ -81,6 +81,7 @@ class ProductListScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          refreshController.loadFailed();
           Get.to(() => ProductAddScreen());
         },
         child: const Icon(Icons.add),
@@ -113,16 +114,17 @@ class ProductListScreen extends StatelessWidget {
                   actions: [
                     TextButton(
                         onPressed: () {
+                          Get.back();
+                        },
+                        child: const Text("Cancel")),
+                    TextButton(
+                        onPressed: () {
                           productController.deleteProduct(product);
                           productController.getAll(input: filterInput);
                           Get.back();
                         },
-                        child: const Text("save")),
-                    TextButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        child: const Text("Cancel"))
+                        child: const Text("Delete")),
+                    
                   ]);
             },
             icon: Icons.delete,

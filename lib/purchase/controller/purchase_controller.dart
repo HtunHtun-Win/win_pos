@@ -16,6 +16,7 @@ class PurchaseController extends GetxController {
   //for pull to refresh
   var showVouchers = <PurchaseModel>[].obs;
   var maxCount = 10;
+  String selectedDate = "today";
 
   Future<void> getAllProduct({String? input = ''}) async {
     var datas = await purchaseService.getAllProduct(input: input);
@@ -26,6 +27,7 @@ class PurchaseController extends GetxController {
   }
 
   Future<void> getAllVouchers({Map? map}) async {
+    maxCount = 10; // reset maxCount for new fetch
     var datas = await purchaseService.getAllVouchers(map: map);
     vouchers.clear();
     for (var data in datas) {

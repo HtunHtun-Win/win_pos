@@ -6,6 +6,8 @@ import 'package:win_pos/product/models/product_log_model.dart';
 import 'package:intl/intl.dart';
 import 'package:win_pos/product/screens/product_adjust_add_screen.dart';
 
+import '../../core/functions/date_range_calc.dart';
+
 // ignore: must_be_immutable
 class ProductAdjustScreen extends StatelessWidget {
   ProductAdjustScreen({super.key});
@@ -16,7 +18,7 @@ class ProductAdjustScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // productLogController.getAll();
-    productLogController.getAll(map: daterangeCalculate("today"));
+    productLogController.getAll(map: daterangeCalculate(productLogController.selectedDate));
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -63,6 +65,7 @@ class ProductAdjustScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          refreshController.loadFailed();
           Get.to(() => ProductAdjustAddScreen());
         },
         child: const Icon(Icons.add),
@@ -98,7 +101,7 @@ class ProductAdjustScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 5, right: 10),
       child: DropdownMenu(
-        initialSelection: "today",
+        initialSelection: productLogController.selectedDate,
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: "all", label: "All"),
           DropdownMenuEntry(value: "today", label: "Today"),
@@ -109,42 +112,16 @@ class ProductAdjustScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          productLogController.selectedDate=value!;
           productLogController.maxCount=10;
           refreshController.loadFailed();
           if (value == 'all') {
             productLogController.getAll();
           } else {
-            productLogController.getAll(map: daterangeCalculate(value!));
+            productLogController.getAll(map: daterangeCalculate(value));
           }
         },
       ),
     );
-  }
-
-  Map daterangeCalculate(String selectedDate) {
-    String startDate = "";
-    String endDate = "";
-    var now = DateTime.now();
-    var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == "today") {
-      startDate = today.toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "yesterday") {
-      startDate = DateTime(now.year, now.month, now.day - 1).toString();
-      endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == "thismonth") {
-      startDate = DateTime(now.year, now.month, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastmonth") {
-      startDate = DateTime(now.year, now.month - 1, 1).toString();
-      endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == "thisyear") {
-      startDate = DateTime(now.year, 1, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastyear") {
-      startDate = DateTime(now.year - 1, 1, 1).toString();
-      endDate = DateTime(now.year, 1, 1).toString();
-    }
-    return {'start': startDate, 'end': endDate};
   }
 }

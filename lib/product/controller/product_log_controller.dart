@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:win_pos/core/functions/date_range_calc.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:win_pos/product/models/product_log_model.dart';
 import 'package:win_pos/product/models/product_model.dart';
@@ -14,14 +15,16 @@ class ProductLogController extends GetxController {
   //for pull to refresh
   var showLogs = [].obs;
   var maxCount = 10;
+  String selectedDate = "today";
 
-  @override
-  void onInit() {
-    super.onInit();
-    getAll();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   getAll();
+  // }
 
   Future<void> getAll({Map? map}) async {
+    maxCount = 10; // reset maxCount for new fetch
     var datas = await productLogService.getAll(map: map);
     //for adjust screen to search product
     var pdatas = await productLogService.getAllProduct();
@@ -77,7 +80,11 @@ class ProductLogController extends GetxController {
     await productLogService.updateProductQty(productId, quantity);
     clearSelected();
     await productController.getAll();
-    getAll();
+    if(selectedDate=="all"){
+      await getAll();
+    }else{
+      await getAll(map: daterangeCalculate("today"));
+    }
   }
 
   void loadMore() {

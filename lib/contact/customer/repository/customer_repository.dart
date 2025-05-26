@@ -9,6 +9,14 @@ class CustomerRepository{
     return await database.query(TABLE_NAME,where: "isdeleted=0",orderBy: "name");
   }
 
+  Future<List> searchByKeyWork(String keyWork) async{
+    final database = await dbObj.database;
+    String sql = '''
+      SELECT * FROM customers where (name like '%$keyWork%' OR phone like '%$keyWork%') AND isdeleted=0 ORDER BY name;
+    ''';
+    return await database.rawQuery(sql);
+  }
+
   Future<List> getByName(String name) async{
     final database = await dbObj.database;
     var data = await database.query(TABLE_NAME,where: "name=? AND isdeleted=0",whereArgs: [name]);

@@ -18,6 +18,7 @@ class ProductController extends GetxController {
   }
 
   Future<void> getAll({String? input = ''}) async {
+    maxCount = 10; // reset maxCount for new fetch
     var datas = await productService.getAll(input: input);
     products.clear();
     for (var data in datas) {
