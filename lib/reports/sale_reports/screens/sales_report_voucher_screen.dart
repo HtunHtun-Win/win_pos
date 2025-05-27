@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 import '../../../contact/customer/controller/customer_controller.dart';
 import '../controller/sales_report_controller.dart';
@@ -8,10 +9,12 @@ import '../controller/sales_report_controller.dart';
 // ignore: must_be_immutable
 class SalesReportVoucherScreen extends StatelessWidget {
   SalesReportVoucherScreen({super.key});
+
   SalesReportController salesController = Get.put(SalesReportController());
   CustomerController customerController = CustomerController();
   int? customerId;
   String date = 'today';
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,34 +37,68 @@ class SalesReportVoucherScreen extends StatelessWidget {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child:  Text("No.")),
-                Expanded(flex:2 ,child: Text("InvNo")),
-                Expanded(flex:2 ,child: Text("Amount")),
+                Expanded(child: Text("No.")),
+                Expanded(flex: 2, child: Text("InvNo")),
+                Expanded(flex: 2, child: Text("Amount")),
               ],
             ),
           ),
           const Divider(),
           Expanded(child: Obx(() {
-            return ListView.builder(
-                itemCount: salesController.vouchers.length,
-                itemBuilder: (context, index) {
-                  var voucher = salesController.vouchers[index];
-                  return reportListTile(index: index+1,voucher: voucher);
-                });
+            return SmartRefresher(
+              controller: refreshController,
+              enablePullUp: true,
+              enablePullDown: false,
+              footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                Widget body = Container();
+                if (mode == LoadStatus.loading) {
+                  body = const CircularProgressIndicator();
+                } else if (mode == LoadStatus.noMore) {
+                  body = const Text("No More Data...");
+                }
+                return SizedBox(
+                  height: 55,
+                  child: Center(
+                    child: body,
+                  ),
+                );
+              }),
+              onLoading: () {
+                if (salesController.maxCount ==
+                    salesController.vouchers.length) {
+                  refreshController.loadNoData();
+                } else {
+                  salesController.voucherLoadMore();
+                  refreshController.loadComplete();
+                }
+              },
+              child: ListView.builder(
+                  itemCount: salesController.showVouchers.length,
+                  itemBuilder: (context, index) {
+                    var voucher = salesController.showVouchers[index];
+                    return reportListTile(index: index + 1, voucher: voucher);
+                  }),
+            );
           })),
-          Obx((){
+          Obx(() {
             // salesController.getTotal();
             return Container(
               height: 50,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              child:ListTile(
-                title:  Row(
+              child: ListTile(
+                title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(salesController.totalAmount.toString(),style: const TextStyle(color: Colors.white),),
+                    const Text(
+                      "Total",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      salesController.totalAmount.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
@@ -72,12 +109,12 @@ class SalesReportVoucherScreen extends StatelessWidget {
     );
   }
 
-  Widget reportListTile({required int index,required SaleModel voucher}){
+  Widget reportListTile({required int index, required SaleModel voucher}) {
     return ListTile(
       title: Row(
         children: [
           Expanded(child: Text(index.toString())),
-          Expanded(flex: 2,child: Text(voucher.sale_no.toString())),
+          Expanded(flex: 2, child: Text(voucher.sale_no.toString())),
           Expanded(flex: 2, child: Text(voucher.total_price.toString())),
         ],
       ),
@@ -85,7 +122,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
   }
 
   Widget customersBox() {
-    return Obx((){
+    return Obx(() {
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
@@ -94,22 +131,28 @@ class SalesReportVoucherScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: ['All']+customerController.customers.map((customer) => customer.name.toString()).toList(),
+        items: ['All'] +
+            customerController.customers
+                .map((customer) => customer.name.toString())
+                .toList(),
         onChanged: (value) {
-          if(value!='All'){
+          // salesController.maxCount = 10;
+          refreshController.loadFailed();
+          if (value != 'All') {
             final customer = customerController.customers.firstWhere(
-                  (customer) => customer.name == value,
+              (customer) => customer.name == value,
             );
             customerId = customer.id;
-          }else{
+          } else {
             customerId = null;
           }
           salesController.getAllVouchers(
             customerId: customerId,
-            date: date!='all' ? daterangeCalculate(date) : null,
+            date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem: "All", // Optional: Can be null if no initial selection is required
+        selectedItem: "All",
+        // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
@@ -139,10 +182,12 @@ class SalesReportVoucherScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          // salesController.maxCount = 10;
+          refreshController.loadFailed();
           date = value!;
           salesController.getAllVouchers(
-              customerId: customerId,
-              date: value!='all' ? daterangeCalculate(date) : null
+            customerId: customerId,
+            date: value != 'all' ? daterangeCalculate(date) : null,
           );
         },
       ),

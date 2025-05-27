@@ -5,6 +5,7 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
 import 'package:win_pos/expense/model/expense_model.dart';
@@ -13,6 +14,7 @@ import 'package:win_pos/expense/screen/expense_edit_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
+import '../../core/functions/date_range_calc.dart';
 import '../../purchase/screens/purchase_voucher_screen.dart';
 import '../../sales/screens/sales_voucher_screen.dart';
 
@@ -20,17 +22,19 @@ class ExpenseScreen extends StatelessWidget {
   ExpenseScreen({super.key});
   final UserController userController = Get.find();
   final ExpenseController _expenseController = Get.put(ExpenseController());
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
     final user = User.fromMap(userController.current_user.toJson());
+    _expenseController.getAll(date: daterangeCalculate("today"));
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
-          if(user.role_id==3){
+          if (user.role_id == 3) {
             Get.off(() => PurchaseVoucherScreen());
-          }else{
+          } else {
             Get.off(() => SalesVoucherScreen());
           }
         }
@@ -41,12 +45,14 @@ class ExpenseScreen extends StatelessWidget {
           // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           actions: [
             IconButton(
-                onPressed: () => Get.to(() => ExpenseAddScreen()),
+                onPressed: () {
+                  refreshController.loadFailed();
+                  Get.to(() => ExpenseAddScreen());
+                },
                 icon: const Icon(Icons.add))
           ],
         ),
-        drawer:
-            CustDrawer(user: user),
+        drawer: CustDrawer(user: user),
         body: Obx(() {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -75,12 +81,40 @@ class ExpenseScreen extends StatelessWidget {
               ),
               datePicker(),
               Expanded(
-                child: ListView.builder(
-                  itemCount: _expenseController.expense_list.length,
-                  itemBuilder: (context, index) {
-                    var expense = _expenseController.expense_list[index];
-                    return listItem(expense);
+                child: SmartRefresher(
+                  controller: refreshController,
+                  enablePullDown: false,
+                  enablePullUp: true,
+                  footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                    Widget body = Container();
+                    if (mode == LoadStatus.loading) {
+                      body = const CircularProgressIndicator();
+                    } else if (mode == LoadStatus.noMore) {
+                      body = const Text("No More Data...");
+                    }
+                    return SizedBox(
+                      height: 55,
+                      child: Center(
+                        child: body,
+                      ),
+                    );
+                  }),
+                  onLoading: () {
+                    if (_expenseController.maxCount ==
+                        _expenseController.expenseList.length) {
+                      refreshController.loadNoData();
+                    } else {
+                      _expenseController.loadMore();
+                      refreshController.loadComplete();
+                    }
                   },
+                  child: ListView.builder(
+                    itemCount: _expenseController.showExpenseList.length,
+                    itemBuilder: (context, index) {
+                      var expense = _expenseController.showExpenseList[index];
+                      return listItem(expense);
+                    },
+                  ),
                 ),
               )
             ],
@@ -98,12 +132,14 @@ class ExpenseScreen extends StatelessWidget {
       endActionPane: ActionPane(motion: const StretchMotion(), children: [
         SlidableAction(
           onPressed: (_) {
+            refreshController.loadFailed();
             Get.to(() => ExpenseEditScreen(expense));
           },
           icon: Icons.edit,
         ),
         SlidableAction(
           onPressed: (_) {
+            refreshController.loadFailed();
             Get.defaultDialog(
                 onCancel: () => Get.back(),
                 onConfirm: () {
@@ -144,7 +180,7 @@ class ExpenseScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 5, right: 10),
       child: DropdownMenu(
-        initialSelection: "all",
+        initialSelection: "today",
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: "all", label: "All"),
           DropdownMenuEntry(value: "today", label: "Today"),
@@ -155,40 +191,15 @@ class ExpenseScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          refreshController.loadFailed();
+          _expenseController.date = value!;
           if (value == 'all') {
             _expenseController.getAll();
           } else {
-            _expenseController.getAll(date: daterangeCalculate(value!));
+            _expenseController.getAll(date: daterangeCalculate(value));
           }
         },
       ),
     );
-  }
-
-  Map daterangeCalculate(String selectedDate) {
-    String startDate = "";
-    String endDate = "";
-    var now = DateTime.now();
-    var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == "today") {
-      startDate = today.toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "yesterday") {
-      startDate = DateTime(now.year, now.month, now.day - 1).toString();
-      endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == "thismonth") {
-      startDate = DateTime(now.year, now.month, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastmonth") {
-      startDate = DateTime(now.year, now.month - 1, 1).toString();
-      endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == "thisyear") {
-      startDate = DateTime(now.year, 1, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastyear") {
-      startDate = DateTime(now.year - 1, 1, 1).toString();
-      endDate = DateTime(now.year, 1, 1).toString();
-    }
-    return {'start': startDate, 'end': endDate};
   }
 }

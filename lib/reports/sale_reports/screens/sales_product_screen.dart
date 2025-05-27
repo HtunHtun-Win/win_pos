@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/reports/sale_reports/models/sale_item_model.dart';
 import '../../../category/controller/category_controller.dart';
 import '../controller/sales_report_controller.dart';
@@ -12,6 +13,7 @@ class SalesProductScreen extends StatelessWidget {
   CategoryController categoryController = CategoryController();
   String date = 'all';
   int? catId;
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +44,40 @@ class SalesProductScreen extends StatelessWidget {
           ),
           const Divider(),
           Expanded(child: Obx(() {
-            return ListView.builder(
-                itemCount: salesController.items.length,
-                itemBuilder: (context, index) {
-                  var item = salesController.items[index];
-                  return reportListTile(item: item);
-                });
+            return SmartRefresher(
+              controller: refreshController,
+              enablePullUp: true,
+              enablePullDown: false,
+              footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                Widget body = Container();
+                if (mode == LoadStatus.loading) {
+                  body = const CircularProgressIndicator();
+                } else if (mode == LoadStatus.noMore) {
+                  body = const Text("No More Data...");
+                }
+                return SizedBox(
+                  height: 55,
+                  child: Center(
+                    child: body,
+                  ),
+                );
+              }),
+              onLoading: () {
+                if (salesController.maxCount ==
+                    salesController.items.length) {
+                  refreshController.loadNoData();
+                } else {
+                  salesController.itemLoadMore();
+                  refreshController.loadComplete();
+                }
+              },
+              child: ListView.builder(
+                  itemCount: salesController.showItems.length,
+                  itemBuilder: (context, index) {
+                    var item = salesController.showItems[index];
+                    return reportListTile(item: item);
+                  }),
+            );
           })),
           Obx((){
             return Container(
@@ -95,6 +125,7 @@ class SalesProductScreen extends StatelessWidget {
         ),
         items: ['All']+categoryController.categories.map((category) => category.name.toString()).toList(),
         onChanged: (value) {
+          refreshController.loadFailed();
           if(value!='All'){
             final selected = categoryController.categories.firstWhere(
                   (category) => category.name == value,
@@ -138,6 +169,7 @@ class SalesProductScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          refreshController.loadFailed();
           date = value!;
             salesController.getSaleItems(
               catId: catId,

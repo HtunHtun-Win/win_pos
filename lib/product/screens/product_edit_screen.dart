@@ -86,6 +86,7 @@ class ProductEditScreen extends StatelessWidget {
     } else if (map["msg"] == "duplicate") {
       Get.snackbar("Duplicate!", "This code is already exist...");
     } else {
+      productController.getAll(input: productController.searchKeywork);
       Get.back();
     }
   }

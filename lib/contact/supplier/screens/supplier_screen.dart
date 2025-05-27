@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 import 'package:win_pos/contact/supplier/model/supplier_model.dart';
 import 'package:win_pos/contact/supplier/screens/supplier_add_screen.dart';
@@ -7,23 +8,75 @@ import 'package:win_pos/contact/supplier/screens/supplier_edit_screen.dart';
 
 class SupplierScreen extends StatelessWidget {
   SupplierScreen({super.key});
+
   final SupplierController supplierController = Get.put(SupplierController());
+  final refreshController = RefreshController();
+  String filterInput = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() => ListView.builder(
-            itemCount: supplierController.suppliers.length,
-            itemBuilder: (context, index) {
-              var supplier = supplierController.suppliers[index];
-              if (supplier.id == 1) {
-                return Container();
-              }
-              return listItem(context, supplier);
-            },
-          )),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Search...",
+              ),
+              onChanged: (value) {
+                refreshController.loadFailed();
+                filterInput = value;
+                supplierController.searchByKeyWork(value);
+              },
+            ),
+          ),
+          Expanded(
+            child: Obx(() => SmartRefresher(
+                  controller: refreshController,
+                  enablePullUp: true,
+                  enablePullDown: false,
+                  footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                    Widget body = Container();
+                    if (mode == LoadStatus.loading) {
+                      body = const CircularProgressIndicator();
+                    } else if (mode == LoadStatus.noMore) {
+                      body = const Text("No More Data...");
+                    }
+                    return SizedBox(
+                      height: 55,
+                      child: Center(
+                        child: body,
+                      ),
+                    );
+                  }),
+                  onLoading: () {
+                    if (supplierController.maxCount ==
+                        supplierController.suppliers.length) {
+                      refreshController.loadNoData();
+                    } else {
+                      supplierController.loadMore();
+                      refreshController.loadComplete();
+                    }
+                  },
+                  child: ListView.builder(
+                    itemCount: supplierController.showSuppliers.length,
+                    itemBuilder: (context, index) {
+                      var supplier = supplierController.showSuppliers[index];
+                      if (supplier.id == 1) {
+                        return Container();
+                      }
+                      return listItem(context, supplier);
+                    },
+                  ),
+                )),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          refreshController.loadFailed();
           Get.to(() => SupplierAddScreen());
         },
         child: const Icon(Icons.add),
@@ -32,17 +85,25 @@ class SupplierScreen extends StatelessWidget {
   }
 
   Widget listItem(context, SupplierModel supplier) {
-    Color color = Colors.white;
+    Color color = Theme.of(context).primaryColor;
+    Color textColor = Colors.black;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
       width: double.infinity,
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(10)),
+          color: Theme.of(context).canvasColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(5, 5),
+              blurRadius: 10,
+            ),
+          ]),
       child: ListTile(
         title: Text(
           supplier.name.toString(),
-          style: TextStyle(color: color, fontWeight: FontWeight.bold),
+          style: TextStyle(color: textColor),
         ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,13 +111,13 @@ class SupplierScreen extends StatelessWidget {
             Text(
               supplier.phone.toString(),
               style: TextStyle(
-                color: color,
+                color: textColor,
               ),
             ),
             Text(
               supplier.address.toString(),
               style: TextStyle(
-                color: color,
+                color: textColor,
               ),
             ),
           ],
@@ -68,6 +129,7 @@ class SupplierScreen extends StatelessWidget {
                 children: [
                   IconButton(
                       onPressed: () {
+                        refreshController.loadFailed();
                         Get.to(() => SupplierEditScreen(supplier));
                       },
                       icon: Icon(
@@ -88,7 +150,9 @@ class SupplierScreen extends StatelessWidget {
                               ),
                               TextButton(
                                 onPressed: () {
+                                  refreshController.loadFailed();
                                   supplierController.delete(supplier.id!);
+                                  supplierController.searchByKeyWork(filterInput);
                                   Get.back();
                                 },
                                 child: const Text("Ok"),

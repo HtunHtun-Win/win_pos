@@ -79,7 +79,11 @@ class SalesSaveScreen extends StatelessWidget {
     };
     await salesController.addSale(saleMap, salesController.cart);
     salesController.cart.clear();
-    salesController.getAllVouchers(map: daterangeCalculate("today"));
+    if(salesController.selectedDate == 'all') {
+      salesController.getAllVouchers();
+    } else {
+      salesController.getAllVouchers(map: daterangeCalculate(salesController.selectedDate));
+    }
     salesController.getTotal();
     Get.back();
   }
