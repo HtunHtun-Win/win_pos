@@ -10,6 +10,7 @@ class ProductController extends GetxController {
   //for pull to refresh
   var showProducts = [].obs;
   var maxCount = 10;
+  String searchKeywork='';
 
   @override
   void onInit() {
@@ -67,7 +68,6 @@ class ProductController extends GetxController {
       salePrice,
       oldPrice,
     );
-    getAll();
     return map;
   }
 

@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
 import 'package:win_pos/purchase/models/purchase_model.dart';
 import '../controller/purchase_report_controller.dart';
@@ -12,6 +13,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
   SupplierController supplierController = SupplierController();
   int? supplierId;
   String date = 'today';
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +44,40 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
           ),
           const Divider(),
           Expanded(child: Obx(() {
-            return ListView.builder(
-                itemCount: purchaseController.vouchers.length,
-                itemBuilder: (context, index) {
-                  var voucher = purchaseController.vouchers[index];
-                  return reportListTile(index: index+1,voucher: voucher);
-                });
+            return SmartRefresher(
+              controller: refreshController,
+              enablePullUp: true,
+              enablePullDown: false,
+              footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                Widget body = Container();
+                if (mode == LoadStatus.loading) {
+                  body = const CircularProgressIndicator();
+                } else if (mode == LoadStatus.noMore) {
+                  body = const Text("No More Data...");
+                }
+                return SizedBox(
+                  height: 55,
+                  child: Center(
+                    child: body,
+                  ),
+                );
+              }),
+              onLoading: () {
+                if (purchaseController.maxCount ==
+                    purchaseController.vouchers.length) {
+                  refreshController.loadNoData();
+                } else {
+                  purchaseController.voucherLoadMore();
+                  refreshController.loadComplete();
+                }
+              },
+              child: ListView.builder(
+                  itemCount: purchaseController.showVouchers.length,
+                  itemBuilder: (context, index) {
+                    var voucher = purchaseController.showVouchers[index];
+                    return reportListTile(index: index+1,voucher: voucher);
+                  }),
+            );
           })),
           Obx((){
             // salesController.getTotal();
@@ -96,6 +126,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
         ),
         items: ['All']+supplierController.suppliers.map((customer) => customer.name.toString()).toList(),
         onChanged: (value) {
+          refreshController.loadFailed();
           if(value!='All'){
             final supplier = supplierController.suppliers.firstWhere(
                   (supplier) => supplier.name == value,
@@ -139,6 +170,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          refreshController.loadFailed();
           date = value!;
           purchaseController.getAllVouchers(
               supplierId: supplierId,

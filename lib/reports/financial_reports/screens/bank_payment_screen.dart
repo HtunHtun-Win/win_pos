@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/payment/controller/payment_controller.dart';
 import 'package:win_pos/reports/financial_reports/controller/financial_report_controller.dart';
 
@@ -14,6 +15,7 @@ class BankPaymentScreen extends StatelessWidget {
   PaymentController paymentController = PaymentController();
   int? paymentId;
   String date = 'today';
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +47,40 @@ class BankPaymentScreen extends StatelessWidget {
           ),
           const Divider(),
           Expanded(child: Obx(() {
-            return ListView.builder(
-                itemCount: controller.vouchers.length,
-                itemBuilder: (context, index) {
-                  var voucher = controller.vouchers[index];
-                  return reportListTile(index: index+1,voucher: voucher);
-                });
+            return SmartRefresher(
+              controller: refreshController,
+              enablePullUp: true,
+              enablePullDown: false,
+              footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                Widget body = Container();
+                if (mode == LoadStatus.loading) {
+                  body = const CircularProgressIndicator();
+                } else if (mode == LoadStatus.noMore) {
+                  body = const Text("No More Data...");
+                }
+                return SizedBox(
+                  height: 55,
+                  child: Center(
+                    child: body,
+                  ),
+                );
+              }),
+              onLoading: () {
+                if (controller.maxCount ==
+                    controller.vouchers.length) {
+                  refreshController.loadNoData();
+                } else {
+                  controller.loadMore();
+                  refreshController.loadComplete();
+                }
+              },
+              child: ListView.builder(
+                  itemCount: controller.showVouchers.length,
+                  itemBuilder: (context, index) {
+                    var voucher = controller.showVouchers[index];
+                    return reportListTile(index: index+1,voucher: voucher);
+                  }),
+            );
           })),
           Obx((){
             // salesController.getTotal();
@@ -103,6 +133,7 @@ class BankPaymentScreen extends StatelessWidget {
           return payment.name.toString();
         }).toList(),
         onChanged: (value) {
+          refreshController.loadFailed();
           if(value!='All'){
             final payment = paymentController.payments.firstWhere(
                   (payment) => payment.name == value,
@@ -146,6 +177,7 @@ class BankPaymentScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          refreshController.loadFailed();
           date = value!;
           controller.getBankPayment(
               paymentId: paymentId,

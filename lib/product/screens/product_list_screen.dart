@@ -31,6 +31,7 @@ class ProductListScreen extends StatelessWidget {
                 hintText: "Search...",
               ),
               onChanged: (value) {
+                productController.searchKeywork = value;
                 productController.maxCount = 10;
                 refreshController.loadFailed();
                 filterInput = value;
