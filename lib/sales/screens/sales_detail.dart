@@ -53,10 +53,10 @@ class SalesDetail extends StatelessWidget {
                             );
                             //request all voucher after delete
                             salesController.getAllVouchers(
-                              map: daterangeCalculate("today"),
+                              map: daterangeCalculate(salesController.selectedDate),
                             );
                             if (flag == 0) {
-                              Get.to(() => SalesVoucherScreen());
+                              Get.off(() => SalesVoucherScreen());
                             }
                           },
                           child: const Text("Delete"))

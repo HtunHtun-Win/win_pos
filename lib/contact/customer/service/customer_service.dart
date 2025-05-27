@@ -7,6 +7,10 @@ class CustomerService {
     return await customerRepository.getAll();
   }
 
+  Future<List> searchByKeyWork(String keyWork) async {
+    return await customerRepository.searchByKeyWork(keyWork);
+  }
+
   Future<Map> getByName(String name) async {
     var datas = await customerRepository.getByName(name);
     if (datas.isNotEmpty) {

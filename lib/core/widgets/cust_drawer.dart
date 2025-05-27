@@ -43,7 +43,7 @@ class CustDrawer extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "LightPos",
+                            "LightPOS",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,

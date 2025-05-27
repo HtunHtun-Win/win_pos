@@ -7,6 +7,10 @@ class SupplierService {
     return await supplierRepository.getAll();
   }
 
+  Future<List> searchByKeyWork(String keyWork) async {
+    return await supplierRepository.searchByKeyWork(keyWork);
+  }
+
   Future<Map> getByName(String name) async {
     var datas = await supplierRepository.getByName(name);
     if (datas.isNotEmpty) {

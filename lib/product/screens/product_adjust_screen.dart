@@ -1,37 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/product/controller/product_log_controller.dart';
 import 'package:win_pos/product/models/product_log_model.dart';
 import 'package:intl/intl.dart';
 import 'package:win_pos/product/screens/product_adjust_add_screen.dart';
 
+import '../../core/functions/date_range_calc.dart';
+
 // ignore: must_be_immutable
 class ProductAdjustScreen extends StatelessWidget {
   ProductAdjustScreen({super.key});
+
   ProductLogController productLogController = Get.put(ProductLogController());
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
     // productLogController.getAll();
-    productLogController.getAll(map: daterangeCalculate("today"));
+    productLogController.getAll(map: daterangeCalculate(productLogController.selectedDate));
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           datePicker(),
           Expanded(
-            child: Obx(() => ListView.builder(
-                  itemCount: productLogController.logs.length,
-                  itemBuilder: (context, index) {
-                    var productLog = productLogController.logs[index];
-                    return listItem(productLog);
+            child: Obx(() => SmartRefresher(
+                  controller: refreshController,
+                  enablePullUp: true,
+                  enablePullDown: false,
+                  footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                    Widget body = Container();
+                    if (mode == LoadStatus.loading) {
+                      body = const CircularProgressIndicator();
+                    } else if (mode == LoadStatus.noMore) {
+                      body = const Text("No More Data...");
+                    }
+                    return SizedBox(
+                      height: 55,
+                      child: Center(
+                        child: body,
+                      ),
+                    );
+                  }),
+                  onLoading: () {
+                    if (productLogController.maxCount ==
+                        productLogController.logs.length) {
+                      refreshController.loadNoData();
+                    } else {
+                      productLogController.loadMore();
+                      refreshController.loadComplete();
+                    }
                   },
+                  child: ListView.builder(
+                    itemCount: productLogController.showLogs.length,
+                    itemBuilder: (context, index) {
+                      var productLog = productLogController.showLogs[index];
+                      return listItem(productLog);
+                    },
+                  ),
                 )),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          refreshController.loadFailed();
           Get.to(() => ProductAdjustAddScreen());
         },
         child: const Icon(Icons.add),
@@ -67,7 +101,7 @@ class ProductAdjustScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 5, right: 10),
       child: DropdownMenu(
-        initialSelection: "today",
+        initialSelection: productLogController.selectedDate,
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: "all", label: "All"),
           DropdownMenuEntry(value: "today", label: "Today"),
@@ -78,40 +112,16 @@ class ProductAdjustScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          productLogController.selectedDate=value!;
+          productLogController.maxCount=10;
+          refreshController.loadFailed();
           if (value == 'all') {
             productLogController.getAll();
           } else {
-            productLogController.getAll(map: daterangeCalculate(value!));
+            productLogController.getAll(map: daterangeCalculate(value));
           }
         },
       ),
     );
-  }
-
-  Map daterangeCalculate(String selectedDate) {
-    String startDate = "";
-    String endDate = "";
-    var now = DateTime.now();
-    var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == "today") {
-      startDate = today.toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "yesterday") {
-      startDate = DateTime(now.year, now.month, now.day - 1).toString();
-      endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == "thismonth") {
-      startDate = DateTime(now.year, now.month, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastmonth") {
-      startDate = DateTime(now.year, now.month - 1, 1).toString();
-      endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == "thisyear") {
-      startDate = DateTime(now.year, 1, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastyear") {
-      startDate = DateTime(now.year - 1, 1, 1).toString();
-      endDate = DateTime(now.year, 1, 1).toString();
-    }
-    return {'start': startDate, 'end': endDate};
   }
 }

@@ -20,15 +20,15 @@ class PVoucherItem extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.inversePrimary,
-            width: 1,
-          ),
-          boxShadow: [
+          // border: Border.all(
+          //   color: Theme.of(context).colorScheme.inversePrimary,
+          //   width: 1,
+          // ),
+          boxShadow: const [
             BoxShadow(
-              color: Colors.black.withValues(alpha: .4),
-              offset: const Offset(2, 2),
-              blurRadius: 5,
+              color: Colors.black26,
+              offset: Offset(2, 2),
+              blurRadius: 10,
             )
           ]
       ),

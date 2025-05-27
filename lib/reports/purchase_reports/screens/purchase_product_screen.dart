@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/reports/purchase_reports/models/purchase_item_model.dart';
 import '../../../category/controller/category_controller.dart';
 import '../controller/purchase_report_controller.dart';
@@ -8,10 +9,12 @@ import '../controller/purchase_report_controller.dart';
 // ignore: must_be_immutable
 class PurchaseProductScreen extends StatelessWidget {
   PurchaseProductScreen({super.key});
-  PurchaseReportController purchaseController = Get.put(PurchaseReportController());
+  PurchaseReportController purchaseController =
+      Get.put(PurchaseReportController());
   CategoryController categoryController = CategoryController();
   String date = 'all';
   int? catId;
+  final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +37,7 @@ class PurchaseProductScreen extends StatelessWidget {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child:  Text("Name")),
+                Expanded(child: Text("Name")),
                 Expanded(child: Text("Qty")),
                 Expanded(child: Text("Amount")),
               ],
@@ -42,25 +45,59 @@ class PurchaseProductScreen extends StatelessWidget {
           ),
           const Divider(),
           Expanded(child: Obx(() {
-            return ListView.builder(
-                itemCount: purchaseController.items.length,
-                itemBuilder: (context, index) {
-                  var item = purchaseController.items[index];
-                  return reportListTile(item: item);
-                });
+            return SmartRefresher(
+              controller: refreshController,
+              enablePullUp: true,
+              enablePullDown: false,
+              footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                Widget body = Container();
+                if (mode == LoadStatus.loading) {
+                  body = const CircularProgressIndicator();
+                } else if (mode == LoadStatus.noMore) {
+                  body = const Text("No More Data...");
+                }
+                return SizedBox(
+                  height: 55,
+                  child: Center(
+                    child: body,
+                  ),
+                );
+              }),
+              onLoading: () {
+                if (purchaseController.maxCount ==
+                    purchaseController.items.length) {
+                  refreshController.loadNoData();
+                } else {
+                  purchaseController.itemLoadMore();
+                  refreshController.loadComplete();
+                }
+              },
+              child: ListView.builder(
+                  itemCount: purchaseController.showItems.length,
+                  itemBuilder: (context, index) {
+                    var item = purchaseController.showItems[index];
+                    return reportListTile(item: item);
+                  }),
+            );
           })),
-          Obx((){
+          Obx(() {
             return Container(
               height: 50,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              child:ListTile(
-                title:  Row(
+              child: ListTile(
+                title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(purchaseController.itemTotalAmount.toString(),style: const TextStyle(color: Colors.white),),
+                    const Text(
+                      "Total",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      purchaseController.itemTotalAmount.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
@@ -71,7 +108,7 @@ class PurchaseProductScreen extends StatelessWidget {
     );
   }
 
-  Widget reportListTile({required PurchaseItemModel item}){
+  Widget reportListTile({required PurchaseItemModel item}) {
     return ListTile(
       title: Row(
         children: [
@@ -84,7 +121,7 @@ class PurchaseProductScreen extends StatelessWidget {
   }
 
   Widget categoryBox(BuildContext context) {
-    return Obx((){
+    return Obx(() {
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
@@ -93,22 +130,27 @@ class PurchaseProductScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: ['All']+categoryController.categories.map((category) => category.name.toString()).toList(),
+        items: ['All'] +
+            categoryController.categories
+                .map((category) => category.name.toString())
+                .toList(),
         onChanged: (value) {
-          if(value!='All'){
+          if (value != 'All') {
+            refreshController.loadFailed();
             final selected = categoryController.categories.firstWhere(
-                  (category) => category.name == value,
+              (category) => category.name == value,
             );
             catId = selected.id;
-          }else{
+          } else {
             catId = null;
           }
           purchaseController.getPurchaseItems(
             catId: catId,
-            date: date!='all' ? daterangeCalculate(date) : null,
+            date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem: "All", // Optional: Can be null if no initial selection is required
+        selectedItem:
+            "All", // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
@@ -124,7 +166,7 @@ class PurchaseProductScreen extends StatelessWidget {
 
   Widget datePicker() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: DropdownMenu(
         initialSelection: "today",
         width: double.infinity,
@@ -138,11 +180,12 @@ class PurchaseProductScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
+          refreshController.loadFailed();
           date = value!;
           purchaseController.getPurchaseItems(
-              catId: catId,
-              date: value!='all' ? daterangeCalculate(date) : null,
-            );
+            catId: catId,
+            date: value != 'all' ? daterangeCalculate(date) : null,
+          );
         },
       ),
     );

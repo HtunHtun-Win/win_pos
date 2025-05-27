@@ -4,6 +4,7 @@ import 'package:win_pos/contact/customer/controller/customer_controller.dart';
 
 class CustomerAddScreen extends StatelessWidget {
   CustomerAddScreen({super.key});
+
   final CustomerController customerController = Get.find();
 
   @override
@@ -53,9 +54,19 @@ class CustomerAddScreen extends StatelessWidget {
   Future<void> save(String name, String phone, String address) async {
     var msg = await customerController.insert(name, phone, address);
     if (msg["msg"] == "name_null") {
-      Get.snackbar("Name empty!", "Name can't be empty!");
+      Get.snackbar(
+        "Name empty!",
+        "Name can't be empty!",
+        backgroundColor: Colors.black45,
+        colorText: Colors.white,
+      );
     } else if (msg["msg"] == "duplicate") {
-      Get.snackbar("Duplicate!", "This customer is already exists!");
+      Get.snackbar(
+        "Duplicate!",
+        "This customer is already exists!",
+        backgroundColor: Colors.black45,
+        colorText: Colors.white,
+      );
     } else {
       Get.back();
     }
