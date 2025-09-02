@@ -28,7 +28,6 @@ class ExpenseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = User.fromMap(userController.current_user.toJson());
     _expenseController.getAll(date: daterangeCalculate("today"));
-    var totalBalance = _expenseController.totalIncome - _expenseController.totalExpense.value;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -71,7 +70,7 @@ class ExpenseScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "$totalBalance",
+                      "${_expenseController.totalBalance}",
                       style: const TextStyle(
                           color: Colors.amber,
                           fontSize: 20,

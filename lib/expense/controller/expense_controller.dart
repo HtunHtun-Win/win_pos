@@ -8,6 +8,7 @@ class ExpenseController extends GetxController {
   var expenseList = []; //variable to keep income and expense list
   var totalIncome = 0.obs;
   var totalExpense = 0.obs;
+  var totalBalance = 0.obs;
   String date = "today";
 
   //for pull to refresh
@@ -48,6 +49,7 @@ class ExpenseController extends GetxController {
     } else {
       showExpenseList.clear();
     }
+    totalBalance.value = totalIncome.value - totalExpense.value;
   }
 
   Future<Map> addExpense(
