@@ -1,14 +1,17 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:win_pos/core/service/pdf_service.dart';
 import 'package:win_pos/core/service/png_voucher_service.dart';
 import 'package:win_pos/core/widgets/custom_btn.dart';
 import 'package:win_pos/sales/models/sale_detail_model.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
+import 'package:win_pos/setting/controller/printer_controller.dart';
 import 'package:win_pos/setting/printer_select_screen.dart';
 import 'package:win_pos/shop/shop_model.dart';
 import 'package:image/image.dart' as img;
@@ -30,9 +33,18 @@ class PrintScreen extends StatefulWidget {
 }
 
 class _PrintScreenState extends State<PrintScreen> {
+  PrinterController printerController = Get.find<PrinterController>();
   PdfPageFormat size = PdfPageFormat.a5;
   bool isSlip = false;
   Uint8List? pngBytes;
+  String? currentPrinter;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    printerController.getDevices();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +70,27 @@ class _PrintScreenState extends State<PrintScreen> {
               children: [
                 Expanded(child: sizeBtn(label: "A4", value: PdfPageFormat.a4)),
                 Expanded(child: sizeBtn(label: "A5", value: PdfPageFormat.a5)),
-                Expanded(child: sizeBtn(label: "80mm", value: PdfPageFormat.roll80)),
+                Expanded(
+                    child: sizeBtn(label: "80mm", value: PdfPageFormat.roll80)),
               ],
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.blueAccent,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Obx(
+              () => Center(
+                child: Text(printerController.state.value.connectedMac != null
+                    ? "Connected Device : ${printerController.state.value.connectedMac!.name}"
+                    : ""),
+              ),
             ),
           ),
           Row(
@@ -80,6 +111,7 @@ class _PrintScreenState extends State<PrintScreen> {
                       "PDF file was saved in download folder!",
                       colorText: Colors.white,
                       backgroundColor: Colors.black.withValues(alpha: 0.5),
+                      duration: const Duration(seconds: 1),
                     );
                   },
                   lable: "Save as PDF",
@@ -129,7 +161,7 @@ class _PrintScreenState extends State<PrintScreen> {
     //   pngBytes = byteList;
     // });
     bool conState = await PrintBluetoothThermal.connectionStatus;
-    if(conState){
+    if (conState) {
       final profile = await CapabilityProfile.load();
       final generator = Generator(PaperSize.mm80, profile);
       //Convert image to printer data
@@ -141,7 +173,7 @@ class _PrintScreenState extends State<PrintScreen> {
       bytes += generator.feed(3); // Feed a few lines before cutting
       bytes += generator.cut(); // Auto cut
       await PrintBluetoothThermal.writeBytes(bytes);
-    }else{
+    } else {
       Get.to(const PrinterSelectScreen());
     }
   }
@@ -149,7 +181,7 @@ class _PrintScreenState extends State<PrintScreen> {
   Widget sizeBtn({var value, required String label}) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: size==value ? Colors.grey : Colors.blue,
+        backgroundColor: size == value ? Colors.grey : Colors.blue,
         foregroundColor: Colors.white,
       ),
       onPressed: () {
@@ -165,5 +197,4 @@ class _PrintScreenState extends State<PrintScreen> {
       child: Text(label),
     );
   }
-
 }
