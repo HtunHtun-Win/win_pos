@@ -51,6 +51,8 @@ dependencies:
   shared_preferences: ^2.5.3
   animate_do: ^4.2.0
   pull_to_refresh: ^2.0.0
+  esc_pos_utils_plus: ^2.0.4
+  print_bluetooth_thermal: ^1.1.6
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +83,8 @@ flutter:
   assets:
     - assets/db/winpos.db
     - assets/images/shop_logo.png
+    - assets/fonts/NotoSansMyanmar-Regular.ttf
+    - assets/fonts/NotoSans-Regular.ttf
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -97,7 +101,7 @@ flutter:
   fonts:
      - family: NotoSans
        fonts:
-         - asset: assets/fonts/NotoSans.ttf
+         - asset: assets/fonts/NotoSans-Regular.ttf
 #           style: italic
   #   - family: Trajan Pro
   #     fonts:

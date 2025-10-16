@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -23,11 +24,30 @@ class PdfService {
   SaleModel voucher;
   List<SaleDetailModel> saleDetailModels;
 
-  Future<Uint8List> generatePdf() {
+  late var engFont;
+  late var myaFont;
+  List<pw.Font> fontFallback = [];
+
+  Future<Uint8List> generatePdf() async {
     DateTime date = DateTime.parse(voucher.created_at.toString());
     var fdate = DateFormat("yyyy-MM-dd h:m a");
     var finalDate = fdate.format(date);
     final pdf = pw.Document();
+
+    // Load both fonts
+    final engFontData = await rootBundle.load(
+      "assets/fonts/NotoSans-Regular.ttf",
+    );
+    final myaFontData = await rootBundle.load(
+      "assets/fonts/NotoSansMyanmar-Regular.ttf",
+    );
+
+    engFont = pw.Font.ttf(engFontData.buffer.asByteData());
+    myaFont = pw.Font.ttf(myaFontData.buffer.asByteData());
+
+    // Create a fallback font list
+    fontFallback = [myaFont, engFont];
+
     pdf.addPage(
       pw.MultiPage(
         pageFormat: size,
@@ -39,19 +59,25 @@ class PdfService {
                 children: [
                   pw.Text(
                     shopModel.name ?? "-",
-                    style: const pw.TextStyle(
+                    style: pw.TextStyle(
+                      font: engFont,
+                      fontFallback: fontFallback,
                       fontSize: 18,
                     ),
                   ),
                   pw.Text(
                     shopModel.phone ?? "-",
-                    style: const pw.TextStyle(
+                    style: pw.TextStyle(
+                      font: engFont,
+                      fontFallback: fontFallback,
                       fontSize: 18,
                     ),
                   ),
                   pw.Text(
                     shopModel.address ?? "-",
-                    style: const pw.TextStyle(
+                    style: pw.TextStyle(
+                      font: engFont,
+                      fontFallback: fontFallback,
                       fontSize: 18,
                     ),
                   ),
@@ -70,14 +96,29 @@ class PdfService {
                   pw.Expanded(child: pw.Text("Customer")),
                   pw.Expanded(child: pw.Text(":")),
                   pw.Expanded(
-                      flex: 3, child: pw.Text(voucher.customer.toString())),
+                      flex: 3,
+                      child: pw.Text(
+                        voucher.customer.toString(),
+                        style: pw.TextStyle(
+                          font: engFont,
+                          fontFallback: fontFallback,
+                        ),
+                      )),
                 ],
               ),
               pw.Row(
                 children: [
                   pw.Expanded(child: pw.Text("Sale staff")),
                   pw.Expanded(child: pw.Text(":")),
-                  pw.Expanded(flex: 3, child: pw.Text(voucher.user.toString())),
+                  pw.Expanded(
+                      flex: 3,
+                      child: pw.Text(
+                        voucher.user.toString(),
+                        style: pw.TextStyle(
+                          font: engFont,
+                          fontFallback: fontFallback,
+                        ),
+                      )),
                 ],
               ),
               pw.Row(
@@ -85,7 +126,14 @@ class PdfService {
                   pw.Expanded(child: pw.Text("Payment")),
                   pw.Expanded(child: pw.Text(":")),
                   pw.Expanded(
-                      flex: 3, child: pw.Text(voucher.payment.toString())),
+                      flex: 3,
+                      child: pw.Text(
+                        voucher.payment.toString(),
+                        style: pw.TextStyle(
+                          font: engFont,
+                          fontFallback: fontFallback,
+                        ),
+                      )),
                 ],
               ),
               pw.Row(
@@ -148,7 +196,16 @@ class PdfService {
       itemList.add(pw.Row(
         children: [
           pw.Expanded(child: pw.Text("${i + 1}")),
-          pw.Expanded(flex: 2, child: pw.Text(data.product!)),
+          pw.Expanded(
+            flex: 2,
+            child: pw.Text(
+              data.product!,
+              style: pw.TextStyle(
+                font: engFont,
+                fontFallback: fontFallback,
+              ),
+            ),
+          ),
           pw.Expanded(child: pw.Text(data.quantity.toString())),
           pw.Expanded(child: pw.Text(data.price.toString())),
           pw.Expanded(
