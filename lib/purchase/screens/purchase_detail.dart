@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:win_pos/core/screens/print_screen.dart';
 import 'package:win_pos/purchase/controller/purchase_controller.dart';
 import '../controller/purchase_detail_controller.dart';
 import '../models/purchase_model.dart';
@@ -28,7 +29,7 @@ class PurchaseDetail extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Purchase Detail"),
         backgroundColor: Theme.of(context).primaryColor,
-        actions: [
+        // actions: [
           // IconButton(
           //     onPressed: () async {
           //       Get.defaultDialog(
@@ -56,14 +57,14 @@ class PurchaseDetail extends StatelessWidget {
           //     icon: const Icon(
           //       Icons.delete,
           //     )),
-          IconButton(
-              onPressed: () async {
-              },
-              icon: const Icon(
-                Icons.print,
-                color: Colors.white,
-              )),
-        ],
+          // IconButton(
+          //     onPressed: () async {
+          //     },
+          //     icon: const Icon(
+          //       Icons.print,
+          //       color: Colors.white,
+          //     )),
+        // ],
       ),
       body: Container(
         child: Column(

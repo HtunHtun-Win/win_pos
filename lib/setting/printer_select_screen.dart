@@ -32,7 +32,6 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
       Permission.bluetoothConnect,
       Permission.location,
     ].request();
-    printerController.loadPrinter();
     printerController.getDevices();
   }
 
@@ -73,6 +72,8 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              Text(printerController.state.value.connectedMac!=null ? "Connected Device : ${printerController.state.value.connectedMac!.name}" : "" ),
               const SizedBox(height: 16),
               Expanded(
                 child: printerController.state.value.isLoading

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
-
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +19,6 @@ class PrinterController extends GetxController {
 
   void getDevices() async {
     var status = await PrintBluetoothThermal.connectionStatus;
-    dev.log(status.toString());
     state.value = state.value.copyWith(devices: [], isLoading: true);
     try {
       final devices = await PrintBluetoothThermal.pairedBluetooths;
@@ -28,6 +26,7 @@ class PrinterController extends GetxController {
     } catch (e) {
       state.value = state.value.copyWith();
     }
+    loadPrinter();
   }
 
   void connect(BluetoothInfo info) async {
@@ -42,9 +41,9 @@ class PrinterController extends GetxController {
       prefs.setString(
           "printer", jsonEncode({"name": info.name, "mac": info.macAdress}));
       state.value = state.value.copyWith(connectedMac: info);
-      dev.log("success");
+      _showSnackBar(title: "Connection status", message: "Successfully connected");
     } else {
-      dev.log("fail");
+      _showSnackBar(title: "Connection status", message: "Fail");
     }
   }
 
@@ -52,9 +51,22 @@ class PrinterController extends GetxController {
     await PrintBluetoothThermal.disconnect;
     state.value = state.value
         .copyWith(connectedMac: BluetoothInfo(name: "", macAdress: ""));
+    _showSnackBar(title: "Disconnected", message: "Printer is successfully disconnected");
+  }
+
+  void _showSnackBar({required String title, required String message}) {
+    Get.snackbar(
+      title,
+      message,
+      duration: const Duration(seconds: 1),
+      backgroundColor: Colors.black.withAlpha(150),
+      colorText: Colors.white,
+    );
   }
 
   void loadPrinter() async {
+    state.value = state.value
+        .copyWith(connectedMac: BluetoothInfo(name: "", macAdress: ""));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? data = await prefs.getString("printer");
     if (data != null) {
@@ -66,26 +78,33 @@ class PrinterController extends GetxController {
       bool conState = await PrintBluetoothThermal.connectionStatus;
       if (conState) {
         dev.log("connected");
+        state.value = state.value
+            .copyWith(connectedMac: info);
       } else {
         connect(info);
       }
-      state.value = state.value.copyWith(connectedMac: info);
     }
   }
 
   void testPrint() async {
-    final profile = await CapabilityProfile.load();
-    final generator = Generator(PaperSize.mm80, profile);
-    //Convert image to printer data
-    Uint8List pngBytes = await _generateBurmeseVoucher();
-    final decoded = img.decodeImage(pngBytes);
-    List<int> bytes = [];
-    bytes += generator.image(decoded!);
+    bool? connected = await PrintBluetoothThermal.connectionStatus;
+    if (connected == true) {
+      final profile = await CapabilityProfile.load();
+      final generator = Generator(PaperSize.mm80, profile);
+      //Convert image to printer data
+      Uint8List pngBytes = await _generateBurmeseVoucher();
+      final decoded = img.decodeImage(pngBytes);
+      List<int> bytes = [];
+      bytes += generator.image(decoded!);
 
-    // Add paper feed + cutter command
-    bytes += generator.feed(3); // Feed a few lines before cutting
-    bytes += generator.cut(); // Auto cut
-    await PrintBluetoothThermal.writeBytes(bytes);
+      // Add paper feed + cutter command
+      bytes += generator.feed(3); // Feed a few lines before cutting
+      bytes += generator.cut(); // Auto cut
+      await PrintBluetoothThermal.writeBytes(bytes);
+    }else{
+      _showSnackBar(title: "Printer no found!", message: "Select a printer");
+    }
+
   }
 
   Future<Uint8List> _generateBurmeseVoucher() async {
@@ -103,8 +122,8 @@ class PrinterController extends GetxController {
     final pictureRecorder = PictureRecorder();
     final canvas = Canvas(pictureRecorder);
     final paint = Paint();
-    var textStyle = TextStyle(fontSize: 26, color: Colors.black);
-    var boldStyle = TextStyle(
+    var textStyle = const TextStyle(fontSize: 26, color: Colors.black);
+    var boldStyle = const TextStyle(
       fontSize: 30,
       fontWeight: FontWeight.bold,
       color: Colors.black,
