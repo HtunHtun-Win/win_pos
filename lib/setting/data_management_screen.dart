@@ -1,3 +1,4 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
@@ -46,11 +47,31 @@ class DataManagementScreen extends StatelessWidget {
   }
 
   Future<void> _getPermission() async {
-    var state = await Permission.storage.status;
-    if (state != PermissionStatus.granted) {
-      await Permission.storage.request();
+    if (!Platform.isAndroid) return;
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final sdkInt = androidInfo.version.sdkInt;
+
+    if (sdkInt <= 32) {
+      // ✅ Android 12 and below
+      var state = await Permission.storage.status;
+      if (state != PermissionStatus.granted) {
+        await Permission.storage.request();
+      }
+    } else {
+      // ✅ Android 13–15: new storage model
+      var managePermission = await Permission.manageExternalStorage.status;
+      if (!managePermission.isGranted) {
+        await Permission.manageExternalStorage.request();
+      }
+
+      // Also request read access for media files if needed
+      await Permission.photos.request();
+      await Permission.videos.request();
+      await Permission.audio.request();
     }
   }
+
 
   Future<String> getPath() async {
     var filePath = '';
@@ -95,7 +116,8 @@ class DataManagementScreen extends StatelessWidget {
 
   Future<void> importDatabase() async {
     String DB_NAME = "winpos.db";
-    if (await Permission.storage.request().isGranted) {
+    if (await Permission.storage.request().isGranted ||
+        await Permission.manageExternalStorage.request().isGranted) {
       // Open the file picker to select a file
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
