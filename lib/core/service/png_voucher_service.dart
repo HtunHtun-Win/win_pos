@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as Date;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:win_pos/sales/models/sale_detail_model.dart';
@@ -24,8 +24,8 @@ class PngVoucherService {
   Future<Uint8List> generatePng() async {
     // 🗓️ Date formatting
     final date = DateTime.parse(voucher.created_at.toString());
-    // final fdate =  DateFormat("yyyy-MM-dd h:mm a");
-    // final finalDate = fdate.format(date);
+    final fdate =  Date.DateFormat("yyyy-MM-dd h:mm a");
+    final finalDate = fdate.format(date);
 
     final shopName = shopModel.name;
     final phone = shopModel.phone;
@@ -93,7 +93,7 @@ class PngVoucherService {
       text2Painter.paint(canvas, Offset(text2X, y));
 
       // Move down for next line
-      y += text1Painter.height + 8;
+      y += text2Painter.height + 8;
     }
 
     void drawItemText(
@@ -163,7 +163,7 @@ class PngVoucherService {
     drawHeaderColumn("Customer", ": ${voucher.customer}");
     drawHeaderColumn("Sale Staff", ": ${voucher.user}");
     drawHeaderColumn("Payment", ": ${voucher.payment}");
-    drawHeaderColumn("Date", ": ${voucher.created_at}");
+    drawHeaderColumn("Date", ": $finalDate");
 
     drawText(
       "-------------------------------------------------------------------------------",
