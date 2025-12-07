@@ -5,6 +5,7 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
@@ -86,7 +87,7 @@ class ExpenseScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              datePicker(),
+              datePicker(context),
               Expanded(
                 child: SmartRefresher(
                   controller: refreshController,
@@ -183,7 +184,7 @@ class ExpenseScreen extends StatelessWidget {
     );
   }
 
-  Widget datePicker() {
+  Widget datePicker(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 5, right: 10),
       child: DropdownMenu(
@@ -196,13 +197,21 @@ class ExpenseScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastmonth", label: "Last month"),
           DropdownMenuEntry(value: "thisyear", label: "This year"),
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
+          DropdownMenuEntry(value: "custom", label: "Custom"),
         ],
-        onSelected: (value) {
+        onSelected: (value) async{
           refreshController.loadFailed();
           _expenseController.date = value!;
           if (value == 'all') {
             _expenseController.getAll();
-          } else {
+          }else if(value == 'custom') {
+            List<DateTime>? dateTimeList = await showOmniDateTimeRangePicker(context: context);
+            if(dateTimeList!=null){
+              String startDate = DateTime(dateTimeList[0].year, dateTimeList[0].month, dateTimeList[0].day).toString();
+              String endDate = DateTime(dateTimeList[1].year, dateTimeList[1].month, dateTimeList[1].day+1).toString();
+              _expenseController.getAll(date: {'start': startDate, 'end': endDate});
+            }
+          }else {
             _expenseController.getAll(date: daterangeCalculate(value));
           }
         },

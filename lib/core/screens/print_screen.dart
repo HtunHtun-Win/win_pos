@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:typed_data';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:win_pos/core/service/pdf_service.dart';
 import 'package:win_pos/core/service/png_voucher_service.dart';
 import 'package:win_pos/core/widgets/custom_btn.dart';
@@ -97,7 +95,8 @@ class _PrintScreenState extends State<PrintScreen> {
             children: [
               Expanded(
                 child: CustomBtn(
-                  fun: () async {
+                  bgColor: size==PdfPageFormat.roll80 ? Colors.grey : null,
+                  fun: size==PdfPageFormat.roll80 ? (){} :  () async {
                     PdfService pdfService = PdfService(
                       size: size,
                       shopModel: widget.shopModel,
@@ -181,7 +180,7 @@ class _PrintScreenState extends State<PrintScreen> {
   Widget sizeBtn({var value, required String label}) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: size == value ? Colors.grey : Colors.blue,
+        backgroundColor: size == value ? Colors.blueGrey : Colors.blue,
         foregroundColor: Colors.white,
       ),
       onPressed: () {

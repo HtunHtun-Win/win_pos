@@ -54,6 +54,7 @@ dependencies:
   esc_pos_utils_plus: ^2.0.4
   print_bluetooth_thermal: ^1.1.6
   device_info_plus: ^11.1.0
+  omni_datetime_picker: ^2.3.1
 
 dev_dependencies:
   flutter_test:

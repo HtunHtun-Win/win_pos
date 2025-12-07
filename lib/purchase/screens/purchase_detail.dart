@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:win_pos/core/screens/print_screen.dart';
 import 'package:win_pos/purchase/controller/purchase_controller.dart';
 import '../controller/purchase_detail_controller.dart';
 import '../models/purchase_model.dart';
