@@ -28,7 +28,7 @@ class PurchaseDetail extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Purchase Detail"),
         backgroundColor: Theme.of(context).primaryColor,
-        actions: [
+        // actions: [
           // IconButton(
           //     onPressed: () async {
           //       Get.defaultDialog(
@@ -56,14 +56,14 @@ class PurchaseDetail extends StatelessWidget {
           //     icon: const Icon(
           //       Icons.delete,
           //     )),
-          IconButton(
-              onPressed: () async {
-              },
-              icon: const Icon(
-                Icons.print,
-                color: Colors.white,
-              )),
-        ],
+          // IconButton(
+          //     onPressed: () async {
+          //     },
+          //     icon: const Icon(
+          //       Icons.print,
+          //       color: Colors.white,
+          //     )),
+        // ],
       ),
       body: Container(
         child: Column(
