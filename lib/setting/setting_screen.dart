@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/screens/category_screen.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/setting/controller/printer_controller.dart';
 import 'package:win_pos/setting/data_management_screen.dart';
+import 'package:win_pos/setting/printer_select_screen.dart';
 import 'package:win_pos/shop/shop_info_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
@@ -17,6 +19,8 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserController controller = Get.find();
+    PrinterController printerController = Get.find<PrinterController>();
+    
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -34,6 +38,9 @@ class SettingScreen extends StatelessWidget {
           children: [
             ListItem(context, const Icon(Icons.house), "Shop", () {
               Get.to(() => ShopInfoScreen());
+            }),
+            ListItem(context, const Icon(Icons.house), "Printer", () {
+              Get.to(() => PrinterSelectScreen());
             }),
             ListItem(context, const Icon(Icons.people), "Users", () {
               Get.to(() => UserScreen());
