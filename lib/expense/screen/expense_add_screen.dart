@@ -1,5 +1,7 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -10,13 +12,13 @@ class ExpenseAddScreen extends StatelessWidget {
   ExpenseAddScreen({super.key});
 
   final ExpenseController _expenseController = Get.find();
+  TextEditingController amountController = TextEditingController();
+  TextEditingController descController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
   int flowType = 2;
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController amountController = TextEditingController();
-    TextEditingController descController = TextEditingController();
-    TextEditingController noteController = TextEditingController();
     amountController.text = '0';
     return Scaffold(
       appBar: AppBar(
@@ -40,9 +42,34 @@ class ExpenseAddScreen extends StatelessWidget {
                 filter: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
                 ]),
-            userInput("Description", descController, type: TextInputType.text),
-            userInput("Note", noteController, type: TextInputType.text),
-            flowDropdown()
+            userInput("Description", descController, type: TextInputType.text,
+                onChange: (value) {
+                  _expenseController.getDescByKeyword(value);
+                }),
+            Expanded(
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      userInput("Note (Optional)", noteController,
+                          type: TextInputType.text),
+                      flowDropdown(),
+                    ],
+                  ),
+                  Obx(() {
+                    return _expenseController.searchList.isEmpty
+                        ? Container()
+                        : ListView.builder(
+                      itemCount: _expenseController.searchList.length,
+                      itemBuilder: (context, index) {
+                        var cat = _expenseController.searchList[index];
+                        return searchItem(context, cat);
+                      },
+                    );
+                  }),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -67,7 +94,7 @@ class ExpenseAddScreen extends StatelessWidget {
     }
   }
 
-  Widget userInput(text, controller, {type, filter}) {
+  Widget userInput(text, controller, {type, filter, hint, onChange}) {
     return Container(
       margin: const EdgeInsets.all(5),
       child: TextField(
@@ -75,9 +102,10 @@ class ExpenseAddScreen extends StatelessWidget {
         inputFormatters: filter,
         controller: controller,
         decoration: InputDecoration(
-          label: Text(text),
-          border: const OutlineInputBorder(),
-        ),
+            label: Text(text),
+            border: const OutlineInputBorder(),
+            hint: Text(hint ?? "")),
+        onChanged: onChange,
       ),
     );
   }
@@ -94,6 +122,27 @@ class ExpenseAddScreen extends StatelessWidget {
         ],
         onSelected: (value) {
           flowType = value!;
+        },
+      ),
+    );
+  }
+
+  Widget searchItem(context, String name) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.inversePrimary,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withValues(alpha: .5),
+                offset: const Offset(5, 5),
+                blurRadius: 10)
+          ]),
+      child: ListTile(
+        title: Text(name),
+        onTap: () {
+          descController.text = name;
+          _expenseController.searchList.value = [];
         },
       ),
     );
