@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -9,15 +10,17 @@ import 'package:win_pos/expense/model/expense_model.dart';
 // ignore: must_be_immutable
 class ExpenseEditScreen extends StatelessWidget {
   final ExpenseModel expense;
+
   ExpenseEditScreen(this.expense, {super.key});
+
   final ExpenseController _expenseController = Get.find();
+  TextEditingController amountController = TextEditingController();
+  TextEditingController descController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
   int flowType = 2;
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController amountController = TextEditingController();
-    TextEditingController descController = TextEditingController();
-    TextEditingController noteController = TextEditingController();
     amountController.text = expense.amount.toString();
     descController.text = expense.description!;
     noteController.text = expense.note!;
@@ -39,17 +42,39 @@ class ExpenseEditScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            userInput(
-                "Amount",
-                amountController,
+            userInput("Amount", amountController,
                 type: TextInputType.number,
-                filter : <TextInputFormatter>[
+                filter: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly
-                ]
+                ]),
+            userInput("Description", descController, type: TextInputType.text,
+                onChange: (value) {
+                  _expenseController.getDescByKeyword(value);
+                }),
+            Expanded(
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      userInput("Note (Optional)", noteController,
+                          type: TextInputType.text),
+                      flowDropdown(),
+                    ],
+                  ),
+                  Obx(() {
+                    return _expenseController.searchList.isEmpty
+                        ? Container()
+                        : ListView.builder(
+                      itemCount: _expenseController.searchList.length,
+                      itemBuilder: (context, index) {
+                        var cat = _expenseController.searchList[index];
+                        return searchItem(context, cat);
+                      },
+                    );
+                  }),
+                ],
+              ),
             ),
-            userInput("Description", descController, type: TextInputType.text),
-            userInput("Note", noteController, type: TextInputType.text),
-            flowDropdown()
           ],
         ),
       ),
@@ -74,7 +99,7 @@ class ExpenseEditScreen extends StatelessWidget {
     }
   }
 
-  Widget userInput(text, controller, {type,filter}) {
+  Widget userInput(text, controller, {type, filter, onChange}) {
     return Container(
       margin: const EdgeInsets.all(5),
       child: TextField(
@@ -85,6 +110,7 @@ class ExpenseEditScreen extends StatelessWidget {
           label: Text(text),
           border: const OutlineInputBorder(),
         ),
+        onChanged: onChange,
       ),
     );
   }
@@ -101,6 +127,27 @@ class ExpenseEditScreen extends StatelessWidget {
         ],
         onSelected: (value) {
           flowType = value!;
+        },
+      ),
+    );
+  }
+
+  Widget searchItem(context, String name) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.inversePrimary,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withValues(alpha: .5),
+                offset: const Offset(5, 5),
+                blurRadius: 10)
+          ]),
+      child: ListTile(
+        title: Text(name),
+        onTap: () {
+          descController.text = name;
+          _expenseController.searchList.value = [];
         },
       ),
     );
