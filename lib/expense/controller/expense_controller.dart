@@ -10,9 +10,12 @@ class ExpenseController extends GetxController {
   var totalExpense = 0.obs;
   var totalBalance = 0.obs;
   String date = "today";
+  String desc = "all";
 
   //for pull to refresh
   var showExpenseList = [].obs;
+  var descList = [].obs;
+  var searchList = [].obs;
   var maxCount = 10;
 
   // @override
@@ -21,13 +24,17 @@ class ExpenseController extends GetxController {
   //   getAll();
   // }
 
-  Future<void> getAll({Map? date}) async {
+  Future<void> getAll({Map? date, String? desc}) async {
     maxCount = 10;
     late var datas;
-    if (date == null) {
+    if (date == null && desc == null) {
       datas = await _expenseService.getAll();
-    } else {
-      datas = await _expenseService.getAllByDate(date["start"], date["end"]);
+    } else if (date != null && desc == null) {
+      datas = await _expenseService.getAllByFilter(date["start"], date["end"],"all");
+    } else if (date == null && desc != null) {
+      datas = await _expenseService.getAllByDesc(desc);
+    }else {
+      datas = await _expenseService.getAllByFilter(date?["start"], date?["end"],desc!);
     }
     expenseList.clear();
     totalIncome = 0.obs;
@@ -52,15 +59,32 @@ class ExpenseController extends GetxController {
     totalBalance.value = totalIncome.value - totalExpense.value;
   }
 
+  Future<void> getAllDesc() async {
+    descList.clear();
+    var datas = await _expenseService.getAllDesc();
+    for (var data in datas) {
+      descList.add(data["description"]);
+    }
+  }
+
+  Future<void> getDescByKeyword(String keyword) async {
+    searchList.clear();
+    var datas = await _expenseService.getDescByKeyword(keyword);
+    for (var data in datas) {
+      searchList.add(data["description"]);
+    }
+  }
+
   Future<Map> addExpense(
       int amount, String description, String note, int type, int userId) async {
     var num = await _expenseService.addExpense(
         amount, description, note, type, userId);
-    if(date=="all"){
+    if (date == "all") {
       getAll();
-    }else{
-      getAll(date:daterangeCalculate(date));
+    } else {
+      getAll(date: daterangeCalculate(date));
     }
+    getAllDesc();
     return num;
   }
 
@@ -68,20 +92,21 @@ class ExpenseController extends GetxController {
       int type, int userId) async {
     var num = await _expenseService.updateExpense(
         id, amount, description, note, type, userId);
-    if(date=="all"){
+    if (date == "all") {
       getAll();
-    }else{
-      getAll(date:daterangeCalculate(date));
+    } else {
+      getAll(date: daterangeCalculate(date));
     }
+    getAllDesc();
     return num;
   }
 
   Future<void> deleteExpense(int id) async {
     await _expenseService.deleteExpense(id);
-    if(date=="all"){
+    if (date == "all") {
       getAll();
-    }else{
-      getAll(date:daterangeCalculate(date));
+    } else {
+      getAll(date: daterangeCalculate(date));
     }
   }
 

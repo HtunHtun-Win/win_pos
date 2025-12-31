@@ -7,8 +7,20 @@ class ExpenseService {
     return _expenseRepository.getAll();
   }
 
-  Future<List> getAllByDate(String startDate,String endDate) async {
-    return _expenseRepository.getAllByDate(startDate, endDate);
+  Future<List> getAllByDesc(String desc) async{
+    return _expenseRepository.getAllByDesc(desc);
+  }
+
+  Future<List> getAllDesc() async{
+    return _expenseRepository.getAllDesc();
+  }
+
+  Future<List> getDescByKeyword(String keyword) async{
+    return _expenseRepository.getDescByKeyword(keyword);
+  }
+
+  Future<List> getAllByFilter(String startDate,String endDate,String desc) async {
+    return _expenseRepository.getAllByFilter(startDate, endDate,desc);
   }
 
   Future<Map> addExpense(
