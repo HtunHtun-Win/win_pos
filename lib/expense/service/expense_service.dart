@@ -19,6 +19,10 @@ class ExpenseService {
     return _expenseRepository.getDescByKeyword(keyword);
   }
 
+  Future<int> updateDesc(String oldValue,String newValue) async{
+    return _expenseRepository.updateDesc(oldValue,newValue);
+  }
+
   Future<List> getAllByFilter(String startDate,String endDate,String desc) async {
     return _expenseRepository.getAllByFilter(startDate, endDate,desc);
   }

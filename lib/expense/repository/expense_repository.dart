@@ -32,6 +32,18 @@ class ExpenseRepository{
     );
   }
 
+  Future<int> updateDesc(String oldValue , String newValue) async{
+    final database = await dbObj.database;
+    return await database.update(
+      TABLE_NAME,
+      {
+        "description" : newValue,
+      },
+      where: "description=?",
+      whereArgs: [oldValue]
+    );
+  }
+
   Future<List> getDescByKeyword(String keyword) async{
     final database = await dbObj.database;
     keyword = keyword.length>=1 ? keyword : "-1";

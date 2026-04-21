@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/screens/category_screen.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/expense/screen/expense_category_edit_screen.dart';
 import 'package:win_pos/setting/controller/printer_controller.dart';
 import 'package:win_pos/setting/data_management_screen.dart';
 import 'package:win_pos/setting/printer_select_screen.dart';
@@ -47,6 +48,9 @@ class SettingScreen extends StatelessWidget {
             }),
             ListItem(context, const Icon(Icons.category), "Category", () {
               Get.to(() => CategoryScreen());
+            }),
+            ListItem(context, const Icon(Icons.money), "Expense Category", () {
+              Get.to(() => ExpenseCategoryEditScreen());
             }),
             ListItem(context, const Icon(Icons.payment), "Payment Method", () {
               Get.to(() => PaymentScreen());

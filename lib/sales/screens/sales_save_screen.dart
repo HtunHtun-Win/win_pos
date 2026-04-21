@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/customer/controller/customer_controller.dart';
+import 'package:win_pos/core/screens/print_screen.dart';
 import 'package:win_pos/payment/controller/payment_controller.dart';
+import 'package:win_pos/sales/controller/sales_detail_controller.dart';
+import 'package:win_pos/sales/models/sale_model.dart';
+import 'package:win_pos/sales/screens/sales_detail.dart';
+import 'package:win_pos/sales/screens/sales_screen.dart';
+import 'package:win_pos/shop/shop_info_controller.dart';
+import 'package:win_pos/shop/shop_model.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import '../../core/functions/date_range_calc.dart';
 import '../controller/sales_controller.dart';
@@ -13,6 +20,10 @@ class SalesSaveScreen extends StatelessWidget {
   SalesSaveScreen({super.key});
   SalesController salesController = Get.find();
   UserController userController = Get.find();
+  //
+  ShopInfoController shopInfoController = Get.find();
+  SalesDetailController salesDetailController = Get.put(SalesDetailController());
+  //
   CustomerController customerController = CustomerController();
   PaymentController paymentController = PaymentController();
   TextEditingController phoneController = TextEditingController();
@@ -24,6 +35,8 @@ class SalesSaveScreen extends StatelessWidget {
   int totalPrice = 0;
   int paymentId = 1;
 
+  late ShopModel shopModel;
+
   @override
   Widget build(BuildContext context) {
     customerController.getAll();
@@ -31,6 +44,9 @@ class SalesSaveScreen extends StatelessWidget {
     netAmountController.text = salesController.totalAmount.toString();
     totalPrice = salesController.totalAmount.value;
     totalController.text = totalPrice.toString();
+    if (shopInfoController.shop.isNotEmpty) {
+      shopModel = ShopModel.fromMap(shopInfoController.shop);
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Save Vouchers"),
@@ -40,7 +56,12 @@ class SalesSaveScreen extends StatelessWidget {
               onPressed: () {
                 onSave();
               },
-              icon: const Icon(Icons.save))
+              icon: const Icon(Icons.save)),
+          IconButton(
+              onPressed: () {
+                onPrint();
+              },
+              icon: const Icon(Icons.print))
         ],
       ),
       body: SingleChildScrollView(
@@ -86,6 +107,32 @@ class SalesSaveScreen extends StatelessWidget {
     }
     salesController.getTotal();
     Get.back();
+  }
+
+  void onPrint() async{
+    Map saleMap = {
+      "customer_id": customerId,
+      "user_id": userController.current_user["id"],
+      "net_price": salesController.totalAmount.value,
+      "discount": salesController.discount.value,
+      "total_price": totalPrice,
+      "payment_type_id": paymentId,
+    };
+    int saleId = await salesController.addSale(saleMap, salesController.cart);
+    salesController.cart.clear();
+    if(salesController.selectedDate == 'all') {
+      salesController.getAllVouchers();
+    } else {
+      salesController.getAllVouchers(map: daterangeCalculate(salesController.selectedDate));
+    }
+    salesController.getTotal();
+    var voucher = await salesController.getVoucherById(saleId);
+    salesDetailController.getSaleDetail(saleId);
+    Get.off(() => PrintScreen(
+      shopModel: shopModel,
+      voucher: voucher,
+      saleDetailModels: salesDetailController.saleDatas,
+    ));
   }
 
   Widget customersBox() {

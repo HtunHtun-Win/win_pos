@@ -24,6 +24,14 @@ class SalesRepository {
       """);
   }
 
+  Future<List> getVoucherById(int id) async {
+    final database = await dbObj.database;
+    return await database.rawQuery("""
+      SELECT sales.id,sales.sale_no,customers.name as customer,users.name as user,sales.net_price,sales.discount,sales.total_price,payment_type.name as payment,sales.created_at 
+      FROM sales,customers,users,payment_type WHERE sales.id=$id AND sales.isdeleted=0 AND sales.customer_id=customers.id AND sales.user_id=users.id AND sales.payment_type_id=payment_type.id ORDER BY sales.id DESC;
+      """);
+  }
+
   Future<List> getVouchersDate(Map date) async {
     final database = await dbObj.database;
     return await database.rawQuery("""

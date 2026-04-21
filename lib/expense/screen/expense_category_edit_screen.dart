@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/get_instance.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
 
 // ignore: must_be_immutable
-class ExpenseAddScreen extends StatelessWidget {
-  ExpenseAddScreen({super.key});
+class ExpenseCategoryEditScreen extends StatelessWidget {
+  ExpenseCategoryEditScreen({super.key});
 
-  final ExpenseController _expenseController = Get.find();
-  TextEditingController amountController = TextEditingController();
+  final ExpenseController _expenseController = ExpenseController();
   TextEditingController descController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
+  TextEditingController newValueController = TextEditingController();
   int flowType = 2;
 
   @override
   Widget build(BuildContext context) {
-    amountController.text = '0';
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Expense"),
+        title: const Text("Edit Expense Category"),
         // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
-              onPressed: () {
-                onSave(amountController, descController, noteController);
+              onPressed: () async{
+                await _expenseController.updateDesc(descController.text, newValueController.text);
               },
               icon: const Icon(Icons.save))
         ],
@@ -36,12 +30,7 @@ class ExpenseAddScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            userInput("Amount", amountController,
-                type: TextInputType.number,
-                filter: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ]),
-            userInput("Description", descController, type: TextInputType.text,
+            userInput("Old Value", descController, type: TextInputType.text,
                 onChange: (value) {
                   _expenseController.getDescByKeyword(value);
                 }),
@@ -50,9 +39,8 @@ class ExpenseAddScreen extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      userInput("Note (Optional)", noteController,
+                      userInput("New Value", newValueController,
                           type: TextInputType.text),
-                      flowDropdown(),
                     ],
                   ),
                   Obx(() {
@@ -75,24 +63,6 @@ class ExpenseAddScreen extends StatelessWidget {
     );
   }
 
-  void onSave(
-      TextEditingController amountController,
-      TextEditingController descController,
-      TextEditingController noteController) async {
-    var result = await _expenseController.addExpense(
-      int.parse(amountController.text),
-      descController.text,
-      noteController.text,
-      flowType,
-      1,
-    );
-    if (result['msg'] == "null") {
-      Get.snackbar("Null!", "Amount and description can't be empty");
-    } else if (result['msg'] == 'success') {
-      Get.back();
-    }
-  }
-
   Widget userInput(text, controller, {type, filter, hint, onChange}) {
     return Container(
       margin: const EdgeInsets.all(5),
@@ -105,23 +75,6 @@ class ExpenseAddScreen extends StatelessWidget {
             border: const OutlineInputBorder(),
             hint: Text(hint ?? "")),
         onChanged: onChange,
-      ),
-    );
-  }
-
-  Widget flowDropdown() {
-    return Container(
-      margin: const EdgeInsets.all(5),
-      child: DropdownMenu(
-        width: double.infinity,
-        initialSelection: 2,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: 1, label: "Income"),
-          DropdownMenuEntry(value: 2, label: "Expense"),
-        ],
-        onSelected: (value) {
-          flowType = value!;
-        },
       ),
     );
   }

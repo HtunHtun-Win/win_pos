@@ -19,6 +19,10 @@ class SalesService {
     return await salesRepository.getAllVouchers();
   }
 
+  Future<List> getVoucherById(int id) async {
+    return await salesRepository.getVoucherById(id);
+  }
+
   Future<int> addSale(Map sale, List<CartModel> cart) async {
     int saleId = await salesRepository.addSale(sale, cart);
     return saleId;
