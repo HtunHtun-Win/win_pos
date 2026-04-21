@@ -43,7 +43,14 @@ class VoucherItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(finalDate),
-            Text(voucher.customer!),
+            SizedBox(
+              width: 120,
+              child: Text(voucher.customer!,
+                maxLines: 1,
+                softWrap: false,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         onTap: () {

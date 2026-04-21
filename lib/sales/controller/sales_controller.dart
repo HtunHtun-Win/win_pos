@@ -44,6 +44,11 @@ class SalesController extends GetxController {
     }
   }
 
+  Future<SaleModel> getVoucherById(int id) async {
+    var datas = await salesService.getVoucherById(id);
+    return SaleModel.fromMap(datas[0]);
+  }
+
   void addToCart(ProductModel product) {
     bool isContain = false;
     for (var item in cart) {

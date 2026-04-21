@@ -34,7 +34,7 @@ class SalesScreen extends StatelessWidget {
                   );
                 }
               },
-              icon: const Icon(Icons.save))
+              icon: const Icon(Icons.check))
         ],
       ),
       body: Container(
