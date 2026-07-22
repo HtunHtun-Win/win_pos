@@ -41,7 +41,7 @@ class SettingScreen extends StatelessWidget {
               Get.to(() => ShopInfoScreen());
             }),
             ListItem(context, const Icon(Icons.house), "Printer", () {
-              Get.to(() => PrinterSelectScreen());
+              Get.to(() => const PrinterSelectScreen());
             }),
             ListItem(context, const Icon(Icons.people), "Users", () {
               Get.to(() => UserScreen());
