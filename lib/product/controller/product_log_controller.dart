@@ -50,7 +50,7 @@ class ProductLogController extends GetxController {
 
   Future<void> getAllLog({Map? map, required int pid}) async {
     var datas = await productLogService.getAllLog(map: map, pid: pid);
-    var pdatas = await productLogService.getAllProduct();
+    // var pdatas = await productLogService.getAllProduct();
     logs.clear();
     // products.clear();
     for (var data in datas) {

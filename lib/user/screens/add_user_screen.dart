@@ -47,49 +47,36 @@ class _AddUserScreenState extends State<AddUserScreen> {
               height: 5,
             ),
             //for role selecter
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    const Text("Admin"),
-                    Radio(
-                        value: 1,
-                        groupValue: currentOpt,
-                        onChanged: (value) {
-                          setState(() {
-                            currentOpt = 1;
-                          });
-                        })
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text("Sale"),
-                    Radio(
-                        value: 2,
-                        groupValue: currentOpt,
-                        onChanged: (value) {
-                          setState(() {
-                            currentOpt = 2;
-                          });
-                        })
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text("Purchase"),
-                    Radio(
-                        value: 3,
-                        groupValue: currentOpt,
-                        onChanged: (value) {
-                          setState(() {
-                            currentOpt = 3;
-                          });
-                        })
-                  ],
-                ),
-              ],
+            RadioGroup<int>(
+              groupValue: currentOpt,
+              onChanged: (int? value) {
+                setState(() {
+                  currentOpt = value!;
+                });
+              },
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Text("Admin"),
+                      Radio<int>(value: 1)
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text("Sale"),
+                      Radio(value: 2)
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text("Purchase"),
+                      Radio(value: 3)
+                    ],
+                  ),
+                ],
+              ),
             ),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               TextButton(
