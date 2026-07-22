@@ -12,13 +12,8 @@ import 'package:image/image.dart' as img;
 class PrinterController extends GetxController {
   var state = PrinterState.initial().obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
   void getDevices() async {
-    var status = await PrintBluetoothThermal.connectionStatus;
+    // var status = await PrintBluetoothThermal.connectionStatus;
     state.value = state.value.copyWith(devices: [], isLoading: true);
     try {
       final devices = await PrintBluetoothThermal.pairedBluetooths;
@@ -121,7 +116,7 @@ class PrinterController extends GetxController {
     // 🖼️ Build printable image with voucher layout
     final pictureRecorder = PictureRecorder();
     final canvas = Canvas(pictureRecorder);
-    final paint = Paint();
+    // final paint = Paint();
     var textStyle = const TextStyle(fontSize: 26, color: Colors.black);
     var boldStyle = const TextStyle(
       fontSize: 30,
