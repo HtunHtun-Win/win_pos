@@ -21,25 +21,33 @@ class DataManagementScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          ListItem(context, const Icon(Icons.backup), "Data Backup", () async{
+          ListItem(context, const Icon(Icons.backup), "Data Backup", () async {
             await exportDatabase();
           }),
-          ListItem(context, const Icon(Icons.restore), "Data Restore", () async{
+          ListItem(context, const Icon(Icons.restore), "Data Restore",
+              () async {
             await importDatabase();
           }),
-          ListItem(context, const Icon(Icons.delete_forever), "Delete Everything", () async{
-            await Get.defaultDialog(
-              title: "Format Everything",
-              middleText: "Are you sure?",
+          ListItem(
+              context, const Icon(Icons.delete_forever), "Delete Everything",
+              () async {
+            await Get.dialog(AlertDialog(
+              title: const Text("Format Everything"),
+              content: const Text("Backup data before format."),
               actions: [
-                TextButton(onPressed: (){
-                  Get.back();
-                }, child: const Text("No")),
-                TextButton(onPressed: () async{
-                  await format();
-                }, child: const Text("Yes")),
-              ]
-            );
+                TextButton(
+                    onPressed: () async {
+                      Get.back();
+                      await format();
+                    },
+                    child: const Text("Yes")),
+                TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text("No")),
+              ],
+            ));
           }),
         ],
       ),
@@ -72,11 +80,11 @@ class DataManagementScreen extends StatelessWidget {
     }
   }
 
-
   Future<String> getPath() async {
     var filePath = '';
     var date = DateTime.now();
-    final fileName = "LightPOS_${date.day}_${date.month}_${date.year}_(${date.hour}h-${date.minute}min).zip";
+    final fileName =
+        "LightPOS_${date.day}_${date.month}_${date.year}_(${date.hour}h-${date.minute}min).zip";
     if (Platform.isAndroid) {
       await _getPermission();
       final directory = Directory('/storage/emulated/0/Download');
@@ -92,26 +100,31 @@ class DataManagementScreen extends StatelessWidget {
   }
 
   Future<void> exportDatabase() async {
-      try {
-        // Get the path to the current database
-        Directory documentsDirectory = await getApplicationDocumentsDirectory();
-        String dbPath = join(documentsDirectory.path, "winpos.db");
+    try {
+      // Get the path to the current database
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      String dbPath = join(documentsDirectory.path, "winpos.db");
 
-        // Get the external storage directory path for Android
-        String externalPath = await getPath();
+      // Get the external storage directory path for Android
+      String externalPath = await getPath();
 
-        // Copy the database to the backup location
-        await File(dbPath).copy(externalPath);
-        await Get.defaultDialog(
-          title: "Success!",
-          middleText: "Backup file saved in download folder",
-          titleStyle: const TextStyle(color: Colors.black),
-          middleTextStyle: const TextStyle(color: Colors.black),
-        );
-      } catch (e) {
-        // print(e.toString());
-        Get.snackbar("Error", "$e");
-      }
+      // Copy the database to the backup location
+      await File(dbPath).copy(externalPath);
+      Get.dialog(AlertDialog(
+        title: const Text("Success"),
+        content: const Text("Backup file was saved in download folder."),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"))
+        ],
+      ));
+    } catch (e) {
+      // print(e.toString());
+      Get.snackbar("Error", "$e");
+    }
   }
 
   Future<void> importDatabase() async {
@@ -136,63 +149,99 @@ class DataManagementScreen extends StatelessWidget {
         try {
           // Copy the picked file to the database path
           await pickedFile.copy(dbPath);
-          await Get.defaultDialog(
-            title: "Success!",
-            middleText: "Data restored successfully!",
-            titleStyle: const TextStyle(color: Colors.black),
-            middleTextStyle: const TextStyle(color: Colors.black),
-          );
+          Get.dialog(AlertDialog(
+            title: const Text("Success"),
+            content: const Text("Data restored successfully."),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text("OK"))
+            ],
+          ));
           Get.off(const LoginScreen());
         } catch (e) {
-          await Get.defaultDialog(
-            title: "Error",
-            middleText: e.toString(),
-            titleStyle: const TextStyle(color: Colors.black),
-            middleTextStyle: const TextStyle(color: Colors.black),
-          );
+          Get.dialog(AlertDialog(
+            title: const Text("Error"),
+            content: Text(e.toString()),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text("OK"))
+            ],
+          ));
         }
       } else {
-        await Get.defaultDialog(
-          title: "Error",
-          middleText: "No file selected or file path is null.",
-          titleStyle: const TextStyle(color: Colors.black),
-          middleTextStyle: const TextStyle(color: Colors.black),
-        );
+        Get.dialog(AlertDialog(
+          title: const Text("Error"),
+          content: const Text("No file selected or file path is null."),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: const Text("OK"))
+          ],
+        ));
       }
     } else {
-      await Get.defaultDialog(
-        title: "Error",
-        middleText: "Storage permission denied.",
-        titleStyle: const TextStyle(color: Colors.black),
-        middleTextStyle: const TextStyle(color: Colors.black),
-      );
+      Get.dialog(AlertDialog(
+        title: const Text("Error"),
+        content: const Text("Storage permission denied."),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"))
+        ],
+      ));
     }
   }
 
-  Future<void> format() async{
+  Future<void> format() async {
     String DB_NAME = "winpos.db";
     // Get the application documents directory
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, DB_NAME);
-    try{
+    try {
       ByteData data = await rootBundle.load(join('assets/db', DB_NAME));
-      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      List<int> bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(path).writeAsBytes(bytes);
-      await Get.defaultDialog(
-        title: "Success!",
-        middleText: "Operation Success ! ",
-        titleStyle: const TextStyle(color: Colors.black),
-        middleTextStyle: const TextStyle(color: Colors.black),
-      );
+      Get.dialog(AlertDialog(
+        title: const Text("Success"),
+        content: const Text("Operation Success!"),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"))
+        ],
+      ));
       Get.off(const LoginScreen());
-    }catch(e){
-      Get.snackbar("Error", "$e");
+    } catch (e) {
+      Get.dialog(AlertDialog(
+        title: const Text("Error"),
+        content: Text(e.toString()),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"))
+        ],
+      ));
     }
   }
 
   Widget ListItem(context, icon, text, VoidCallback fun) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColor.withValues(alpha: 1),
           borderRadius: BorderRadius.circular(10)),

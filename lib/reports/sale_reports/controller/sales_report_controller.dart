@@ -50,6 +50,23 @@ class SalesReportController extends GetxController{
     }
   }
 
+  Future<void> getMostSaleItems({int? catId,Map? date}) async {
+    maxCount = 10;
+    items.clear();
+    var datas = await service.getMostSaleItems(catId: catId,date: date);
+    items = datas;
+    itemTotal();
+    if (items.isNotEmpty) {
+      showItems.clear();
+      maxCount = items.length < maxCount ? items.length : maxCount;
+      for (int i = 0; i < maxCount; i++) {
+        showItems.add(items[i]);
+      }
+    }else{
+      showItems.clear();
+    }
+  }
+
   int? getTotal(){
     int total = 0;
     for(var t in vouchers){

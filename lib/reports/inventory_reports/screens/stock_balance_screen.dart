@@ -9,6 +9,7 @@ import '../../../product/models/product_model.dart';
 // ignore: must_be_immutable
 class StockBalanceScreen extends StatelessWidget {
   StockBalanceScreen({super.key});
+
   InventoryReportController reportController = InventoryReportController();
   CategoryController categoryController = Get.put(CategoryController());
   final refreshController = RefreshController();
@@ -69,27 +70,29 @@ class StockBalanceScreen extends StatelessWidget {
   }
 
   Widget stockItem({required ProductModel product}) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(product.name!),
-              Text("${product.quantity.toString()} pcs"),
-            ],
+    return Card(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(product.name!),
+                Text("${product.quantity.toString()} pcs"),
+              ],
+            ),
+            subtitle: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(product.code!),
+                Text("${product.sale_price.toString()} mmk"),
+              ],
+            ),
           ),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(product.code!),
-              Text("${product.sale_price.toString()} mmk"),
-            ],
-          ),
-        ),
-        const Divider(),
-      ],
+          // const Divider(),
+        ],
+      ),
     );
   }
 
@@ -118,8 +121,8 @@ class StockBalanceScreen extends StatelessWidget {
             reportController.getAll();
           }
         },
-        selectedItem:
-            "All", // Optional: Can be null if no initial selection is required
+        selectedItem: "All",
+        // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(

@@ -36,4 +36,21 @@ class SalesReportRepository {
         "$sql$endSql"
     );
   }
+
+  Future<List> getMostSaleItems({int? catId,Map? date}) async {
+    final database = await dbObj.database;
+    String sql = """
+    SELECT products.name,SUM(sales_detail.quantity) as quantity,SUM(sales_detail.quantity*sales_detail.price) as price
+    FROM products,sales_detail WHERE products.id=sales_detail.product_id """;
+    String endSql = "GROUP BY products.name ORDER BY quantity LIMIT 20;";
+    if(catId!=null){
+      sql+="AND products.category_id=$catId ";
+    }
+    if(date!=null){
+      sql+="AND sales_detail.created_at>'${date['start']}' AND sales_detail.created_at<'${date['end']}' ";
+    }
+    return await database.rawQuery(
+        "$sql$endSql"
+    );
+  }
 }

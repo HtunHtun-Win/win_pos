@@ -5,7 +5,7 @@ import 'package:win_pos/product/services/product_service.dart';
 class ProductController extends GetxController {
   ProductService productService = ProductService();
 
-  var products = [];
+  var products = [].obs;
   var purchasePriceLog = [].obs;
   //for pull to refresh
   var showProducts = [].obs;

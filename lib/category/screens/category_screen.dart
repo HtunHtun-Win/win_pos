@@ -51,24 +51,27 @@ class CategoryScreen extends StatelessWidget {
                   icon: const Icon(Icons.edit)),
               IconButton(
                   onPressed: () {
-                    Get.defaultDialog(
-                        title: "Delete!",
-                        middleText: "Are you sure to delete!",
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Text("Cancel"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              categoryController.deleteCategory(category.id!);
-                              Get.back();
-                            },
-                            child: const Text("Ok"),
-                          ),
-                        ]);
+                    Get.dialog(
+                        AlertDialog(
+                            title: const Text("Delete!"),
+                            content: const Text("Are you sure to delete!"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  categoryController.deleteCategory(category.id!);
+                                  Get.back();
+                                },
+                                child: const Text("Ok"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text("Cancel"),
+                              ),
+                            ]
+                        )
+                    );
                   },
                   icon: const Icon(Icons.delete)),
             ],

@@ -46,15 +46,25 @@ class CategoryEditScreen extends StatelessWidget {
                           nameController.text,
                           descController.text);
                       if (msg["msg"] == 'name_null') {
-                        Get.snackbar(
-                            "Empty name!", "Name field can't be empty!",
-                            colorText: Colors.white,
-                            backgroundColor: Colors.black.withValues(alpha: .4));
+                        Get.dialog(
+                            AlertDialog(
+                              title: const Text("Empty name!"),
+                              content: const Text("Name field can't be empty."),
+                              actions: [
+                                TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+                              ],
+                            )
+                        );
                       } else if (msg["msg"] == 'duplicate') {
-                        Get.snackbar(
-                            "Duplicate!", "This category is already exists!",
-                            colorText: Colors.white,
-                            backgroundColor: Colors.black.withValues(alpha: .4));
+                        Get.dialog(
+                            AlertDialog(
+                              title: const Text("Duplicate"),
+                              content: const Text("This category is already exists!"),
+                              actions: [
+                                TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+                              ],
+                            )
+                        );
                       } else {
                         Get.back();
                       }

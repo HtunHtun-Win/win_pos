@@ -93,12 +93,17 @@ class LoginScreen extends StatelessWidget {
                               Get.off(() => SalesVoucherScreen());
                             }
                           } else {
-                            Get.snackbar(
-                              "Invalid Credentials",
-                              "Wrong UserId or Password!",
-                              colorText: Colors.white,
-                              backgroundColor:
-                                  Colors.black.withValues(alpha: .3),
+                            Get.dialog(
+                              AlertDialog(
+                                title: const Text("Invalid Credentials"),
+                                content: const Text("Wrong UserId or Password!"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Get.back(),
+                                    child: const Text("OK"),
+                                  ),
+                                ],
+                              ),
                             );
                           }
                         },

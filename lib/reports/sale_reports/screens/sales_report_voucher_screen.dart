@@ -110,13 +110,16 @@ class SalesReportVoucherScreen extends StatelessWidget {
   }
 
   Widget reportListTile({required int index, required SaleModel voucher}) {
-    return ListTile(
-      title: Row(
-        children: [
-          Expanded(child: Text(index.toString())),
-          Expanded(flex: 2, child: Text(voucher.sale_no.toString())),
-          Expanded(flex: 2, child: Text(voucher.total_price.toString())),
-        ],
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Expanded(child: Text(index.toString())),
+            Expanded(flex: 2, child: Text(voucher.sale_no.toString())),
+            Expanded(flex: 2, child: Text(voucher.total_price.toString())),
+          ],
+        ),
       ),
     );
   }

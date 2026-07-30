@@ -223,11 +223,18 @@ class SalesScreen extends StatelessWidget {
                 if (quantity <= item.product.quantity!){
                   salesController.cart[index].quantity = quantity;
                 }else{
-                  Get.back();
-                  Get.snackbar(
-                    "Alert!","Not enough stock!",
-                    backgroundColor: Colors.black.withValues(alpha: .5),
-                    colorText: Colors.white,
+                  qtyController.text = item.product.quantity.toString();
+                  Get.dialog(
+                    AlertDialog(
+                      title: const Text("Not Enought Stock"),
+                      content: Text("Remaining stock is ${item.product.quantity!}"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Get.back(),
+                          child: const Text("OK"),
+                        ),
+                      ],
+                    ),
                   );
                 }
                 salesController.cart.refresh();

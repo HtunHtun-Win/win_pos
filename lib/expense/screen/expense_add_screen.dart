@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -52,17 +53,17 @@ class ExpenseAddScreen extends StatelessWidget {
                       flowDropdown(),
                     ],
                   ),
-                  Obx(() {
-                    return _expenseController.searchList.isEmpty
-                        ? Container()
-                        : ListView.builder(
-                      itemCount: _expenseController.searchList.length,
-                      itemBuilder: (context, index) {
-                        var cat = _expenseController.searchList[index];
-                        return searchItem(context, cat);
-                      },
-                    );
-                  }),
+                  // Obx(() {
+                  //   return _expenseController.searchList.isEmpty
+                  //       ? Container()
+                  //       : ListView.builder(
+                  //     itemCount: _expenseController.searchList.length,
+                  //     itemBuilder: (context, index) {
+                  //       var cat = _expenseController.searchList[index];
+                  //       return searchItem(context, cat);
+                  //     },
+                  //   );
+                  // }),
                 ],
               ),
             ),
@@ -84,7 +85,15 @@ class ExpenseAddScreen extends StatelessWidget {
       1,
     );
     if (result['msg'] == "null") {
-      Get.snackbar("Null!", "Amount and description can't be empty");
+      Get.dialog(
+          AlertDialog(
+            title: const Text("Null!"),
+            content: const Text("Amount and description can't be empty."),
+            actions: [
+              TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+            ],
+          )
+      );
     } else if (result['msg'] == 'success') {
       Get.back();
     }
@@ -109,16 +118,26 @@ class ExpenseAddScreen extends StatelessWidget {
   Widget flowDropdown() {
     return Container(
       margin: const EdgeInsets.all(5),
-      child: DropdownMenu(
-        width: double.infinity,
-        initialSelection: 2,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: 1, label: "Income"),
-          DropdownMenuEntry(value: 2, label: "Expense"),
-        ],
-        onSelected: (value) {
-          flowType = value!;
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            // labelText: "Select Type",
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: const ["Expense","Income"],
+        onChanged: (value) {
+          if(value=="Expense"){
+            flowType = 2;
+          }else{
+            flowType = 1;
+          }
         },
+        selectedItem: "Expense", // Optional: Can be null if no initial selection is required
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
       ),
     );
   }

@@ -20,7 +20,19 @@ class ExpenseCategoryEditScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () async{
-                await _expenseController.updateDesc(descController.text, newValueController.text);
+                if(newValueController.text.isEmpty) return;
+                int result = await _expenseController.updateDesc(descController.text, newValueController.text);
+                if(result != 0){
+                  Get.dialog(
+                      AlertDialog(
+                        title: const Text("Success!"),
+                        content: const Text("Exp category name successfully renamed."),
+                        actions: [
+                          TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+                        ],
+                      )
+                  );
+                }
               },
               icon: const Icon(Icons.save))
         ],

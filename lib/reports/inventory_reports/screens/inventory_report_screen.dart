@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/reports/inventory_reports/screens/sale_log_screen.dart';
 import 'package:win_pos/reports/inventory_reports/screens/stock_balance_screen.dart';
 import 'package:win_pos/reports/inventory_reports/screens/stock_balance_valuation_screen.dart';
 
@@ -26,6 +27,9 @@ class InventoryReportScreen extends StatelessWidget {
           if(user.role_id==1)
           ListItem(context, const Icon(Icons.inventory), "Stock Balance With Valuation", () {
             Get.to(() => StockBalanceValuationScreen());
+          }),
+          ListItem(context, const Icon(Icons.inventory), "Sale Price History", () {
+            Get.to(() => SaleLogScreen());
           }),
         ],
       ),

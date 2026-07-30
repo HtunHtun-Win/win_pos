@@ -15,4 +15,9 @@ class SalesReportService {
     return datas.map((data)=>SaleItemModel.fromJson(data)).toList();
   }
 
+  Future<List<SaleItemModel>> getMostSaleItems({int? catId,Map? date}) async {
+    List datas = await salesRepository.getMostSaleItems(catId: catId,date: date);
+    return datas.map((data)=>SaleItemModel.fromJson(data)).toList();
+  }
+
 }

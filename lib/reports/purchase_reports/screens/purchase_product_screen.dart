@@ -9,6 +9,7 @@ import '../controller/purchase_report_controller.dart';
 // ignore: must_be_immutable
 class PurchaseProductScreen extends StatelessWidget {
   PurchaseProductScreen({super.key});
+
   PurchaseReportController purchaseController =
       Get.put(PurchaseReportController());
   CategoryController categoryController = CategoryController();
@@ -109,13 +110,16 @@ class PurchaseProductScreen extends StatelessWidget {
   }
 
   Widget reportListTile({required PurchaseItemModel item}) {
-    return ListTile(
-      title: Row(
-        children: [
-          Expanded(child: Text(item.name.toString())),
-          Expanded(child: Text(item.quantity.toString())),
-          Expanded(child: Text(item.price.toString())),
-        ],
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Expanded(child: Text(item.name.toString())),
+            Expanded(child: Text(item.quantity.toString())),
+            Expanded(child: Text(item.price.toString())),
+          ],
+        ),
       ),
     );
   }
@@ -149,8 +153,8 @@ class PurchaseProductScreen extends StatelessWidget {
             date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem:
-            "All", // Optional: Can be null if no initial selection is required
+        selectedItem: "All",
+        // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(

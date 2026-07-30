@@ -96,33 +96,38 @@ class StockBalanceValuationScreen extends StatelessWidget {
   }
 
   Widget stockItem({required ProductValueModel product}){
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-               Text(
-                   product.name,
-                 style: const TextStyle(
-                   fontSize: 16,
-                   fontWeight: FontWeight.w500,
-                 ),
-               ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("${product.quantity.toString()} pcs"),
-                    Text("${product.price.toString()} MMK"),
-                    Text("${product.total.toString()} MMK"),
-                  ],
-                ),
-            ]
-          ),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Text(
+                       product.name,
+                     style: const TextStyle(
+                       fontSize: 16,
+                       fontWeight: FontWeight.w500,
+                     ),
+                   ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("${product.quantity.toString()} pcs"),
+                        Text("${product.price.toString()} MMK"),
+                        Text("${product.total.toString()} MMK"),
+                      ],
+                    ),
+                ]
+              ),
+            ),
+            // const Divider(),
+          ],
         ),
-        const Divider(),
-      ],
+      ),
     );
   }
 

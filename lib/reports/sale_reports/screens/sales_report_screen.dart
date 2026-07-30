@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/reports/sale_reports/screens/most_sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_report_voucher_screen.dart';
 
@@ -20,6 +21,9 @@ class SalesReportScreen extends StatelessWidget {
           }),
           ListItem(context, const Icon(Icons.inventory_2), "Sales Items", () {
             Get.to(() => SalesProductScreen());
+          }),
+          ListItem(context, const Icon(Icons.inventory), "Most Sales Items", () {
+            Get.to(() => MostSalesProductScreen());
           }),
         ],
       ),
