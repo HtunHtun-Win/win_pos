@@ -6,11 +6,13 @@ class InventoryReportController extends GetxController {
 
   var products = [];
   var productsValue = [];
+  var saleLog = [];
   var totalValue = 0.obs;
 
   //for pull to refresh
   var showProducts = [].obs;
   var showProductsValue = [].obs;
+  var showSalelog = [].obs;
   var maxCount = 10;
 
   Future<void> getAll({int? catId}) async {
@@ -47,6 +49,23 @@ class InventoryReportController extends GetxController {
     }
   }
 
+  Future<void> getSaleLog({int? pid,Map? date}) async {
+    maxCount = 10;
+    saleLog.clear();
+    var datas = await reportService.getSalePriceLog(pid: pid,date: date);
+    saleLog = datas;
+    getTotal();
+    if (saleLog.isNotEmpty) {
+      showSalelog.clear();
+      maxCount = saleLog.length < maxCount ? saleLog.length : maxCount;
+      for (int i = 0; i < maxCount; i++) {
+        showSalelog.add(saleLog[i]);
+      }
+    }else{
+      showSalelog.clear();
+    }
+  }
+
   void getTotal() {
     int total = 0;
     for (var t in productsValue) {
@@ -72,6 +91,17 @@ class InventoryReportController extends GetxController {
       int nextCount = rmData >= 10 ? 10 : rmData;
       for (int i = maxCount; i < maxCount + nextCount; i++) {
         showProductsValue.add(productsValue[i]);
+      }
+      maxCount += nextCount;
+    });
+  }
+
+  void saleLogLoadMore() {
+    Future.delayed(const Duration(microseconds: 1000), () {
+      int rmData = saleLog.length - maxCount;
+      int nextCount = rmData >= 10 ? 10 : rmData;
+      for (int i = maxCount; i < maxCount + nextCount; i++) {
+        showSalelog.add(saleLog[i]);
       }
       maxCount += nextCount;
     });

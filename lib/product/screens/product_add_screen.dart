@@ -93,9 +93,25 @@ class ProductAddScreen extends StatelessWidget {
     var map = await productController.addProduct(code, name, description,
         quantity, categoryId, purchasePrice, salePrice);
     if (map["msg"] == "null") {
-      Get.snackbar("Empty!", "Name, code and purchase price can't be empty...");
+      Get.dialog(
+          AlertDialog(
+            title: const Text("Empty!"),
+            content: const Text("Name, code and purchase price can't be empty..."),
+            actions: [
+              TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+            ],
+          )
+      );
     } else if (map["msg"] == "duplicate") {
-      Get.snackbar("Duplicate!", "This code is already exist...");
+      Get.dialog(
+          AlertDialog(
+            title: const Text("Duplicate!"),
+            content: const Text("This code is already exist..."),
+            actions: [
+              TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+            ],
+          )
+      );
     } else {
       Get.back();
     }

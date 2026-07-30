@@ -9,6 +9,7 @@ import '../controller/sales_report_controller.dart';
 // ignore: must_be_immutable
 class SalesProductScreen extends StatelessWidget {
   SalesProductScreen({super.key});
+
   SalesReportController salesController = Get.put(SalesReportController());
   CategoryController categoryController = CategoryController();
   String date = 'all';
@@ -36,7 +37,7 @@ class SalesProductScreen extends StatelessWidget {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child:  Text("Name")),
+                Expanded(child: Text("Name")),
                 Expanded(child: Text("Qty")),
                 Expanded(child: Text("Amount")),
               ],
@@ -63,8 +64,7 @@ class SalesProductScreen extends StatelessWidget {
                 );
               }),
               onLoading: () {
-                if (salesController.maxCount ==
-                    salesController.items.length) {
+                if (salesController.maxCount == salesController.items.length) {
                   refreshController.loadNoData();
                 } else {
                   salesController.itemLoadMore();
@@ -79,18 +79,24 @@ class SalesProductScreen extends StatelessWidget {
                   }),
             );
           })),
-          Obx((){
+          Obx(() {
             return Container(
               height: 50,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              child:ListTile(
-                title:  Row(
+              child: ListTile(
+                title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(salesController.itemTotalAmount.toString(),style: const TextStyle(color: Colors.white),),
+                    const Text(
+                      "Total",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      salesController.itemTotalAmount.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
@@ -101,20 +107,23 @@ class SalesProductScreen extends StatelessWidget {
     );
   }
 
-  Widget reportListTile({required SaleItemModel item}){
-    return ListTile(
-      title: Row(
-        children: [
-          Expanded(child: Text(item.name.toString())),
-          Expanded(child: Text(item.quantity.toString())),
-          Expanded(child: Text(item.price.toString())),
-        ],
+  Widget reportListTile({required SaleItemModel item}) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Expanded(child: Text(item.name.toString())),
+            Expanded(child: Text(item.quantity.toString())),
+            Expanded(child: Text(item.price.toString())),
+          ],
+        ),
       ),
     );
   }
 
   Widget categoryBox(BuildContext context) {
-    return Obx((){
+    return Obx(() {
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
@@ -123,23 +132,27 @@ class SalesProductScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: ['All']+categoryController.categories.map((category) => category.name.toString()).toList(),
+        items: ['All'] +
+            categoryController.categories
+                .map((category) => category.name.toString())
+                .toList(),
         onChanged: (value) {
           refreshController.loadFailed();
-          if(value!='All'){
+          if (value != 'All') {
             final selected = categoryController.categories.firstWhere(
-                  (category) => category.name == value,
+              (category) => category.name == value,
             );
             catId = selected.id;
-          }else{
+          } else {
             catId = null;
           }
           salesController.getSaleItems(
             catId: catId,
-            date: date!='all' ? daterangeCalculate(date) : null,
+            date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem: "All", // Optional: Can be null if no initial selection is required
+        selectedItem: "All",
+        // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
@@ -155,7 +168,7 @@ class SalesProductScreen extends StatelessWidget {
 
   Widget datePicker() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: DropdownMenu(
         initialSelection: "today",
         width: double.infinity,
@@ -171,10 +184,10 @@ class SalesProductScreen extends StatelessWidget {
         onSelected: (value) {
           refreshController.loadFailed();
           date = value!;
-            salesController.getSaleItems(
-              catId: catId,
-              date: value!='all' ? daterangeCalculate(date) : null,
-            );
+          salesController.getSaleItems(
+            catId: catId,
+            date: value != 'all' ? daterangeCalculate(date) : null,
+          );
         },
       ),
     );

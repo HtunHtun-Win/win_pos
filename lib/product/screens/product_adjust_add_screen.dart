@@ -16,7 +16,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
   int? pId;
   int? currentQty;
   int newQty = 0;
-  String type = 'adjust';
+  String type = 'Adjust';
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
             actions: [
               IconButton(
                   onPressed: () async {
-                    if (type == 'lose') {
+                    if (type == 'Lost') {
                       qtyController.text = '-${qtyController.text}';
                     }
                     await productLogController.addProductLog(
@@ -96,7 +96,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
                     border: OutlineInputBorder()),
                 onChanged: (value) {
                   value = value.isNotEmpty ? value : '0';
-                  if (type == 'lose') value = '-$value';
+                  if (type == 'Lost') value = '-$value';
                   newQty =
                       productLogController.selectedProduct['qty']! +
                           int.parse(value);
@@ -119,17 +119,43 @@ class ProductAdjustAddScreen extends StatelessWidget {
     );
   }
 
+  // Widget typeChange() {
+  //   return DropdownMenu(
+  //     initialSelection: "adjust",
+  //     width: double.infinity,
+  //     dropdownMenuEntries: const [
+  //       DropdownMenuEntry(value: "adjust", label: "Adjust"),
+  //       DropdownMenuEntry(value: "lose", label: "Lose"),
+  //     ],
+  //     onSelected: (value) {
+  //       type = value!;
+  //     },
+  //   );
+  // }
+
   Widget typeChange() {
-    return DropdownMenu(
-      initialSelection: "adjust",
-      width: double.infinity,
-      dropdownMenuEntries: const [
-        DropdownMenuEntry(value: "adjust", label: "Adjust"),
-        DropdownMenuEntry(value: "lose", label: "Lose"),
-      ],
-      onSelected: (value) {
+    return DropdownSearch<String>(
+      dropdownDecoratorProps: const DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          labelText: "Select Type",
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          border: OutlineInputBorder(),
+        ),
+      ),
+      items: const ["Adjust","Lost"],
+      onChanged: (value) {
         type = value!;
       },
+      selectedItem: "Adjust", // Optional: Can be null if no initial selection is required
+      popupProps: const PopupProps.menu(
+        showSearchBox: false,
+        searchFieldProps: TextFieldProps(
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: "Select Type",
+          ),
+        ),
+      ),
     );
   }
 
@@ -164,24 +190,5 @@ class ProductAdjustAddScreen extends StatelessWidget {
       ),
     );
   }
-
-  // Widget productList() {
-  //   return DropdownMenu(
-  //     enableFilter: true,
-  //     requestFocusOnTap: true,
-  //     hintText: "Search...",
-  //     width: 350,
-  //     dropdownMenuEntries: productLogController.products.value.map((product) {
-  //       return DropdownMenuEntry(
-  //           value: product, label: "${product.name} (${product.quantity} pcs)");
-  //     }).toList(),
-  //     onSelected: (value) {
-  //       pId = value.id;
-  //       currentQty = value.quantity;
-  //       productLogController.selectedProduct['pid'] = pId!;
-  //       productLogController.selectedProduct['qty'] = currentQty!;
-  //     },
-  //   );
-  // }
 
 }

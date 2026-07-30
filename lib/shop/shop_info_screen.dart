@@ -38,7 +38,15 @@ class ShopInfoScreen extends StatelessWidget {
                   onPressed: () async{
                     await shopInfoController.updateInfo(nameController.text,
                         addressController.text, phoneController.text);
-                    Get.snackbar("Success!", "Update Success!");
+                    Get.dialog(
+                        AlertDialog(
+                          title: const Text("Success"),
+                          content: const Text("Shop Info Successfully Updated."),
+                          actions: [
+                            TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+                          ],
+                        )
+                    );
                   },
                   child: const Text("Update"),
               ),

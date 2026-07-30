@@ -9,7 +9,9 @@ import '../controller/purchase_report_controller.dart';
 // ignore: must_be_immutable
 class PurchaseReportVoucherScreen extends StatelessWidget {
   PurchaseReportVoucherScreen({super.key});
-  PurchaseReportController purchaseController = Get.put(PurchaseReportController());
+
+  PurchaseReportController purchaseController =
+      Get.put(PurchaseReportController());
   SupplierController supplierController = SupplierController();
   int? supplierId;
   String date = 'today';
@@ -36,9 +38,9 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child:  Text("No.")),
-                Expanded(flex:2 ,child: Text("InvNo")),
-                Expanded(flex:2 ,child: Text("Amount")),
+                Expanded(child: Text("No.")),
+                Expanded(flex: 2, child: Text("InvNo")),
+                Expanded(flex: 2, child: Text("Amount")),
               ],
             ),
           ),
@@ -75,23 +77,29 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
                   itemCount: purchaseController.showVouchers.length,
                   itemBuilder: (context, index) {
                     var voucher = purchaseController.showVouchers[index];
-                    return reportListTile(index: index+1,voucher: voucher);
+                    return reportListTile(index: index + 1, voucher: voucher);
                   }),
             );
           })),
-          Obx((){
+          Obx(() {
             // salesController.getTotal();
             return Container(
               height: 50,
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              child:ListTile(
-                title:  Row(
+              child: ListTile(
+                title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(purchaseController.totalAmount.toString(),style: const TextStyle(color: Colors.white),),
+                    const Text(
+                      "Total",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      purchaseController.totalAmount.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
@@ -102,20 +110,23 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
     );
   }
 
-  Widget reportListTile({required int index,required PurchaseModel voucher}){
-    return ListTile(
-      title: Row(
-        children: [
-          Expanded(child: Text(index.toString())),
-          Expanded(flex: 2,child: Text(voucher.purchaseNo.toString())),
-          Expanded(flex: 2, child: Text(voucher.total_price.toString())),
-        ],
+  Widget reportListTile({required int index, required PurchaseModel voucher}) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Expanded(child: Text(index.toString())),
+            Expanded(flex: 2, child: Text(voucher.purchaseNo.toString())),
+            Expanded(flex: 2, child: Text(voucher.total_price.toString())),
+          ],
+        ),
       ),
     );
   }
 
   Widget customersBox() {
-    return Obx((){
+    return Obx(() {
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
@@ -124,23 +135,27 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: ['All']+supplierController.suppliers.map((customer) => customer.name.toString()).toList(),
+        items: ['All'] +
+            supplierController.suppliers
+                .map((customer) => customer.name.toString())
+                .toList(),
         onChanged: (value) {
           refreshController.loadFailed();
-          if(value!='All'){
+          if (value != 'All') {
             final supplier = supplierController.suppliers.firstWhere(
-                  (supplier) => supplier.name == value,
+              (supplier) => supplier.name == value,
             );
             supplierId = supplier.id;
-          }else{
+          } else {
             supplierId = null;
           }
           purchaseController.getAllVouchers(
             supplierId: supplierId,
-            date: date!='all' ? daterangeCalculate(date) : null,
+            date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem: "All", // Optional: Can be null if no initial selection is required
+        selectedItem: "All",
+        // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
@@ -174,8 +189,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
           date = value!;
           purchaseController.getAllVouchers(
               supplierId: supplierId,
-              date: value!='all' ? daterangeCalculate(date) : null
-          );
+              date: value != 'all' ? daterangeCalculate(date) : null);
         },
       ),
     );

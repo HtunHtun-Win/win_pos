@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/reports/inventory_reports/models/product_value_model.dart';
+import 'package:win_pos/reports/inventory_reports/models/sale_log_model.dart';
 import 'package:win_pos/reports/inventory_reports/repository/inventory_report_repository.dart';
 
 class InventoryReportService {
@@ -13,5 +16,10 @@ class InventoryReportService {
   Future<List<ProductValueModel>> getWithValue({int? catId}) async {
     var datas = await reportRepository.getWithValue(catId: catId);
     return datas.map((data) => ProductValueModel.fromJson(data)).toList();
+  }
+
+  Future<List<SaleLogModel>> getSalePriceLog({int? pid,Map? date}) async {
+    var datas = await reportRepository.getSalePriceLog(pid: pid,date: date);
+    return datas.map((data) => SaleLogModel.fromJson(data)).toList();
   }
 }

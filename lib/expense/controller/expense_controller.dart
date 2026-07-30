@@ -75,9 +75,9 @@ class ExpenseController extends GetxController {
     }
   }
 
-  Future<void> updateDesc(String oldValue,String newValue) async {
+  Future<int> updateDesc(String oldValue,String newValue) async {
     searchList.clear();
-    await _expenseService.updateDesc(oldValue, newValue);
+    return await _expenseService.updateDesc(oldValue, newValue);
   }
 
   Future<Map> addExpense(

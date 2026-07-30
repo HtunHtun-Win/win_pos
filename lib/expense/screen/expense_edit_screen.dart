@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -115,16 +116,26 @@ class ExpenseEditScreen extends StatelessWidget {
   Widget flowDropdown() {
     return Container(
       margin: const EdgeInsets.all(5),
-      child: DropdownMenu(
-        width: double.infinity,
-        initialSelection: expense.type,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: 1, label: "Income"),
-          DropdownMenuEntry(value: 2, label: "Expense"),
-        ],
-        onSelected: (value) {
-          flowType = value!;
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            // labelText: "Select Type",
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: const ["Expense","Income"],
+        onChanged: (value) {
+          if(value=="Expense"){
+            flowType = 2;
+          }else{
+            flowType = 1;
+          }
         },
+        selectedItem: expense.type==2 ? "Expense" : "Income", // Optional: Can be null if no initial selection is required
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
       ),
     );
   }

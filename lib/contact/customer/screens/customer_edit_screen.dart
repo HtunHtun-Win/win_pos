@@ -58,9 +58,25 @@ class CustomerEditScreen extends StatelessWidget {
   Future<void> update(int id, String name, String phone, String address) async {
     var msg = await customerController.updateCustomer(id, name, phone, address);
     if (msg["msg"] == "name_null") {
-      Get.snackbar("Name empty!", "Name can't be empty!");
+      Get.dialog(
+          AlertDialog(
+            title: const Text("Name empty!!"),
+            content: const Text("Name can't be empty!"),
+            actions: [
+              TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+            ],
+          )
+      );
     } else if (msg["msg"] == "duplicate") {
-      Get.snackbar("Duplicate!", "This customer is already exists!");
+      Get.dialog(
+          AlertDialog(
+            title: const Text("Duplicate!"),
+            content: const Text("This customer is already exists!"),
+            actions: [
+              TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+            ],
+          )
+      );
     } else {
       Get.back();
     }

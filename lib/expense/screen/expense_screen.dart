@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -97,7 +98,7 @@ class ExpenseScreen extends StatelessWidget {
                   spacing: 10,
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(child: catPicker(context)),
+                    Expanded(child: catPicker()),
                     Expanded(child: datePicker(context)),
                   ],
                 ),
@@ -198,23 +199,23 @@ class ExpenseScreen extends StatelessWidget {
     );
   }
 
-  Widget catPicker(BuildContext context) {
+  Widget catPicker() {
     return Container(
-      child: DropdownMenu(
-        width: double.infinity,
-        initialSelection: "all",
-        dropdownMenuEntries: [
-          const DropdownMenuEntry(value: "all", label: "All"),
-          ..._expenseController.descList.value
-              .map(
-                (data) => DropdownMenuEntry(value: data, label: data),
-          )
-              .toList()
-        ],
-        onSelected: (value) async {
-          desc = value;
+      margin: const EdgeInsets.all(5),
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            // labelText: "Select Type",
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: ["All",..._expenseController.descList],
+        onChanged: (value) {
+          var sValue = value!.toLowerCase();
+          desc = sValue;
           refreshController.loadFailed();
-          if (value == 'all') {
+          if (sValue == 'all') {
             if (date == "all") {
               _expenseController.getAll();
             } else {
@@ -222,18 +223,106 @@ class ExpenseScreen extends StatelessWidget {
             }
           } else {
             if(date=="all"){
-              _expenseController.getAll(desc: value);
+              _expenseController.getAll(desc: sValue);
             }else{
               _expenseController.getAll(
-                  date: daterangeCalculate(date), desc: value);
+                  date: daterangeCalculate(date), desc: sValue);
             }
           }
         },
+        selectedItem: "All", // Optional: Can be null if no initial selection is required
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
       ),
     );
   }
 
+  // Widget catPicker_org(BuildContext context) {
+  //   return Container(
+  //     child: DropdownMenu(
+  //       width: double.infinity,
+  //       initialSelection: "all",
+  //       dropdownMenuEntries: [
+  //         const DropdownMenuEntry(value: "all", label: "All"),
+  //         ..._expenseController.descList.value
+  //             .map(
+  //               (data) => DropdownMenuEntry(value: data, label: data),
+  //         )
+  //             .toList()
+  //       ],
+  //       onSelected: (value) async {
+  //         desc = value;
+  //         refreshController.loadFailed();
+  //         if (value == 'all') {
+  //           if (date == "all") {
+  //             _expenseController.getAll();
+  //           } else {
+  //             _expenseController.getAll(date: daterangeCalculate(date));
+  //           }
+  //         } else {
+  //           if(date=="all"){
+  //             _expenseController.getAll(desc: value);
+  //           }else{
+  //             _expenseController.getAll(
+  //                 date: daterangeCalculate(date), desc: value);
+  //           }
+  //         }
+  //       },
+  //     ),
+  //   );
+  // }
+
   Widget datePicker(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(5),
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            // labelText: "Select Type",
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: const ["All","Today","Yesterday","ThisMonth","LastMonth","ThisYear","LastYear","Custom"],
+        onChanged: (value) async {
+          var sValue = value!.toLowerCase();
+          date = sValue;
+          refreshController.loadFailed();
+          _expenseController.date = sValue;
+          if (sValue == 'all') {
+            if (desc == "all") {
+              _expenseController.getAll();
+            } else {
+              _expenseController.getAll(desc: desc);
+            }
+          } else if (sValue == 'custom') {
+            List<DateTime>? dateTimeList =
+                await showOmniDateTimeRangePicker(context: context);
+            if (dateTimeList != null) {
+              String startDate = DateTime(dateTimeList[0].year,
+                  dateTimeList[0].month, dateTimeList[0].day)
+                  .toString();
+              String endDate = DateTime(dateTimeList[1].year,
+                  dateTimeList[1].month, dateTimeList[1].day + 1)
+                  .toString();
+              _expenseController.getAll(
+                  date: {'start': startDate, 'end': endDate}, desc: desc);
+            }
+          } else {
+            _expenseController.getAll(
+                date: daterangeCalculate(sValue), desc: desc);
+          }
+        },
+        selectedItem: "Today", // Optional: Can be null if no initial selection is required
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
+      ),
+    );
+  }
+
+  Widget datePicker_org(BuildContext context) {
     return Container(
       child: DropdownMenu(
         width: double.infinity,

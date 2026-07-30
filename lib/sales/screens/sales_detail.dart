@@ -36,31 +36,33 @@ class SalesDetail extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () async {
-                Get.defaultDialog(
-                    title: "Delete!",
-                    content: const Text("This process can't undo!"),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Get.back();
-                          },
-                          child: const Text("Cancel")),
-                      TextButton(
-                          onPressed: () async {
-                            int flag = await salesController.deleteSale(
-                              voucher.id!,
-                              salesDetailController.saleDataToDel,
-                            );
-                            //request all voucher after delete
-                            salesController.getAllVouchers(
-                              map: daterangeCalculate(salesController.selectedDate),
-                            );
-                            if (flag == 0) {
-                              Get.off(() => SalesVoucherScreen());
-                            }
-                          },
-                          child: const Text("Delete"))
-                    ]);
+                Get.dialog(
+                  AlertDialog(
+                      title: const Text("Delete!"),
+                      content: const Text("This process can't undo!"),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text("Cancel")),
+                        TextButton(
+                            onPressed: () async {
+                              int flag = await salesController.deleteSale(
+                                voucher.id!,
+                                salesDetailController.saleDataToDel,
+                              );
+                              //request all voucher after delete
+                              salesController.getAllVouchers(
+                                map: daterangeCalculate(salesController.selectedDate),
+                              );
+                              if (flag == 0) {
+                                Get.off(() => SalesVoucherScreen());
+                              }
+                            },
+                            child: const Text("Delete"))
+                      ])
+                );
               },
               icon: const Icon(
                 Icons.delete,

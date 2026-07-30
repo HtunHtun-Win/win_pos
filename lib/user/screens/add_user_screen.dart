@@ -98,12 +98,27 @@ class _AddUserScreenState extends State<AddUserScreen> {
                       passwordController.text,
                       currentOpt);
                   if (num == -1) {
-                    Get.snackbar("Duplicate!", "LoginId is already exists!");
+                    Get.dialog(
+                        AlertDialog(
+                          title: const Text("Duplicate!"),
+                          content: const Text("LoginId is already exists."),
+                          actions: [
+                            TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+                          ],
+                        )
+                    );
                   } else if (num != 0) {
                     Get.off(() => UserScreen());
                   } else {
-                    Get.snackbar(
-                        "Invalid Input!", "Every input must have at least 2");
+                    Get.dialog(
+                        AlertDialog(
+                          title: const Text("Invalid Input!"),
+                          content: const Text("Every input must have at least 2 characters."),
+                          actions: [
+                            TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
+                          ],
+                        )
+                    );
                   }
                 },
                 child: const Text(

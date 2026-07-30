@@ -16,9 +16,18 @@ class UserService {
     }
   }
 
+  Future<List> checkUser(String loginId) async {
+    var datas = await userRepo.getByName(loginId);
+    if (datas.isNotEmpty) {
+      return datas;
+    } else {
+      return [];
+    }
+  }
+
   Future<int> insertUser(
       String name, String loginId, String password, int roleId) async {
-    var data = await validUser(loginId, password);
+    var data = await checkUser(loginId);
     if (data.isNotEmpty) {
       return -1;
     } else if (name.length >= 2 &&
@@ -45,7 +54,7 @@ class UserService {
         return 0;
       }
     }
-    return 0;
+    return -1;
   }
 
   Future<void> deleteUser(int id) async {
