@@ -9,6 +9,7 @@ class ExpenseController extends GetxController {
   var totalIncome = 0.obs;
   var totalExpense = 0.obs;
   var totalBalance = 0.obs;
+  var dateTime = "".obs;
   String date = "today";
   String desc = "all";
 
@@ -23,6 +24,10 @@ class ExpenseController extends GetxController {
   //   super.onInit();
   //   getAll();
   // }
+
+  void setDateTime(String dt){
+    dateTime.value = dt;
+  }
 
   Future<void> getAll({Map? date, String? desc}) async {
     maxCount = 10;
@@ -80,10 +85,8 @@ class ExpenseController extends GetxController {
     return await _expenseService.updateDesc(oldValue, newValue);
   }
 
-  Future<Map> addExpense(
-      int amount, String description, String note, int type, int userId) async {
-    var num = await _expenseService.addExpense(
-        amount, description, note, type, userId);
+  Future<Map> addExpense(ExpenseModel model) async {
+    var num = await _expenseService.addExpense(model);
     if (date == "all") {
       getAll();
     } else {
@@ -93,10 +96,8 @@ class ExpenseController extends GetxController {
     return num;
   }
 
-  Future<Map> updateExpense(int id, int amount, String description, String note,
-      int type, int userId) async {
-    var num = await _expenseService.updateExpense(
-        id, amount, description, note, type, userId);
+  Future<Map> updateExpense(ExpenseModel model) async {
+    var num = await _expenseService.updateExpense(model);
     if (date == "all") {
       getAll();
     } else {

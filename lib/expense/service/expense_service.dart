@@ -1,3 +1,4 @@
+import 'package:win_pos/expense/model/expense_model.dart';
 import 'package:win_pos/expense/repository/expense_repository.dart';
 
 class ExpenseService {
@@ -27,24 +28,20 @@ class ExpenseService {
     return _expenseRepository.getAllByFilter(startDate, endDate,desc);
   }
 
-  Future<Map> addExpense(
-      int amount, String description, String note, int type, int userId) async {
+  Future<Map> addExpense(ExpenseModel model) async {
     // print(amount);
-    if (amount > 0 && description.isNotEmpty) {
-      await _expenseRepository.addExpense(
-          amount, description, note, type, userId);
+    if (model.amount! > 0 && model.description!.isNotEmpty) {
+      await _expenseRepository.addExpense(model);
       return {'msg': 'success'};
     } else {
       return {'msg': 'null'};
     }
   }
 
-  Future<Map> updateExpense(int id, int amount, String description, String note,
-      int type, int userId) async {
+  Future<Map> updateExpense(ExpenseModel model) async {
     // print(amount);
-    if (amount > 0 && description.isNotEmpty) {
-      await _expenseRepository.updateExpense(
-          id, amount, description, note, type, userId);
+    if (model.amount! > 0 && model.description!.isNotEmpty) {
+      await _expenseRepository.updateExpense(model);
       return {'msg': 'success'};
     } else {
       return {'msg': 'null'};

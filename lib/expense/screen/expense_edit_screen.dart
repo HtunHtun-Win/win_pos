@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
 import 'package:win_pos/expense/model/expense_model.dart';
 
@@ -23,6 +26,7 @@ class ExpenseEditScreen extends StatelessWidget {
     descController.text = expense.description!;
     noteController.text = expense.note!;
     flowType = expense.type!;
+    _expenseController.setDateTime(expense.createdDate!);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Expense"),
@@ -40,6 +44,26 @@ class ExpenseEditScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Obx(() {
+                    return Text(_expenseController.dateTime.value);
+                  }),
+                  TextButton(
+                      onPressed: () async {
+                        DateTime? dateTime =
+                        await showOmniDateTimePicker(context: context);
+                        if (dateTime != null) {
+                          _expenseController.setDateTime(dateTime.toString());
+                        }
+                      },
+                      child: const Text("Select Date"))
+                ],
+              ),
+            ),
             userInput("Amount", amountController,
                 type: TextInputType.number,
                 filter: <TextInputFormatter>[
@@ -83,13 +107,15 @@ class ExpenseEditScreen extends StatelessWidget {
       TextEditingController amountController,
       TextEditingController descController,
       TextEditingController noteController) async {
-    var result = await _expenseController.updateExpense(
-        expense.id!,
-        int.parse(amountController.text),
-        descController.text,
-        noteController.text,
-        flowType,
-        1);
+    ExpenseModel model = ExpenseModel(
+        id: expense.id!,
+        amount: int.parse(amountController.text),
+        description: descController.text,
+        note: noteController.text,
+        type: flowType,
+        userId: 1,
+        createdDate: _expenseController.dateTime.value);
+    var result = await _expenseController.updateExpense(model);
     if (result['msg'] == "null") {
       Get.snackbar("Null!", "Amount and description can't be empty");
     } else if (result['msg'] == 'success') {
