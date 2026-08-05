@@ -1,4 +1,5 @@
 import 'package:win_pos/core/database/db_helper.dart';
+import 'package:win_pos/expense/model/expense_model.dart';
 
 class ExpenseRepository{
   DbHelper dbObj = DbHelper();
@@ -9,7 +10,7 @@ class ExpenseRepository{
     return await database.query(
       TABLE_NAME,
       where: "isdeleted=0",
-      orderBy: "id desc",
+      orderBy: "created_at desc",
     );
   }
 
@@ -71,34 +72,35 @@ class ExpenseRepository{
     );
   }
 
-  Future<int> addExpense(int amount, String description, String note, int type, int userId) async{
+  Future<int> addExpense(ExpenseModel model) async{
     final database = await dbObj.database;
     return await database.insert(
         TABLE_NAME,
         {
-          "amount" : amount,
-          "description" : description,
-          "note" : note,
-          "flow_type_id" : type,
-          "user_id" : userId,
-          "created_at" : DateTime.now().toString(),
+          "amount" : model.amount,
+          "description" : model.description,
+          "note" : model.note,
+          "flow_type_id" : model.type,
+          "user_id" : model.userId,
+          "created_at" : model.createdDate,
         }
     );
   }
 
-  Future<int> updateExpense(int id, int amount, String description, String note, int type, int userId) async{
+  Future<int> updateExpense(ExpenseModel model) async{
     final database = await dbObj.database;
     return await database.update(
         TABLE_NAME,
         {
-          "amount" : amount,
-          "description" : description,
-          "note" : note,
-          "flow_type_id" : type,
-          "user_id" : userId
+          "amount" : model.amount,
+          "description" : model.description,
+          "note" : model.note,
+          "flow_type_id" : model.type,
+          "user_id" : model.userId,
+          "created_at" : model.createdDate,
         },
         where: 'id=?',
-        whereArgs: [id]
+        whereArgs: [model.id]
     );
   }
 

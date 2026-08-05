@@ -7,6 +7,16 @@ class ExpenseModel{
   int? userId;
   String? createdDate;
 
+  ExpenseModel({
+    required this.id,
+    required this.amount,
+    required this.description,
+    required this.note,
+    required this.type,
+    required this.userId,
+    required this.createdDate,
+  });
+
   ExpenseModel.fromMap(Map map){
     id = map['id'];
     amount = map['amount'];
