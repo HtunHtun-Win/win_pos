@@ -283,5 +283,5 @@ String _roleLabel(int? roleId) {
 }
 
 String _appVersion() {
-  return '2.7.0';
+  return '3.0.0';
 }
