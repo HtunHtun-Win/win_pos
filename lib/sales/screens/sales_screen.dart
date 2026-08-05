@@ -20,27 +20,11 @@ class SalesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sales"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-              onPressed: () {
-                if (salesController.cart.isNotEmpty) {
-                  Get.to(() => SalesSaveScreen());
-                }else{
-                  Get.snackbar(
-                  "Cart is empty!", "Select product!",
-                    backgroundColor: Colors.black.withValues(alpha: .5),
-                    colorText: Colors.white,
-                  );
-                }
-              },
-              icon: const Icon(Icons.check))
-        ],
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 0),
         child: Column(children: [
-          userInput(),
+          userInput(context),
           Expanded(
             child: Stack(
               children: [
@@ -50,7 +34,7 @@ class SalesScreen extends StatelessWidget {
                     itemCount: salesController.cart.length,
                     itemBuilder: (context, index) {
                       var item = salesController.cart[index];
-                      return selectedItem(item, index);
+                      return selectedItem(context, item, index);
                     },
                   );
                 }),
@@ -77,7 +61,7 @@ class SalesScreen extends StatelessWidget {
     );
   }
 
-  Widget userInput() {
+  Widget userInput(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -87,6 +71,8 @@ class SalesScreen extends StatelessWidget {
               controller: searchController,
               decoration: const InputDecoration(
                 hintText: "Search...",
+                isDense: true,
+                prefixIcon: Icon(Icons.search),
               ),
               onChanged: (value) {
                 salesController.getAllProduct(input: value);
@@ -96,6 +82,7 @@ class SalesScreen extends StatelessWidget {
           IconButton(
               onPressed: () {
                 searchController.text = "";
+                salesController.products.clear();
               },
               icon: const Icon(Icons.cancel))
         ],
@@ -104,42 +91,41 @@ class SalesScreen extends StatelessWidget {
   }
 
   Widget searchItem(context, ProductModel product) {
+    final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withValues(alpha: .5),
-                offset: const Offset(5, 5),
-                blurRadius: 10)
-          ]),
-      child: ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(product.name.toString()),
-            Text(product.sale_price.toString())
-          ],
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 2,
+        child: ListTile(
+          tileColor: theme.cardColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(product.name.toString()),
+              Text(product.sale_price.toString())
+            ],
+          ),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(product.code.toString()),
+              Text(product.quantity.toString())
+            ],
+          ),
+          onTap: () {
+            salesController.addToCart(product);
+            salesController.products.clear();
+            salesController.getTotal();
+            searchController.text = "";
+          },
         ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(product.code.toString()),
-            Text(product.quantity.toString())
-          ],
-        ),
-        onTap: () {
-          salesController.addToCart(product);
-          salesController.products.clear();
-          salesController.getTotal();
-          searchController.text = "";
-        },
       ),
     );
   }
 
-  Widget selectedItem(CartModel item, index) {
+  Widget selectedItem(BuildContext context,CartModel item, index) {
     var total = item.product.sale_price! * item.quantity;
     return Slidable(
       endActionPane: ActionPane(
@@ -147,7 +133,7 @@ class SalesScreen extends StatelessWidget {
         children: [
           SlidableAction(
             onPressed: (_) {
-              quantityAlert(item, index);
+              quantityAlert(context, item, index);
             },
             icon: Icons.edit,
           ),
@@ -161,37 +147,64 @@ class SalesScreen extends StatelessWidget {
           )
         ],
       ),
-      child: ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(item.product.name.toString()),
-            Text(total.toString())
-          ],
-        ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("${item.sprice}x${item.quantity}"),
-          ],
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 1,
+        child: ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(item.product.name.toString()),
+              Text(total.toString())
+            ],
+          ),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("${item.sprice} x ${item.quantity}"),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget totalAmountWidget(context, amount) {
+    final theme = Theme.of(context);
     return Container(
       width: double.infinity,
-      color: Theme.of(context).colorScheme.inversePrimary,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      color: theme.colorScheme.primary.withOpacity(0.06),
       child: ListTile(
-        title: Text("Total : $amount",
-          style: const TextStyle(color: Colors.black),
+        title: Text("Total : $amount", style: theme.textTheme.titleMedium),
+        trailing: ElevatedButton(
+          onPressed: () {
+            if (salesController.cart.isNotEmpty) {
+              Get.to(() => SalesSaveScreen());
+            } else {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Cart is Empty"),
+                  content: const Text("Please add items to the cart before checkout."),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text("OK"),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+          child: const Text('Checkout'),
         ),
       ),
     );
   }
 
-  void quantityAlert(CartModel item, index) {
+  void quantityAlert(BuildContext context, CartModel item, index) {
     qtyController.text = item.quantity.toString();
     Get.defaultDialog(
         title: "${item.product.name!} (${item.product.quantity!} pcs)",
@@ -220,17 +233,18 @@ class SalesScreen extends StatelessWidget {
               ],
               onChanged: (value) {
                 int quantity = int.parse(value) > 0 ? int.parse(value) : 1;
-                if (quantity <= item.product.quantity!){
+                if (quantity <= item.product.quantity!) {
                   salesController.cart[index].quantity = quantity;
-                }else{
+                } else {
                   qtyController.text = item.product.quantity.toString();
-                  Get.dialog(
-                    AlertDialog(
-                      title: const Text("Not Enought Stock"),
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Not Enough Stock"),
                       content: Text("Remaining stock is ${item.product.quantity!}"),
                       actions: [
                         TextButton(
-                          onPressed: () => Get.back(),
+                          onPressed: () => Navigator.of(context).pop(),
                           child: const Text("OK"),
                         ),
                       ],
@@ -246,14 +260,15 @@ class SalesScreen extends StatelessWidget {
               onPressed: () {
                 int qty = int.parse(qtyController.text);
                 qty++;
-                if (qty <= item.product.quantity!){
+                if (qty <= item.product.quantity!) {
                   qtyController.text = qty.toString();
                   salesController.cart[index].quantity++;
-                }else{
-                  Get.back();
+                } else {
+                  qtyController.text = item.product.quantity.toString();
                   Get.snackbar(
-                    "Alert!","Not enough stock!",
-                    backgroundColor: Colors.black.withValues(alpha: .5),
+                    "Alert!",
+                    "Not enough stock!",
+                    backgroundColor: Colors.black.withOpacity(.5),
                     colorText: Colors.white,
                   );
                 }

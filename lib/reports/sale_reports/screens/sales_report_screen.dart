@@ -9,42 +9,160 @@ class SalesReportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sales Reports"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Sales Reports'),
       ),
-      body: ListView(
-        children: [
-          ListItem(context, const Icon(Icons.shopping_cart), "Sales Vouchers", () {
-            Get.to(() => SalesReportVoucherScreen());
-          }),
-          ListItem(context, const Icon(Icons.inventory_2), "Sales Items", () {
-            Get.to(() => SalesProductScreen());
-          }),
-          ListItem(context, const Icon(Icons.inventory), "Most Sales Items", () {
-            Get.to(() => MostSalesProductScreen());
-          }),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary,
+                    theme.colorScheme.primaryContainer,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 54,
+                    height: 54,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.onPrimary.withValues(alpha: 0.16),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      Icons.bar_chart,
+                      size: 28,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Sales Reports',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Browse vouchers, items, and top-selling products in a clean dashboard.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView(
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  buildMenuCard(
+                    context,
+                    icon: Icons.shopping_cart,
+                    title: 'Sales Vouchers',
+                    subtitle: 'View invoice history and details',
+                    onTap: () => Get.to(() => SalesReportVoucherScreen()),
+                  ),
+                  buildMenuCard(
+                    context,
+                    icon: Icons.inventory_2,
+                    title: 'Sales Items',
+                    subtitle: 'Review sold items and quantities',
+                    onTap: () => Get.to(() => SalesProductScreen()),
+                  ),
+                  buildMenuCard(
+                    context,
+                    icon: Icons.star,
+                    title: 'Best Sellers',
+                    subtitle: 'Discover your top-selling products',
+                    onTap: () => Get.to(() => MostSalesProductScreen()),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget ListItem(context, icon, text, VoidCallback fun) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 1),
-          borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        leading: icon,
-        iconColor: Colors.white,
-        title: Text(
-          text,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+  Widget buildMenuCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Material(
+        color: theme.cardColor,
+        elevation: 1,
+        borderRadius: BorderRadius.circular(18),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+            child: Row(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withAlpha(25),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(icon, color: theme.colorScheme.primary, size: 26),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        subtitle,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: theme.iconTheme.color),
+              ],
+            ),
+          ),
         ),
-        onTap: fun,
       ),
     );
   }

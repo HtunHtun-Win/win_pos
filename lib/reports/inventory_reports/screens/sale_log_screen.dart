@@ -42,67 +42,64 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sale Price History"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Sale Price History'),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            margin: const EdgeInsets.all(10),
-            child: Obx((){
-              return productList();
-            }),
-          ),
-          datePicker(),
-          const ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
               children: [
-                Expanded(flex: 2, child: Text("Name")),
-                Expanded(flex: 2, child: Text("Old")),
-                Expanded(flex: 2, child: Text("New")),
-                Expanded(flex: 2, child: Text("Date")),
+                Expanded(child: Obx(() => productList())),
+                const SizedBox(width: 12),
+                Expanded(child: datePicker()),
               ],
             ),
           ),
+          const SizedBox(height: 12),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: _TableHeader(),
+          ),
           const Divider(),
-          Expanded(child: Obx(() {
-            return SmartRefresher(
-              controller: refreshController,
-              enablePullUp: true,
-              enablePullDown: false,
-              footer: CustomFooter(builder: (context, LoadStatus? mode) {
-                Widget body = Container();
-                if (mode == LoadStatus.loading) {
-                  body = const CircularProgressIndicator();
-                } else if (mode == LoadStatus.noMore) {
-                  body = const Text("No More Data...");
-                }
-                return SizedBox(
-                  height: 55,
-                  child: Center(
-                    child: body,
-                  ),
-                );
-              }),
-              onLoading: () {
-                if (reportController.saleLog.length >=
-                    reportController.maxCount) {
-                  refreshController.loadNoData();
-                } else {
-                  reportController.saleLogLoadMore();
-                  refreshController.loadComplete();
-                }
-              },
-              child: ListView.builder(
+          Expanded(
+            child: Obx(() {
+              return SmartRefresher(
+                controller: refreshController,
+                enablePullUp: true,
+                enablePullDown: false,
+                footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                  Widget body = Container();
+                  if (mode == LoadStatus.loading) {
+                    body = const CircularProgressIndicator();
+                  } else if (mode == LoadStatus.noMore) {
+                    body = const Text('No More Data...');
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: Center(child: body),
+                  );
+                }),
+                onLoading: () {
+                  if (reportController.saleLog.length >=
+                      reportController.maxCount) {
+                    refreshController.loadNoData();
+                  } else {
+                    reportController.saleLogLoadMore();
+                    refreshController.loadComplete();
+                  }
+                },
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: reportController.showSalelog.length,
                   itemBuilder: (context, index) {
                     var saleLog = reportController.showSalelog[index];
                     return reportListTile(saleLog: saleLog);
-                  }),
-            );
-          }))
+                  },
+                ),
+              );
+            }),
+          ),
         ],
       ),
     );
@@ -110,17 +107,21 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
 
   Widget reportListTile({required SaleLogModel saleLog}) {
     return Card(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
             Expanded(flex: 2, child: Text(saleLog.name.toString())),
             Expanded(flex: 2, child: Text(saleLog.oldPrice.toString())),
             Expanded(flex: 2, child: Text(saleLog.newPrice.toString())),
             Expanded(
-                flex: 2,
-                child: Text(DateFormat("dd/MM/yyyy HH:mm")
-                    .format(DateTime.parse(saleLog.createdAt)))),
+              flex: 2,
+              child: Text(DateFormat('dd/MM/yyyy HH:mm')
+                  .format(DateTime.parse(saleLog.createdAt))),
+            ),
           ],
         ),
       ),
@@ -131,7 +132,7 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
     return DropdownSearch<String>(
       dropdownDecoratorProps: const DropDownDecoratorProps(
         dropdownSearchDecoration: InputDecoration(
-          labelText: "Product",
+          labelText: 'Product',
           contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           border: OutlineInputBorder(),
         ),
@@ -141,11 +142,10 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
               .map((product) => product.name.toString())
               .toList(),
       onChanged: (value) {
-        // salesController.maxCount = 10;
         refreshController.resetNoData();
         if (value != 'All') {
           final product = productController.products.firstWhere(
-                (product) => product.name == value,
+            (product) => product.name == value,
           );
           pId = product.id;
         } else {
@@ -156,13 +156,13 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
           date: date != 'all' ? daterangeCalculate(date) : null,
         );
       },
-      selectedItem: "All",
+      selectedItem: 'All',
       popupProps: const PopupProps.menu(
         showSearchBox: true,
         searchFieldProps: TextFieldProps(
           autofocus: true,
           decoration: InputDecoration(
-            labelText: "Product",
+            labelText: 'Product',
           ),
         ),
       ),
@@ -171,28 +171,35 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
 
   Widget datePicker() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: DropdownMenu(
-        initialSelection: "today",
-        width: double.infinity,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: "all", label: "All"),
-          DropdownMenuEntry(value: "today", label: "Today"),
-          DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
-          DropdownMenuEntry(value: "thismonth", label: "This month"),
-          DropdownMenuEntry(value: "lastmonth", label: "Last month"),
-          DropdownMenuEntry(value: "thisyear", label: "This year"),
-          DropdownMenuEntry(value: "lastyear", label: "Last year"),
+      margin: const EdgeInsets.all(5),
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: const [
+          'All',
+          'Today',
+          'Yesterday',
+          'ThisMonth',
+          'LastMonth',
+          'ThisYear',
+          'LastYear',
         ],
-        onSelected: (value) {
-          // salesController.maxCount = 10;
+        onChanged: (value) {
           refreshController.resetNoData();
-          date = value!;
+          date = value!.toLowerCase();
           reportController.getSaleLog(
             pid: pId,
-            date: value != 'all' ? daterangeCalculate(date) : null,
+            date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
+        selectedItem: 'Today',
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
       ),
     );
   }
@@ -205,36 +212,30 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
     late DateTime end;
 
     switch (type) {
-      case "today":
+      case 'today':
         start = today;
         end = today.add(const Duration(days: 1));
         break;
-
-      case "yesterday":
+      case 'yesterday':
         start = today.subtract(const Duration(days: 1));
         end = today;
         break;
-
-      case "thismonth":
+      case 'thismonth':
         start = DateTime(now.year, now.month, 1);
         end = today.add(const Duration(days: 1));
         break;
-
-      case "lastmonth":
+      case 'lastmonth':
         start = DateTime(now.year, now.month - 1, 1);
         end = DateTime(now.year, now.month, 1);
         break;
-
-      case "thisyear":
+      case 'thisyear':
         start = DateTime(now.year, 1, 1);
         end = today.add(const Duration(days: 1));
         break;
-
-      case "lastyear":
+      case 'lastyear':
         start = DateTime(now.year - 1, 1, 1);
         end = DateTime(now.year, 1, 1);
         break;
-
       default:
         start = today;
         end = today.add(const Duration(days: 1));
@@ -244,5 +245,23 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
       'start': start.toIso8601String(),
       'end': end.toIso8601String(),
     };
+  }
+}
+
+class _TableHeader extends StatelessWidget {
+  const _TableHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(flex: 2, child: Text('Name', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(flex: 2, child: Text('Old', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(flex: 2, child: Text('New', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(flex: 2, child: Text('Date', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+      ],
+    );
   }
 }

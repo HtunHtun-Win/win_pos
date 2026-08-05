@@ -20,45 +20,25 @@ class PurchaseScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Purchase"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-              onPressed: () {
-                if (purchaseController.cart.isNotEmpty) {
-                  Get.to(() => PurchaseSaveScreen());
-                } else {
-                  Get.snackbar(
-                    "Cart is empty!",
-                    "Select product!",
-                    backgroundColor: Colors.black.withValues(alpha: 0.5),
-                    colorText: Colors.white,
-                  );
-                }
-              },
-              icon: const Icon(Icons.save))
-        ],
       ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 0),
-        child: Column(children: [
-          userInput(),
+      body: Column(
+        children: [
+          userInput(context),
           Expanded(
             child: Stack(
               children: [
-                //show cart items
                 Obx(() {
                   return ListView.builder(
                     itemCount: purchaseController.cart.length,
                     itemBuilder: (context, index) {
                       var item = purchaseController.cart[index];
-                      return selectedItem(item, index);
+                      return selectedItem(context, item, index);
                     },
                   );
                 }),
-                //for search result
                 Obx(() {
                   return purchaseController.products.isEmpty
-                      ? Container()
+                      ? const SizedBox.shrink()
                       : ListView.builder(
                           itemCount: purchaseController.products.length,
                           itemBuilder: (context, index) {
@@ -70,24 +50,25 @@ class PurchaseScreen extends StatelessWidget {
               ],
             ),
           ),
-          Obx(() {
-            return totalAmountWidget(context, purchaseController.totalAmount);
-          })
-        ]),
+          Obx(() => totalAmountWidget(context, purchaseController.totalAmount)),
+        ],
       ),
     );
   }
 
-  Widget userInput() {
+  Widget userInput(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         children: [
           Expanded(
             child: TextField(
               controller: searchController,
-              decoration: const InputDecoration(
-                hintText: "Search...",
+              decoration: InputDecoration(
+                hintText: "Search products...",
+                isDense: true,
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onChanged: (value) {
                 purchaseController.getAllProduct(input: value);
@@ -95,52 +76,54 @@ class PurchaseScreen extends StatelessWidget {
             ),
           ),
           IconButton(
-              onPressed: () {
-                searchController.text = "";
-              },
-              icon: const Icon(Icons.cancel))
+            onPressed: () {
+              searchController.clear();
+              purchaseController.products.clear();
+            },
+            icon: const Icon(Icons.cancel),
+          )
         ],
       ),
     );
   }
 
-  Widget searchItem(context, ProductModel product) {
+  Widget searchItem(BuildContext context, ProductModel product) {
+    final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withValues(alpha: .4),
-                offset: const Offset(5, 5),
-                blurRadius: 10)
-          ]),
-      child: ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(product.name.toString()),
-            Text(product.purchase_price.toString())
-          ],
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        elevation: 2,
+        child: ListTile(
+          tileColor: theme.cardColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(child: Text(product.name.toString())),
+              Text(product.purchase_price.toString()),
+            ],
+          ),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(product.code.toString()),
+              Text(product.quantity.toString()),
+            ],
+          ),
+          onTap: () {
+            purchaseController.addToCart(product);
+            purchaseController.products.clear();
+            purchaseController.getTotal();
+            searchController.clear();
+          },
         ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(product.code.toString()),
-            Text(product.quantity.toString())
-          ],
-        ),
-        onTap: () {
-          purchaseController.addToCart(product);
-          purchaseController.products.clear();
-          purchaseController.getTotal();
-          searchController.text = "";
-        },
       ),
     );
   }
 
-  Widget selectedItem(CartModel item, index) {
+  Widget selectedItem(BuildContext context, CartModel item, index) {
+    final theme = Theme.of(context);
     var total = item.pprice! * item.quantity;
     return Slidable(
       endActionPane: ActionPane(
@@ -148,7 +131,7 @@ class PurchaseScreen extends StatelessWidget {
         children: [
           SlidableAction(
             onPressed: (_) {
-              quantityAlert(item, index);
+              quantityAlert(context, item, index);
             },
             icon: Icons.edit,
           ),
@@ -159,109 +142,142 @@ class PurchaseScreen extends StatelessWidget {
             },
             icon: Icons.delete,
             foregroundColor: Colors.red,
-          )
+          ),
         ],
       ),
-      child: ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(item.product.name.toString()),
-            Text(total.toString())
-          ],
-        ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("${item.pprice}x${item.quantity}"),
-          ],
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        elevation: 1,
+        child: ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(child: Text(item.product.name.toString(), style: theme.textTheme.titleMedium)),
+              Text(total.toString(), style: theme.textTheme.titleMedium),
+            ],
+          ),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("${item.pprice} x ${item.quantity}"),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget totalAmountWidget(context, amount) {
+    final theme = Theme.of(context);
     return Container(
       width: double.infinity,
-      color: Theme.of(context).colorScheme.inversePrimary,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      color: theme.colorScheme.primary.withOpacity(0.08),
       child: ListTile(
-        title: Text("Total : $amount"),
+        title: Text("Total : $amount", style: theme.textTheme.titleMedium),
+        trailing: ElevatedButton(
+          onPressed: () {
+            if (purchaseController.cart.isNotEmpty) {
+              Get.to(() => PurchaseSaveScreen());
+            } else {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Cart is Empty"),
+                  content: const Text("Please add items to the cart before checkout."),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text("OK"),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+          child: const Text('Checkout'),
+        ),
       ),
     );
   }
 
-  void quantityAlert(CartModel item, index) {
+  void quantityAlert(BuildContext context, CartModel item, index) {
     ppriceController.text = item.pprice.toString();
     qtyController.text = item.quantity.toString();
     Get.defaultDialog(
-        title: "${item.product.name!} (${item.product.quantity!} pcs)",
-        content: Column(
-          children: [
-          Row(
-            children: [
-              Expanded(
-                  child: TextField(
-                    controller: ppriceController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    onChanged: (value) {
-                      int price = int.parse(value) > 0 ? int.parse(value) : 1;
-                      purchaseController.cart[index].pprice = price;
-                      purchaseController.cart.refresh();
-                      purchaseController.getTotal();
-                    },
-                    textAlign: TextAlign.center,
-                  )),
-            ],
-          ),
-          Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: () {
-                int qty = int.parse(qtyController.text);
-                qty--;
-                if (qty > 0) {
-                  qtyController.text = qty.toString();
-                  purchaseController.cart[index].quantity--;
-                }
-                purchaseController.cart.refresh();
-                purchaseController.getTotal();
-              },
-              icon: const Icon(Icons.remove),
+      title: "${item.product.name!} (${item.product.quantity!} pcs)",
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: ppriceController,
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(
+              hintText: 'Purchase price',
+              isDense: true,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            Expanded(
+            onChanged: (value) {
+              int price = int.tryParse(value) != null && int.parse(value) > 0 ? int.parse(value) : 1;
+              purchaseController.cart[index].pprice = price;
+              purchaseController.cart.refresh();
+              purchaseController.getTotal();
+            },
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 14),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () {
+                  int qty = int.parse(qtyController.text);
+                  qty--;
+                  if (qty > 0) {
+                    qtyController.text = qty.toString();
+                    purchaseController.cart[index].quantity--;
+                  }
+                  purchaseController.cart.refresh();
+                  purchaseController.getTotal();
+                },
+                icon: const Icon(Icons.remove),
+              ),
+              Expanded(
                 child: TextField(
                   controller: qtyController,
                   keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
+                  inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                  decoration: InputDecoration(
+                    hintText: 'Qty',
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                   onChanged: (value) {
-                    int quantity = int.parse(value) > 0 ? int.parse(value) : 1;
+                    int quantity = int.tryParse(value) != null && int.parse(value) > 0 ? int.parse(value) : 1;
                     purchaseController.cart[index].quantity = quantity;
                     purchaseController.cart.refresh();
                     purchaseController.getTotal();
                   },
                   textAlign: TextAlign.center,
-                )),
-            IconButton(
-              onPressed: () {
-                int qty = int.parse(qtyController.text);
-                qty++;
-                qtyController.text = qty.toString();
-                purchaseController.cart[index].quantity++;
-                purchaseController.cart.refresh();
-                purchaseController.getTotal();
-              },
-              icon: const Icon(Icons.add),
-            ),
-          ],
-        )
-          ],
-        )
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  int qty = int.parse(qtyController.text);
+                  qty++;
+                  qtyController.text = qty.toString();
+                  purchaseController.cart[index].quantity++;
+                  purchaseController.cart.refresh();
+                  purchaseController.getTotal();
+                },
+                icon: const Icon(Icons.add),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -33,15 +33,18 @@ class ContactScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Contacts'),
             // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            bottom: const TabBar(
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white,
-              tabs: [
-                Tab(text: "Customers",),
-                Tab(
-                  text: "Suppliers",
-                ),
-              ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(48),
+              child: Builder(builder: (ctx) {
+                final theme = Theme.of(ctx);
+                return TabBar(
+                  indicatorColor: theme.colorScheme.secondary,
+                  tabs: const [
+                    Tab(text: "Customers"),
+                    Tab(text: "Suppliers"),
+                  ],
+                );
+              }),
             ),
           ),
           drawer:

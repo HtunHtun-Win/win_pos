@@ -27,7 +27,6 @@ class PurchaseDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Purchase Detail"),
-        backgroundColor: Theme.of(context).primaryColor,
         // actions: [
           // IconButton(
           //     onPressed: () async {

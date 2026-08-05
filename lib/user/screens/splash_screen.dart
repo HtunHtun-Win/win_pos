@@ -20,56 +20,60 @@ class SplashScreen extends StatelessWidget {
     Future.delayed(const Duration(seconds: 1), () {
       _checkAuth();
     });
+    final theme = Theme.of(context);
     return Scaffold(
-      body: Stack(
-        children: [
-          //for background color
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                  Colors.blue,
-                  Colors.blueAccent,
-                  Colors.blueAccent,
-                  Colors.blue,
-                ],
-                    stops: [
-                  0.1,
-                  0.3,
-                  0.7,
-                  0.9
-                ])),
-          ),
-          //for alignment
-          Center(
-            child: ZoomIn(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Image.asset("assets/images/shop_logo.png"),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: theme.scaffoldBackgroundColor,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FadeInDown(
+                duration: const Duration(milliseconds: 700),
+                child: Card(
+                  elevation: 8,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  const Text(
-                    "LightPOS",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Image.asset(
+                      'assets/images/shop_logo.png',
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ],
+                ),
               ),
-            ),
-          )
-        ],
+              const SizedBox(height: 18),
+              FadeInUp(
+                duration: const Duration(milliseconds: 600),
+                child: Text(
+                  'LightPOS',
+                  style: theme.textTheme.headlineMedium?.copyWith(fontSize: 28),
+                ),
+              ),
+              const SizedBox(height: 8),
+              FadeInUp(
+                delay: const Duration(milliseconds: 200),
+                child: Text(
+                  'Simple • Fast • Reliable',
+                  style: theme.textTheme.bodyLarge,
+                ),
+              ),
+              const SizedBox(height: 26),
+              FadeInUp(
+                delay: const Duration(milliseconds: 400),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

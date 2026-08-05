@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
 import 'package:win_pos/expense/model/expense_model.dart';
 
@@ -43,7 +44,7 @@ class ExpenseAddScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Obx(() {
-                    return Text(_expenseController.dateTime.value);
+                    return Text(prettyDate(_expenseController.dateTime.value));
                   }),
                   TextButton(
                       onPressed: () async {
