@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/product/controller/product_log_controller.dart';
 import 'package:win_pos/product/models/product_log_model.dart';
 import 'package:intl/intl.dart';
@@ -17,8 +18,12 @@ class ProductAdjustScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // productLogController.getAll();
-    productLogController.getAll(map: daterangeCalculate(productLogController.selectedDate));
+    if (productLogController.selectedDate == "all") {
+      productLogController.getAll();
+    } else {
+      productLogController.getAll(
+          map: daterangeCalculate(productLogController.selectedDate));
+    }
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -56,7 +61,14 @@ class ProductAdjustScreen extends StatelessWidget {
                     itemCount: productLogController.showLogs.length,
                     itemBuilder: (context, index) {
                       var productLog = productLogController.showLogs[index];
-                      return listItem(productLog);
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 3),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        elevation: 3,
+                        child: listItem(productLog),
+                      );
                     },
                   ),
                 )),
@@ -74,25 +86,20 @@ class ProductAdjustScreen extends StatelessWidget {
   }
 
   Widget listItem(ProductLogModel log) {
-    DateTime date = DateTime.parse(log.date.toString());
-    var fdate = DateFormat("yyyy-MM-dd h:m:s a");
-    var finalDate = fdate.format(date);
-    return Container(
-      child: ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(log.product.toString()),
-            Text(log.user.toString()),
-          ],
-        ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('${log.quantity.toString()} : pcs (${log.note.toString()})'),
-            Text(finalDate),
-          ],
-        ),
+    return ListTile(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Text(log.product.toString())),
+          Text(log.user.toString()),
+        ],
+      ),
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${log.quantity.toString()} : pcs (${log.note.toString()})'),
+          Text(prettyDate(log.date.toString())),
+        ],
       ),
     );
   }
@@ -112,8 +119,8 @@ class ProductAdjustScreen extends StatelessWidget {
           DropdownMenuEntry(value: "lastyear", label: "Last year"),
         ],
         onSelected: (value) {
-          productLogController.selectedDate=value!;
-          productLogController.maxCount=10;
+          productLogController.selectedDate = value!;
+          productLogController.maxCount = 10;
           refreshController.loadFailed();
           if (value == 'all') {
             productLogController.getAll();

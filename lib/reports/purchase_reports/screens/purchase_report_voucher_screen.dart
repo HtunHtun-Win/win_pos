@@ -21,104 +21,124 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     purchaseController.getAllVouchers(date: daterangeCalculate('today'));
     supplierController.getAll();
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Purchase Report"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Purchase Report'),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            margin: const EdgeInsets.all(10),
-            child: customersBox(),
-          ),
-          datePicker(),
-          const ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
               children: [
-                Expanded(child: Text("No.")),
-                Expanded(flex: 2, child: Text("InvNo")),
-                Expanded(flex: 2, child: Text("Amount")),
+                Expanded(child: customersBox()),
+                const SizedBox(width: 12),
+                Expanded(child: datePicker()),
               ],
             ),
           ),
-          const Divider(),
-          Expanded(child: Obx(() {
-            return SmartRefresher(
-              controller: refreshController,
-              enablePullUp: true,
-              enablePullDown: false,
-              footer: CustomFooter(builder: (context, LoadStatus? mode) {
-                Widget body = Container();
-                if (mode == LoadStatus.loading) {
-                  body = const CircularProgressIndicator();
-                } else if (mode == LoadStatus.noMore) {
-                  body = const Text("No More Data...");
-                }
-                return SizedBox(
-                  height: 55,
-                  child: Center(
-                    child: body,
-                  ),
-                );
-              }),
-              onLoading: () {
-                if (purchaseController.maxCount ==
-                    purchaseController.vouchers.length) {
-                  refreshController.loadNoData();
-                } else {
-                  purchaseController.voucherLoadMore();
-                  refreshController.loadComplete();
-                }
-              },
-              child: ListView.builder(
+          const SizedBox(height: 12),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: _TableHeader(),
+          ),
+          Expanded(
+            child: Obx(() {
+              return SmartRefresher(
+                controller: refreshController,
+                enablePullUp: true,
+                enablePullDown: false,
+                footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                  Widget body = Container();
+                  if (mode == LoadStatus.loading) {
+                    body = const CircularProgressIndicator();
+                  } else if (mode == LoadStatus.noMore) {
+                    body = const Text('No More Data...');
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: Center(child: body),
+                  );
+                }),
+                onLoading: () {
+                  if (purchaseController.maxCount ==
+                      purchaseController.vouchers.length) {
+                    refreshController.loadNoData();
+                  } else {
+                    purchaseController.voucherLoadMore();
+                    refreshController.loadComplete();
+                  }
+                },
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: purchaseController.showVouchers.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     var voucher = purchaseController.showVouchers[index];
                     return reportListTile(index: index + 1, voucher: voucher);
-                  }),
-            );
-          })),
+                  },
+                ),
+              );
+            }),
+          ),
           Obx(() {
-            // salesController.getTotal();
             return Container(
-              height: 50,
+              height: 56,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: theme.colorScheme.primary,
               ),
-              child: ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text(
-                      "Total",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Text(
-                      purchaseController.totalAmount.toString(),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ],
+              child: Center(
+                child: Text(
+                  'Total: ${purchaseController.totalAmount}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             );
-          })
+          }),
         ],
       ),
     );
   }
 
   Widget reportListTile({required int index, required PurchaseModel voucher}) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
         child: Row(
           children: [
-            Expanded(child: Text(index.toString())),
-            Expanded(flex: 2, child: Text(voucher.purchaseNo.toString())),
-            Expanded(flex: 2, child: Text(voucher.total_price.toString())),
+            Expanded(
+              child: Text(
+                index.toString(),
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(voucher.purchaseNo.toString()),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                voucher.total_price.toString(),
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
           ],
         ),
       ),
@@ -130,7 +150,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-            labelText: "Supplier",
+            labelText: 'Supplier',
             contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             border: OutlineInputBorder(),
           ),
@@ -154,14 +174,13 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
             date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem: "All",
-        // Optional: Can be null if no initial selection is required
+        selectedItem: 'All',
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
             autofocus: true,
             decoration: InputDecoration(
-              labelText: "Customer",
+              labelText: 'Supplier',
             ),
           ),
         ),
@@ -171,54 +190,83 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
 
   Widget datePicker() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: DropdownMenu(
-        initialSelection: "today",
-        width: double.infinity,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: "all", label: "All"),
-          DropdownMenuEntry(value: "today", label: "Today"),
-          DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
-          DropdownMenuEntry(value: "thismonth", label: "This month"),
-          DropdownMenuEntry(value: "lastmonth", label: "Last month"),
-          DropdownMenuEntry(value: "thisyear", label: "This year"),
-          DropdownMenuEntry(value: "lastyear", label: "Last year"),
+      margin: const EdgeInsets.all(5),
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: const [
+          'All',
+          'Today',
+          'Yesterday',
+          'ThisMonth',
+          'LastMonth',
+          'ThisYear',
+          'LastYear',
         ],
-        onSelected: (value) {
+        onChanged: (value) {
           refreshController.loadFailed();
-          date = value!;
+          date = value!.toLowerCase();
           purchaseController.getAllVouchers(
-              supplierId: supplierId,
-              date: value != 'all' ? daterangeCalculate(date) : null);
+            supplierId: supplierId,
+            date: date != 'all' ? daterangeCalculate(date) : null,
+          );
         },
+        selectedItem: 'Today',
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
       ),
     );
   }
 
-  Map daterangeCalculate(String selectedDate) {
-    String startDate = "";
-    String endDate = "";
+  Map<String, String> daterangeCalculate(String selectedDate) {
+    String startDate = '';
+    String endDate = '';
     var now = DateTime.now();
     var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == "today") {
+    if (selectedDate == 'today') {
       startDate = today.toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "yesterday") {
+    } else if (selectedDate == 'yesterday') {
       startDate = DateTime(now.year, now.month, now.day - 1).toString();
       endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == "thismonth") {
+    } else if (selectedDate == 'thismonth') {
       startDate = DateTime(now.year, now.month, 1).toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastmonth") {
+    } else if (selectedDate == 'lastmonth') {
       startDate = DateTime(now.year, now.month - 1, 1).toString();
       endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == "thisyear") {
+    } else if (selectedDate == 'thisyear') {
       startDate = DateTime(now.year, 1, 1).toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastyear") {
+    } else if (selectedDate == 'lastyear') {
       startDate = DateTime(now.year - 1, 1, 1).toString();
       endDate = DateTime(now.year, 1, 1).toString();
     }
     return {'start': startDate, 'end': endDate};
+  }
+}
+
+class _TableHeader extends StatelessWidget {
+  const _TableHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Text('No.', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+          Expanded(flex: 2, child: Text('Inv No', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+          Expanded(flex: 2, child: Text('Amount', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+        ],
+      ),
+    );
   }
 }
