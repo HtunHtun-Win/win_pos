@@ -22,9 +22,11 @@ class CustomerScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
                 hintText: "Search...",
+                isDense: true,
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onChanged: (value) {
                 refreshController.loadFailed();
@@ -86,86 +88,71 @@ class CustomerScreen extends StatelessWidget {
   }
 
   Widget listItem(context, CustomerModel customer) {
-    Color color = Theme.of(context).primaryColor;
-    Color textColor = Colors.black;
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.primary;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-      width: double.infinity,
-      decoration: BoxDecoration(
-          color: Theme.of(context).canvasColor,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(5, 5),
-              blurRadius: 10,
-            ),
-          ]),
-      child: ListTile(
-        title: Text(
-          customer.name.toString(),
-          style: TextStyle(color: textColor),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 1,
+        child: ListTile(
+          title: Text(customer.name.toString()),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(customer.phone.toString()),
+              Expanded(
+                child: Text(
+                  customer.address.toString(),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          trailing: customer.id == 1
+              ? const SizedBox()
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          refreshController.loadFailed();
+                          Get.to(() => CustomerEditScreen(customer));
+                        },
+                        icon: Icon(
+                          Icons.edit,
+                          color: color,
+                        )),
+                    IconButton(
+                        onPressed: () {
+                          Get.defaultDialog(
+                              title: "Delete!",
+                              middleText: "Are you sure to delete!",
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: const Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    refreshController.loadFailed();
+                                    customerController.delete(customer.id!);
+                                    customerController.searchByKeyWork(filterInput);
+                                    Get.back();
+                                  },
+                                  child: const Text("Ok"),
+                                ),
+                              ]);
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: color,
+                        )),
+                  ],
+                ),
         ),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              customer.phone.toString(),
-              style: TextStyle(
-                color: textColor,
-              ),
-            ),
-            Text(
-              customer.address.toString(),
-              style: TextStyle(
-                color: textColor,
-              ),
-            ),
-          ],
-        ),
-        trailing: customer.id == 1
-            ? const SizedBox()
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        refreshController.loadFailed();
-                        Get.to(() => CustomerEditScreen(customer));
-                      },
-                      icon: Icon(
-                        Icons.edit,
-                        color: color,
-                      )),
-                  IconButton(
-                      onPressed: () {
-                        Get.defaultDialog(
-                            title: "Delete!",
-                            middleText: "Are you sure to delete!",
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: const Text("Cancel"),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  refreshController.loadFailed();
-                                  customerController.delete(customer.id!);
-                                  customerController.searchByKeyWork(filterInput);
-                                  Get.back();
-                                },
-                                child: const Text("Ok"),
-                              ),
-                            ]);
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: color,
-                      )),
-                ],
-              ),
       ),
     );
   }

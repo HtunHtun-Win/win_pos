@@ -19,51 +19,52 @@ class StockBalanceScreen extends StatelessWidget {
     reportController.getAll();
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Stock Balance"),
+        title: const Text('Stock Balance'),
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: categoryBox(context),
           ),
-          Expanded(child: Obx(() {
-            return SmartRefresher(
-              controller: refreshController,
-              enablePullUp: true,
-              enablePullDown: false,
-              footer: CustomFooter(builder: (context, LoadStatus? mode) {
-                Widget body = Container();
-                if (mode == LoadStatus.loading) {
-                  body = const CircularProgressIndicator();
-                } else if (mode == LoadStatus.noMore) {
-                  body = const Text("No More Data...");
-                }
-                return SizedBox(
-                  height: 55,
-                  child: Center(
-                    child: body,
-                  ),
-                );
-              }),
-              onLoading: () {
-                if (reportController.maxCount ==
-                    reportController.products.length) {
-                  refreshController.loadNoData();
-                } else {
-                  reportController.productLoadMore();
-                  refreshController.loadComplete();
-                }
-              },
-              child: ListView.builder(
+          const SizedBox(height: 12),
+          Expanded(
+            child: Obx(() {
+              return SmartRefresher(
+                controller: refreshController,
+                enablePullUp: true,
+                enablePullDown: false,
+                footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                  Widget body = Container();
+                  if (mode == LoadStatus.loading) {
+                    body = const CircularProgressIndicator();
+                  } else if (mode == LoadStatus.noMore) {
+                    body = const Text('No More Data...');
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: Center(child: body),
+                  );
+                }),
+                onLoading: () {
+                  if (reportController.maxCount ==
+                      reportController.products.length) {
+                    refreshController.loadNoData();
+                  } else {
+                    reportController.productLoadMore();
+                    refreshController.loadComplete();
+                  }
+                },
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: reportController.showProducts.length,
                   itemBuilder: (context, index) {
                     var item = reportController.showProducts[index];
                     return stockItem(product: item);
-                  }),
-            );
-          }))
+                  },
+                ),
+              );
+            })),
         ],
       ),
     );
@@ -71,27 +72,30 @@ class StockBalanceScreen extends StatelessWidget {
 
   Widget stockItem({required ProductModel product}) {
     return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: Row(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Column(
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(product.name!),
-                Text("${product.quantity.toString()} pcs"),
+                Expanded(child: Text(product.name!)),
+                Text('${product.quantity} pcs'),
               ],
             ),
-            subtitle: Row(
+            const SizedBox(height: 8),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(product.code!),
-                Text("${product.sale_price.toString()} mmk"),
+                Text('${product.sale_price} MMK'),
               ],
             ),
-          ),
-          // const Divider(),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -101,7 +105,7 @@ class StockBalanceScreen extends StatelessWidget {
       () => DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-            labelText: "Category",
+            labelText: 'Category',
             contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             border: OutlineInputBorder(),
           ),
@@ -121,14 +125,13 @@ class StockBalanceScreen extends StatelessWidget {
             reportController.getAll();
           }
         },
-        selectedItem: "All",
-        // Optional: Can be null if no initial selection is required
+        selectedItem: 'All',
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
             autofocus: true,
             decoration: InputDecoration(
-              labelText: "Search Category",
+              labelText: 'Search Category',
             ),
           ),
         ),

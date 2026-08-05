@@ -32,7 +32,6 @@ class SalesDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sale Detail"),
-        backgroundColor: Theme.of(context).primaryColor,
         actions: [
           IconButton(
               onPressed: () async {
@@ -77,7 +76,6 @@ class SalesDetail extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.print,
-                color: Colors.white,
               )),
         ],
       ),

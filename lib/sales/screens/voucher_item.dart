@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/sales/screens/sales_detail.dart';
 
@@ -11,9 +12,6 @@ class VoucherItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime date = DateTime.parse(voucher.created_at.toString());
-    var fdate = DateFormat("yyyy-MM-dd h:m:s a");
-    var finalDate = fdate.format(date);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 3,horizontal: 8),
       decoration: BoxDecoration(
@@ -42,7 +40,7 @@ class VoucherItem extends StatelessWidget {
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(finalDate),
+            Text(prettyDate(voucher.created_at.toString())),
             SizedBox(
               width: 120,
               child: Text(voucher.customer!,

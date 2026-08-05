@@ -28,17 +28,18 @@ class ProductScreen extends StatelessWidget {
             appBar: AppBar(
               title: const Text("Inventory"),
               // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              bottom: const TabBar(
-                labelStyle: TextStyle(color: Colors.white),
-                unselectedLabelColor: Colors.white,
-                tabs: [
-                  Tab(
-                    text: "List",
-                  ),
-                  Tab(
-                    text: "Adjust",
-                  ),
-                ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(48),
+                child: Builder(builder: (ctx) {
+                  final theme = Theme.of(ctx);
+                  return TabBar(
+                    indicatorColor: theme.colorScheme.secondary,
+                    tabs: const [
+                      Tab(text: "List"),
+                      Tab(text: "Adjust"),
+                    ],
+                  );
+                }),
               ),
             ),
             drawer: CustDrawer(
