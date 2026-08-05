@@ -10,8 +10,8 @@ import '../controller/sales_report_controller.dart';
 class SalesReportVoucherScreen extends StatelessWidget {
   SalesReportVoucherScreen({super.key});
 
-  SalesReportController salesController = Get.put(SalesReportController());
-  CustomerController customerController = CustomerController();
+  final SalesReportController salesController = Get.put(SalesReportController());
+  final CustomerController customerController = CustomerController();
   int? customerId;
   String date = 'today';
   final refreshController = RefreshController();
@@ -20,118 +20,176 @@ class SalesReportVoucherScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     salesController.getAllVouchers(date: daterangeCalculate('today'));
     customerController.getAll();
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sales Report"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Sales Report'),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Container(
-            margin: const EdgeInsets.all(10),
-            child: customersBox(),
-          ),
-          datePicker(),
-          const ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
               children: [
-                Expanded(child: Text("No.")),
-                Expanded(flex: 2, child: Text("InvNo")),
-                Expanded(flex: 2, child: Text("Amount")),
+                Expanded(child: customersBox(context)),
+                const SizedBox(width: 12),
+                Expanded(child: datePicker()),
               ],
             ),
           ),
-          const Divider(),
-          Expanded(child: Obx(() {
-            return SmartRefresher(
-              controller: refreshController,
-              enablePullUp: true,
-              enablePullDown: false,
-              footer: CustomFooter(builder: (context, LoadStatus? mode) {
-                Widget body = Container();
-                if (mode == LoadStatus.loading) {
-                  body = const CircularProgressIndicator();
-                } else if (mode == LoadStatus.noMore) {
-                  body = const Text("No More Data...");
-                }
-                return SizedBox(
-                  height: 55,
-                  child: Center(
-                    child: body,
-                  ),
-                );
-              }),
-              onLoading: () {
-                if (salesController.maxCount ==
-                    salesController.vouchers.length) {
-                  refreshController.loadNoData();
-                } else {
-                  salesController.voucherLoadMore();
-                  refreshController.loadComplete();
-                }
-              },
-              child: ListView.builder(
-                  itemCount: salesController.showVouchers.length,
-                  itemBuilder: (context, index) {
-                    var voucher = salesController.showVouchers[index];
-                    return reportListTile(index: index + 1, voucher: voucher);
-                  }),
-            );
-          })),
-          Obx(() {
-            // salesController.getTotal();
-            return Container(
-              height: 50,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: theme.cardColor,
+                borderRadius: BorderRadius.circular(18),
               ),
-              child: ListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: Row(
                   children: [
-                    const Text(
-                      "Total",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    Expanded(child: Text('No.', style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(flex: 2, child: Text('Inv No', style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(flex: 2, child: Text('Amount', style: TextStyle(fontWeight: FontWeight.w600))),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: Obx(() {
+              return SmartRefresher(
+                controller: refreshController,
+                enablePullUp: true,
+                enablePullDown: false,
+                footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                  Widget body = Container();
+                  if (mode == LoadStatus.loading) {
+                    body = const CircularProgressIndicator();
+                  } else if (mode == LoadStatus.noMore) {
+                    body = const Text('No More Data...');
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: Center(child: body),
+                  );
+                }),
+                onLoading: () {
+                  if (salesController.maxCount == salesController.vouchers.length) {
+                    refreshController.loadNoData();
+                  } else {
+                    salesController.voucherLoadMore();
+                    refreshController.loadComplete();
+                  }
+                },
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: salesController.showVouchers.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final voucher = salesController.showVouchers[index];
+                    return reportListTile(index: index + 1, voucher: voucher);
+                  },
+                ),
+              );
+            }),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Container(
+              height: 56,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     Text(
-                      salesController.totalAmount.toString(),
-                      style: const TextStyle(color: Colors.white),
+                      'Total',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Obx(
+                      () => Text(
+                        salesController.totalAmount.toString(),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-            );
-          })
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget reportListTile({required int index, required SaleModel voucher}) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
         child: Row(
           children: [
-            Expanded(child: Text(index.toString())),
-            Expanded(flex: 2, child: Text(voucher.sale_no.toString())),
-            Expanded(flex: 2, child: Text(voucher.total_price.toString())),
+            Expanded(
+              child: Text(
+                index.toString(),
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(voucher.sale_no.toString()),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                voucher.total_price.toString(),
+                // textAlign: TextAlign.right,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget customersBox() {
+  Widget customersBox(BuildContext context) {
+    final theme = Theme.of(context);
     return Obx(() {
       return DropdownSearch<String>(
-        dropdownDecoratorProps: const DropDownDecoratorProps(
+        dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-            labelText: "Customer",
-            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            border: OutlineInputBorder(),
+            labelText: 'Customer',
+            filled: true,
+            fillColor: theme.cardColor,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
           ),
         ),
         items: ['All'] +
@@ -139,7 +197,6 @@ class SalesReportVoucherScreen extends StatelessWidget {
                 .map((customer) => customer.name.toString())
                 .toList(),
         onChanged: (value) {
-          // salesController.maxCount = 10;
           refreshController.loadFailed();
           if (value != 'All') {
             final customer = customerController.customers.firstWhere(
@@ -154,14 +211,13 @@ class SalesReportVoucherScreen extends StatelessWidget {
             date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
-        selectedItem: "All",
-        // Optional: Can be null if no initial selection is required
+        selectedItem: 'All',
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
             autofocus: true,
             decoration: InputDecoration(
-              labelText: "Customer",
+              labelText: 'Customer',
             ),
           ),
         ),
@@ -171,53 +227,60 @@ class SalesReportVoucherScreen extends StatelessWidget {
 
   Widget datePicker() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: DropdownMenu(
-        initialSelection: "today",
-        width: double.infinity,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: "all", label: "All"),
-          DropdownMenuEntry(value: "today", label: "Today"),
-          DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
-          DropdownMenuEntry(value: "thismonth", label: "This month"),
-          DropdownMenuEntry(value: "lastmonth", label: "Last month"),
-          DropdownMenuEntry(value: "thisyear", label: "This year"),
-          DropdownMenuEntry(value: "lastyear", label: "Last year"),
+      margin: const EdgeInsets.all(5),
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: const [
+          'All',
+          'Today',
+          'Yesterday',
+          'ThisMonth',
+          'LastMonth',
+          'ThisYear',
+          'LastYear',
         ],
-        onSelected: (value) {
-          // salesController.maxCount = 10;
+        onChanged: (value) {
           refreshController.loadFailed();
-          date = value!;
+          date = value!.toLowerCase();
           salesController.getAllVouchers(
             customerId: customerId,
-            date: value != 'all' ? daterangeCalculate(date) : null,
+            date: date != 'all' ? daterangeCalculate(date) : null,
           );
         },
+        selectedItem: 'Today',
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
       ),
     );
   }
 
   Map daterangeCalculate(String selectedDate) {
-    String startDate = "";
-    String endDate = "";
+    String startDate = '';
+    String endDate = '';
     var now = DateTime.now();
     var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == "today") {
+    if (selectedDate == 'today') {
       startDate = today.toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "yesterday") {
+    } else if (selectedDate == 'yesterday') {
       startDate = DateTime(now.year, now.month, now.day - 1).toString();
       endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == "thismonth") {
+    } else if (selectedDate == 'thismonth') {
       startDate = DateTime(now.year, now.month, 1).toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastmonth") {
+    } else if (selectedDate == 'lastmonth') {
       startDate = DateTime(now.year, now.month - 1, 1).toString();
       endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == "thisyear") {
+    } else if (selectedDate == 'thisyear') {
       startDate = DateTime(now.year, 1, 1).toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastyear") {
+    } else if (selectedDate == 'lastyear') {
       startDate = DateTime(now.year - 1, 1, 1).toString();
       endDate = DateTime(now.year, 1, 1).toString();
     }

@@ -26,9 +26,11 @@ class ProductListScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
                 hintText: "Search...",
+                isDense: true,
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onChanged: (value) {
                 productController.searchKeywork = value;
@@ -132,36 +134,42 @@ class ProductListScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  product.name.toString(),
-                  style: const TextStyle(fontSize: 18),
-                ),
-                Text(product.quantity.toString()),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(child: Text(product.code.toString())),
-                Expanded(
-                    child: Text(
-                  product.category_name.toString(),
-                  style: const TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                )),
-                Text(product.sale_price.toString()),
-              ],
-            ),
-            const Divider()
-          ],
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      child: Text(
+                    product.name.toString(),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  )),
+                  Text(product.quantity.toString()),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(child: Text(product.code.toString())),
+                  Expanded(
+                      child: Text(
+                    product.category_name.toString(),
+                    style: const TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  )),
+                  Text(product.sale_price.toString()),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

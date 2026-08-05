@@ -20,100 +20,106 @@ class BankPaymentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     controller.getBankPayment();
-    paymentController.getAll();
+    if(date != 'all'){
+      controller.getBankPayment(date: daterangeCalculate(date));
+    }else{
+      paymentController.getAll();
+    }
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Bank Payment"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Bank Payment'),
       ),
-    body: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      body: Column(
         children: [
-          Container(
-            margin: const EdgeInsets.all(10),
-            child: paymentBox(),
-          ),
-          datePicker(),
-          const ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
               children: [
-                Expanded(child:  Text("No.")),
-                Expanded(flex:2 ,child: Text("InvNo")),
-                Expanded(flex:2 ,child: Text("Payment")),
-                Expanded(flex:2 ,child: Text("Amount")),
+                Expanded(child: Obx(() => paymentBox())),
+                const SizedBox(width: 12),
+                Expanded(child: datePicker()),
               ],
             ),
           ),
+          const SizedBox(height: 12),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: _TableHeader(),
+          ),
           const Divider(),
-          Expanded(child: Obx(() {
-            return SmartRefresher(
-              controller: refreshController,
-              enablePullUp: true,
-              enablePullDown: false,
-              footer: CustomFooter(builder: (context, LoadStatus? mode) {
-                Widget body = Container();
-                if (mode == LoadStatus.loading) {
-                  body = const CircularProgressIndicator();
-                } else if (mode == LoadStatus.noMore) {
-                  body = const Text("No More Data...");
-                }
-                return SizedBox(
-                  height: 55,
-                  child: Center(
-                    child: body,
-                  ),
-                );
-              }),
-              onLoading: () {
-                if (controller.maxCount ==
-                    controller.vouchers.length) {
-                  refreshController.loadNoData();
-                } else {
-                  controller.loadMore();
-                  refreshController.loadComplete();
-                }
-              },
-              child: ListView.builder(
+          Expanded(
+            child: Obx(() {
+              return SmartRefresher(
+                controller: refreshController,
+                enablePullUp: true,
+                enablePullDown: false,
+                footer: CustomFooter(builder: (context, LoadStatus? mode) {
+                  Widget body = Container();
+                  if (mode == LoadStatus.loading) {
+                    body = const CircularProgressIndicator();
+                  } else if (mode == LoadStatus.noMore) {
+                    body = const Text('No More Data...');
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: Center(child: body),
+                  );
+                }),
+                onLoading: () {
+                  if (controller.maxCount == controller.vouchers.length) {
+                    refreshController.loadNoData();
+                  } else {
+                    controller.loadMore();
+                    refreshController.loadComplete();
+                  }
+                },
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: controller.showVouchers.length,
                   itemBuilder: (context, index) {
                     var voucher = controller.showVouchers[index];
-                    return reportListTile(index: index+1,voucher: voucher);
-                  }),
-            );
-          })),
-          Obx((){
-            // salesController.getTotal();
+                    return reportListTile(index: index + 1, voucher: voucher);
+                  },
+                ),
+              );
+            }),
+          ),
+          Obx(() {
             return Container(
-              height: 50,
+              height: 56,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: theme.colorScheme.primary,
               ),
-              child:ListTile(
-                title:  Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text("Total",style: TextStyle(color: Colors.white),),
-                    Text(controller.totalAmount.toString(),style: const TextStyle(color: Colors.white),),
-                  ],
+              child: Center(
+                child: Text(
+                  'Total: ${controller.totalAmount}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             );
-          })
-        ]
-      )
+          }),
+        ],
+      ),
     );
   }
 
-  Widget reportListTile({required int index,required SaleModel voucher}){
+  Widget reportListTile({required int index, required SaleModel voucher}) {
     return Card(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
             Expanded(child: Text(index.toString())),
-            Expanded(flex: 2,child: Text(voucher.sale_no.toString())),
-            Expanded(flex: 2,child: Text(voucher.payment!)),
+            Expanded(flex: 2, child: Text(voucher.sale_no.toString())),
+            Expanded(flex: 2, child: Text(voucher.payment!)),
             Expanded(flex: 2, child: Text(voucher.total_price.toString())),
           ],
         ),
@@ -122,99 +128,115 @@ class BankPaymentScreen extends StatelessWidget {
   }
 
   Widget paymentBox() {
-    return Obx((){
-      return DropdownSearch<String>(
-        dropdownDecoratorProps: const DropDownDecoratorProps(
-          dropdownSearchDecoration: InputDecoration(
-            labelText: "Payment",
-            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            border: OutlineInputBorder(),
+    return DropdownSearch<String>(
+      dropdownDecoratorProps: const DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          labelText: 'Payment',
+          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          border: OutlineInputBorder(),
+        ),
+      ),
+      items: paymentController.payments.map((payment) {
+        if (payment.name == 'Cash') return 'All';
+        return payment.name.toString();
+      }).toList(),
+      onChanged: (value) {
+        refreshController.loadFailed();
+        if (value != 'All') {
+          final payment = paymentController.payments.firstWhere(
+            (payment) => payment.name == value,
+          );
+          paymentId = payment.id;
+        } else {
+          paymentId = null;
+        }
+        controller.getBankPayment(
+          paymentId: paymentId,
+          date: date != 'all' ? daterangeCalculate(date) : null,
+        );
+      },
+      selectedItem: 'All',
+      popupProps: const PopupProps.menu(
+        showSearchBox: true,
+        searchFieldProps: TextFieldProps(
+          autofocus: true,
+          decoration: InputDecoration(
+            labelText: 'Payment',
           ),
         ),
-        items: paymentController.payments.map((payment) {
-          if(payment.name=="Cash") return 'All';
-          return payment.name.toString();
-        }).toList(),
-        onChanged: (value) {
-          refreshController.loadFailed();
-          if(value!='All'){
-            final payment = paymentController.payments.firstWhere(
-                  (payment) => payment.name == value,
-            );
-            paymentId = payment.id;
-          }else{
-            paymentId = null;
-          }
-          controller.getBankPayment(
-            paymentId: paymentId,
-            date: date!='all' ? daterangeCalculate(date) : null,
-          );
-        },
-        selectedItem: "All", // Optional: Can be null if no initial selection is required
-        popupProps: const PopupProps.menu(
-          showSearchBox: true,
-          searchFieldProps: TextFieldProps(
-            autofocus: true,
-            decoration: InputDecoration(
-              labelText: "Payment",
-            ),
-          ),
-        ),
-      );
-    });
-  }
-
-  Widget datePicker() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: DropdownMenu(
-        initialSelection: "today",
-        width: double.infinity,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: "all", label: "All"),
-          DropdownMenuEntry(value: "today", label: "Today"),
-          DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
-          DropdownMenuEntry(value: "thismonth", label: "This month"),
-          DropdownMenuEntry(value: "lastmonth", label: "Last month"),
-          DropdownMenuEntry(value: "thisyear", label: "This year"),
-          DropdownMenuEntry(value: "lastyear", label: "Last year"),
-        ],
-        onSelected: (value) {
-          refreshController.loadFailed();
-          date = value!;
-          controller.getBankPayment(
-              paymentId: paymentId,
-              date: value!='all' ? daterangeCalculate(date) : null
-          );
-        },
       ),
     );
   }
 
-  Map daterangeCalculate(String selectedDate) {
-    String startDate = "";
-    String endDate = "";
+  Widget datePicker() {
+    return Container(
+      margin: const EdgeInsets.all(5),
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: const ['All', 'Today', 'Yesterday', 'ThisMonth', 'LastMonth', 'ThisYear', 'LastYear'],
+        onChanged: (value) {
+          refreshController.loadFailed();
+          date = value!.toLowerCase();
+          controller.getBankPayment(
+            paymentId: paymentId,
+            date: date != 'all' ? daterangeCalculate(date) : null,
+          );
+        },
+        selectedItem: 'Today',
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
+      ),
+    );
+  }
+
+  Map<String, String> daterangeCalculate(String selectedDate) {
+    String startDate = '';
+    String endDate = '';
     var now = DateTime.now();
     var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == "today") {
+    if (selectedDate == 'today') {
       startDate = today.toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "yesterday") {
+    } else if (selectedDate == 'yesterday') {
       startDate = DateTime(now.year, now.month, now.day - 1).toString();
       endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == "thismonth") {
+    } else if (selectedDate == 'thismonth') {
       startDate = DateTime(now.year, now.month, 1).toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastmonth") {
+    } else if (selectedDate == 'lastmonth') {
       startDate = DateTime(now.year, now.month - 1, 1).toString();
       endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == "thisyear") {
+    } else if (selectedDate == 'thisyear') {
       startDate = DateTime(now.year, 1, 1).toString();
       endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastyear") {
+    } else if (selectedDate == 'lastyear') {
       startDate = DateTime(now.year - 1, 1, 1).toString();
       endDate = DateTime(now.year, 1, 1).toString();
     }
     return {'start': startDate, 'end': endDate};
+  }
+}
+
+class _TableHeader extends StatelessWidget {
+  const _TableHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(child: Text('No.', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(flex: 2, child: Text('InvNo', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(flex: 2, child: Text('Payment', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(flex: 2, child: Text('Amount', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+      ],
+    );
   }
 }

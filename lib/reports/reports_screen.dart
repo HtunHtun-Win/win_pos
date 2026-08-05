@@ -35,44 +35,125 @@ class ReportsScreen extends StatelessWidget {
           // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         drawer: CustDrawer(user: user),
-        body: ListView(
+        body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: ListView(
           children: [
-            if(user.role_id!=3)
-            ListItem(context, const Icon(Icons.shopping_cart), "Sales", () {
-              Get.to(() => const SalesReportScreen());
-            }),
-            if(user.role_id!=2)
-            ListItem(context, const Icon(Icons.add_shopping_cart), "Purchase", () {
-              Get.to(() => const PurchaseReportScreen());
-            }),
-            ListItem(context, const Icon(Icons.inventory), "Inventory", () {
-              Get.to(() => const InventoryReportScreen());
-            }),
-            if(user.role_id==1)
-            ListItem(context, const Icon(Icons.attach_money), "Financial", () {
-              Get.to(() => const FinancialReportScreen());
-            }),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primaryContainer,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Reports Hub',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Quickly access sales, purchase, inventory and financial reports in one place.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.9),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            if (user.role_id != 3)
+              buildReportCard(
+                context,
+                icon: Icons.shopping_cart,
+                title: 'Sales Reports',
+                subtitle: 'View sales analytics and trends',
+                onTap: () => Get.to(() => const SalesReportScreen()),
+              ),
+            if (user.role_id != 2)
+              buildReportCard(
+                context,
+                icon: Icons.add_shopping_cart,
+                title: 'Purchase Reports',
+                subtitle: 'Track purchase orders and costs',
+                onTap: () => Get.to(() => const PurchaseReportScreen()),
+              ),
+            buildReportCard(
+              context,
+              icon: Icons.inventory,
+              title: 'Inventory Reports',
+              subtitle: 'Monitor stock movements and valuation',
+              onTap: () => Get.to(() => const InventoryReportScreen()),
+            ),
+            if (user.role_id == 1)
+              buildReportCard(
+                context,
+                icon: Icons.attach_money,
+                title: 'Financial Reports',
+                subtitle: 'Review income, expenses and cash flow',
+                onTap: () => Get.to(() => const FinancialReportScreen()),
+              ),
           ],
         ),
       ),
-    );
+    ));
   }
 
-  Widget ListItem(context, icon, text, VoidCallback fun) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2,horizontal: 8),
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 1),
-          borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        leading: icon,
-        iconColor: Colors.white,
-        title: Text(
-          text,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+  Widget buildReportCard(BuildContext context,
+      {required IconData icon,
+      required String title,
+      required String subtitle,
+      required VoidCallback onTap}) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Material(
+        color: theme.cardColor,
+        elevation: 2,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+            child: Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(icon, size: 28, color: theme.colorScheme.primary),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                      const SizedBox(height: 6),
+                      Text(subtitle, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7))),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: theme.iconTheme.color),
+              ],
+            ),
+          ),
         ),
-        onTap: fun,
       ),
     );
   }

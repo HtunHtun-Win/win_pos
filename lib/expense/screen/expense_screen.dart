@@ -8,6 +8,8 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:win_pos/core/functions/date_range_calc.dart';
+import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
 import 'package:win_pos/expense/model/expense_model.dart';
@@ -17,8 +19,6 @@ import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
 import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
-
-import '../../core/functions/date_range_calc.dart';
 
 class ExpenseScreen extends StatelessWidget {
   ExpenseScreen({super.key});
@@ -148,9 +148,6 @@ class ExpenseScreen extends StatelessWidget {
   }
 
   Widget listItem(ExpenseModel expense) {
-    DateTime date = DateTime.parse(expense.createdDate.toString());
-    var format = DateFormat("yyyy-MM-dd h:m:s a");
-    var finalDate = format.format(date);
     return Slidable(
       endActionPane: ActionPane(motion: const StretchMotion(), children: [
         SlidableAction(
@@ -174,24 +171,33 @@ class ExpenseScreen extends StatelessWidget {
         )
       ]),
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
         decoration: BoxDecoration(
-          color: expense.type == 1 ? Colors.blue[200] : Colors.red[200],
+          color: Colors.white,
           borderRadius: BorderRadius.circular(10),
-        ),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(2, 2),
+              blurRadius: 10,
+            )
+          ]
+      ),
         child: ListTile(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(expense.description.toString()),
-              Text(expense.amount.toString()),
+              Text(expense.type == 1 ? "-${expense.amount}" : "+${expense.amount}",style: TextStyle(
+                color: expense.type == 1 ? Colors.red : Colors.green
+              ),),
             ],
           ),
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(expense.note.toString()),
-              Text(finalDate),
+              Text(prettyDate(expense.createdDate.toString())),
             ],
           ),
         ),
@@ -238,41 +244,6 @@ class ExpenseScreen extends StatelessWidget {
     );
   }
 
-  // Widget catPicker_org(BuildContext context) {
-  //   return Container(
-  //     child: DropdownMenu(
-  //       width: double.infinity,
-  //       initialSelection: "all",
-  //       dropdownMenuEntries: [
-  //         const DropdownMenuEntry(value: "all", label: "All"),
-  //         ..._expenseController.descList.value
-  //             .map(
-  //               (data) => DropdownMenuEntry(value: data, label: data),
-  //         )
-  //             .toList()
-  //       ],
-  //       onSelected: (value) async {
-  //         desc = value;
-  //         refreshController.loadFailed();
-  //         if (value == 'all') {
-  //           if (date == "all") {
-  //             _expenseController.getAll();
-  //           } else {
-  //             _expenseController.getAll(date: daterangeCalculate(date));
-  //           }
-  //         } else {
-  //           if(date=="all"){
-  //             _expenseController.getAll(desc: value);
-  //           }else{
-  //             _expenseController.getAll(
-  //                 date: daterangeCalculate(date), desc: value);
-  //           }
-  //         }
-  //       },
-  //     ),
-  //   );
-  // }
-
   Widget datePicker(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(5),
@@ -318,53 +289,6 @@ class ExpenseScreen extends StatelessWidget {
         popupProps: const PopupProps.menu(
           showSearchBox: false,
         ),
-      ),
-    );
-  }
-
-  Widget datePicker_org(BuildContext context) {
-    return Container(
-      child: DropdownMenu(
-        width: double.infinity,
-        initialSelection: "today",
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: "all", label: "All"),
-          DropdownMenuEntry(value: "today", label: "Today"),
-          DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
-          DropdownMenuEntry(value: "thismonth", label: "This month"),
-          DropdownMenuEntry(value: "lastmonth", label: "Last month"),
-          DropdownMenuEntry(value: "thisyear", label: "This year"),
-          DropdownMenuEntry(value: "lastyear", label: "Last year"),
-          DropdownMenuEntry(value: "custom", label: "Custom"),
-        ],
-        onSelected: (value) async {
-          date = value!;
-          refreshController.loadFailed();
-          _expenseController.date = value;
-          if (value == 'all') {
-            if (desc == "all") {
-              _expenseController.getAll();
-            } else {
-              _expenseController.getAll(desc: desc);
-            }
-          } else if (value == 'custom') {
-            List<DateTime>? dateTimeList =
-            await showOmniDateTimeRangePicker(context: context);
-            if (dateTimeList != null) {
-              String startDate = DateTime(dateTimeList[0].year,
-                  dateTimeList[0].month, dateTimeList[0].day)
-                  .toString();
-              String endDate = DateTime(dateTimeList[1].year,
-                  dateTimeList[1].month, dateTimeList[1].day + 1)
-                  .toString();
-              _expenseController.getAll(
-                  date: {'start': startDate, 'end': endDate}, desc: desc);
-            }
-          } else {
-            _expenseController.getAll(
-                date: daterangeCalculate(value), desc: desc);
-          }
-        },
       ),
     );
   }
