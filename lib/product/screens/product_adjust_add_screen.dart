@@ -33,7 +33,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
             actions: [
               IconButton(
                   onPressed: () async {
-                    if (type == 'Lost') {
+                    if (type == 'Lose') {
                       qtyController.text = '-${qtyController.text}';
                     }
                     await productLogController.addProductLog(
@@ -96,7 +96,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
                     border: OutlineInputBorder()),
                 onChanged: (value) {
                   value = value.isNotEmpty ? value : '0';
-                  if (type == 'Lost') value = '-$value';
+                  if (type == 'Lose') value = '-$value';
                   newQty =
                       productLogController.selectedProduct['qty']! +
                           int.parse(value);
@@ -119,20 +119,6 @@ class ProductAdjustAddScreen extends StatelessWidget {
     );
   }
 
-  // Widget typeChange() {
-  //   return DropdownMenu(
-  //     initialSelection: "adjust",
-  //     width: double.infinity,
-  //     dropdownMenuEntries: const [
-  //       DropdownMenuEntry(value: "adjust", label: "Adjust"),
-  //       DropdownMenuEntry(value: "lose", label: "Lose"),
-  //     ],
-  //     onSelected: (value) {
-  //       type = value!;
-  //     },
-  //   );
-  // }
-
   Widget typeChange() {
     return DropdownSearch<String>(
       dropdownDecoratorProps: const DropDownDecoratorProps(
@@ -142,7 +128,7 @@ class ProductAdjustAddScreen extends StatelessWidget {
           border: OutlineInputBorder(),
         ),
       ),
-      items: const ["Adjust","Lost"],
+      items: const ["Adjust","Lose"],
       onChanged: (value) {
         type = value!;
       },

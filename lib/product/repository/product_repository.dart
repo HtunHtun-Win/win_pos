@@ -72,12 +72,14 @@ class ProductRepository {
         where: "id=?",
         whereArgs: [id]);
     if (salePrice != oldPrice) {
+      DateTime dateTime = DateTime.now();
       await database.insert(
         "sale_price_log",
         {
           "product_id": id,
           "old_price": oldPrice,
           "new_price": salePrice,
+          "created_at": dateTime.toString()
         },
       );
     }

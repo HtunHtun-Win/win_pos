@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:win_pos/core/functions/date_range_calc.dart';
+import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:win_pos/reports/inventory_reports/controller/inventory_report_controller.dart';
 import 'package:win_pos/reports/inventory_reports/models/sale_log_model.dart';
@@ -107,7 +109,7 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
 
   Widget reportListTile({required SaleLogModel saleLog}) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 6),
+      margin: const EdgeInsets.symmetric(vertical: 3),
       elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(
@@ -118,10 +120,7 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
             Expanded(flex: 2, child: Text(saleLog.oldPrice.toString())),
             Expanded(flex: 2, child: Text(saleLog.newPrice.toString())),
             Expanded(
-              flex: 2,
-              child: Text(DateFormat('dd/MM/yyyy HH:mm')
-                  .format(DateTime.parse(saleLog.createdAt))),
-            ),
+                flex: 2, child: Text(prettyDate(saleLog.createdAt.toString()))),
           ],
         ),
       ),
@@ -203,49 +202,6 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
       ),
     );
   }
-
-  Map<String, String> daterangeCalculate(String type) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    late DateTime start;
-    late DateTime end;
-
-    switch (type) {
-      case 'today':
-        start = today;
-        end = today.add(const Duration(days: 1));
-        break;
-      case 'yesterday':
-        start = today.subtract(const Duration(days: 1));
-        end = today;
-        break;
-      case 'thismonth':
-        start = DateTime(now.year, now.month, 1);
-        end = today.add(const Duration(days: 1));
-        break;
-      case 'lastmonth':
-        start = DateTime(now.year, now.month - 1, 1);
-        end = DateTime(now.year, now.month, 1);
-        break;
-      case 'thisyear':
-        start = DateTime(now.year, 1, 1);
-        end = today.add(const Duration(days: 1));
-        break;
-      case 'lastyear':
-        start = DateTime(now.year - 1, 1, 1);
-        end = DateTime(now.year, 1, 1);
-        break;
-      default:
-        start = today;
-        end = today.add(const Duration(days: 1));
-    }
-
-    return {
-      'start': start.toIso8601String(),
-      'end': end.toIso8601String(),
-    };
-  }
 }
 
 class _TableHeader extends StatelessWidget {
@@ -257,10 +213,26 @@ class _TableHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(flex: 2, child: Text('Name', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-        Expanded(flex: 2, child: Text('Old', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-        Expanded(flex: 2, child: Text('New', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-        Expanded(flex: 2, child: Text('Date', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(
+            flex: 2,
+            child: Text('Name',
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(
+            flex: 2,
+            child: Text('Old',
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(
+            flex: 2,
+            child: Text('New',
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.bold))),
+        Expanded(
+            flex: 2,
+            child: Text('Date',
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.bold))),
       ],
     );
   }

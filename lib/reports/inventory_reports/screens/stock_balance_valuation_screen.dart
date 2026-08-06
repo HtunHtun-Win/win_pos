@@ -141,7 +141,7 @@ class StockBalanceValuationScreen extends StatelessWidget {
 
   Widget stockItem({required ProductValueModel product}) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 6),
+      margin: const EdgeInsets.symmetric(vertical: 3),
       elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(

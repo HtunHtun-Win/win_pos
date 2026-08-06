@@ -160,12 +160,31 @@ class ExpenseScreen extends StatelessWidget {
         SlidableAction(
           onPressed: (_) {
             refreshController.loadFailed();
-            Get.defaultDialog(
-                onCancel: () => Get.back(),
-                onConfirm: () {
-                  _expenseController.deleteExpense(expense.id!);
-                  Get.back();
-                });
+            // Get.defaultDialog(
+            //     onCancel: () => Get.back(),
+            //     onConfirm: () {
+            //       _expenseController.deleteExpense(expense.id!);
+            //       Get.back();
+            //     });
+            Get.dialog(
+              AlertDialog(
+                title: const Text('Delete Expense'),
+                content: const Text('Are you sure you want to delete this expense?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Get.back(),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _expenseController.deleteExpense(expense.id!);
+                      Get.back();
+                    },
+                    child: const Text('Delete'),
+                  ),
+                ],
+              ),
+            );
           },
           icon: Icons.delete,
         )

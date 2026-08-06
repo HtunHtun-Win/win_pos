@@ -93,7 +93,7 @@ class SalesScreen extends StatelessWidget {
   Widget searchItem(context, ProductModel product) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
@@ -175,7 +175,7 @@ class SalesScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      color: theme.colorScheme.primary.withOpacity(0.06),
+      color: theme.colorScheme.primary.withValues(alpha:0.06),
       child: ListTile(
         title: Text("Total : $amount", style: theme.textTheme.titleMedium),
         trailing: ElevatedButton(
@@ -268,7 +268,7 @@ class SalesScreen extends StatelessWidget {
                   Get.snackbar(
                     "Alert!",
                     "Not enough stock!",
-                    backgroundColor: Colors.black.withOpacity(.5),
+                    backgroundColor: Colors.black.withValues(alpha:0.5),
                     colorText: Colors.white,
                   );
                 }

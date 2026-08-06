@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
+import 'package:win_pos/user/screens/login_screen.dart';
 
 class EditUserScreen extends StatefulWidget {
   const EditUserScreen({super.key});
@@ -15,16 +17,18 @@ class _EditUserScreenState extends State<EditUserScreen> {
   TextEditingController loginIdController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   UserController controller = Get.find();
+  bool isCurrentUser = false;
   int currentOpt = 1;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     nameController.text = controller.edit_user.value.name!;
     loginIdController.text = controller.edit_user.value.login_id!;
     passwordController.text = controller.edit_user.value.password!;
     currentOpt = controller.edit_user.value.role_id!;
+    isCurrentUser =
+        controller.current_user['id'] == controller.edit_user.value.id;
   }
 
   @override
@@ -43,17 +47,17 @@ class _EditUserScreenState extends State<EditUserScreen> {
             const SizedBox(
               height: 5,
             ),
-            userInput(context, "Login Id", const Icon(Icons.fingerprint),
+            userInput(context, "Login Id", const Icon(Icons.badge),
                 loginIdController),
             const SizedBox(
               height: 5,
             ),
-            userInput(context, "Password", const Icon(Icons.lock),
-                passwordController, type: TextInputType.number,
-              filer: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ]
-            ),
+            userInput(
+                context, "Password", const Icon(Icons.lock), passwordController,
+                type: TextInputType.number,
+                filer: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ]),
             const SizedBox(
               height: 5,
             ),
@@ -69,22 +73,13 @@ class _EditUserScreenState extends State<EditUserScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
-                    children: [
-                      Text("Admin"),
-                      Radio(value: 1)
-                    ],
+                    children: [Text("Admin"), Radio(value: 1)],
                   ),
                   Row(
-                    children: [
-                      Text("Sale"),
-                      Radio(value: 2)
-                    ],
+                    children: [Text("Sale"), Radio(value: 2)],
                   ),
                   Row(
-                    children: [
-                      Text("Purchase"),
-                      Radio(value: 3)
-                    ],
+                    children: [Text("Purchase"), Radio(value: 3)],
                   ),
                 ],
               ),
@@ -110,27 +105,40 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       passwordController.text,
                       currentOpt);
                   if (num == -1) {
-                    Get.dialog(
-                        AlertDialog(
-                          title: const Text("Duplicate!"),
-                          content: const Text("LoginId is already exists."),
-                          actions: [
-                            TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
-                          ],
-                        )
-                    );
+                    Get.dialog(AlertDialog(
+                      title: const Text("Duplicate!"),
+                      content: const Text("LoginId is already exists."),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text("OK"))
+                      ],
+                    ));
                   } else if (num != 0) {
-                    Get.back();
+                    
+                    if (isCurrentUser) {
+                      final SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+                      await pref.setBool('remember_me', false);
+                      Get.offAll(() => const LoginScreen());
+                    }else{
+                      Get.back();
+                    }
                   } else {
-                    Get.dialog(
-                        AlertDialog(
-                          title: const Text("Invalid Input!"),
-                          content: const Text("Every input must have at least 2 characters."),
-                          actions: [
-                            TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
-                          ],
-                        )
-                    );
+                    Get.dialog(AlertDialog(
+                      title: const Text("Invalid Input!"),
+                      content: const Text(
+                          "Every input must have at least 2 characters."),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text("OK"))
+                      ],
+                    ));
                   }
                 },
                 child: const Text(
@@ -146,7 +154,8 @@ class _EditUserScreenState extends State<EditUserScreen> {
   }
 
   Widget userInput(
-      context, String hintText, Icon icon, TextEditingController tController,{type,filer}) {
+      context, String hintText, Icon icon, TextEditingController tController,
+      {type, filer}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(

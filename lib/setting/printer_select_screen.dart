@@ -14,10 +14,9 @@ class PrinterSelectScreen extends StatefulWidget {
 }
 
 class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
-  PrinterController printerController = Get.find<PrinterController>();
+  final PrinterController printerController = Get.find<PrinterController>();
   late SharedPreferences pref;
   Uint8List? pngBytes;
-  bool isInit = true;
 
   @override
   void initState() {
@@ -37,85 +36,130 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Bluetooth Printer')),
+      appBar: AppBar(
+        title: const Text('Bluetooth Printer'),
+      ),
       body: Obx(
-        () => Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Row(
-                spacing: 5,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: printerController.getDevices,
-                      child: Text(printerController.state.value.isLoading
-                          ? "Scanning..."
-                          : "Scan"),
+        () {
+          final state = printerController.state.value;
+          final connected = state.connectedMac;
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: state.isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Icon(Icons.search),
+                        label: Text(state.isLoading ? 'Scanning...' : 'Scan'),
+                        onPressed: state.isLoading ? null : printerController.getDevices,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.wifi_off),
+                        label: const Text('Disconnect'),
+                        onPressed: printerController.disconnect,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          backgroundColor: theme.colorScheme.error,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.check),
+                    label: const Text('Test Print'),
+                    onPressed: printerController.testPrint,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
                   ),
-                  Expanded(
-                    flex: 3,
-                    child: ElevatedButton(
-                      onPressed: printerController.disconnect,
-                      child: const Text("Disconnect"),
-                    ),
+                ),
+                const SizedBox(height: 18),
+                if (connected != null)
+                  Row(
+                    children: [
+                      const Icon(Icons.bluetooth_connected, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Connected to ${connected.name}',
+                          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    flex: 3,
-                    child: ElevatedButton(
-                      onPressed: printerController.testPrint,
-                      child: const Text("TestPrint"),
-                    ),
+                if (connected == null)
+                  Text(
+                    'No printer connected',
+                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7)),
                   ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Text(printerController.state.value.connectedMac!=null ? "Connected Device : ${printerController.state.value.connectedMac!.name}" : "" ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: printerController.state.value.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : printerController.state.value.devices.isEmpty
-                        ? const Center(child: Text("No paired printers found"))
-                        : ListView.builder(
-                            itemCount:
-                                printerController.state.value.devices.length,
-                            itemBuilder: (context, i) {
-                              BluetoothInfo d =
-                                  printerController.state.value.devices[i];
-                              final connected = d.macAdress ==
-                                  printerController
-                                      .state.value.connectedMac?.macAdress;
-                              return Card(
-                                child: ListTile(
-                                  title: Text(d.name ?? "Unknown"),
-                                  subtitle: Text(d.macAdress ?? ""),
-                                  trailing: ElevatedButton(
-                                    onPressed: () =>
-                                        printerController.connect(d),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: connected
-                                          ? Colors.green
-                                          : Colors.blue,
-                                    ),
-                                    child: Text(
-                                      style: const TextStyle(
-                                        color: Colors.white,
+                const SizedBox(height: 18),
+                Expanded(
+                  child: state.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : state.devices.isEmpty
+                          ? Center(
+                              child: Text(
+                                'No paired printers found',
+                                style: theme.textTheme.bodyLarge,
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: state.devices.length,
+                              itemBuilder: (context, index) {
+                                final BluetoothInfo device = state.devices[index];
+                                final isConnected = device.macAdress == connected?.macAdress;
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 18,
+                                        offset: const Offset(0, 8),
                                       ),
-                                      connected ? "Connected" : "Connect",
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                                    leading: Icon(Icons.bluetooth, color: theme.colorScheme.primary),
+                                    title: Text(device.name ?? 'Unknown printer'),
+                                    subtitle: Text(device.macAdress ?? ''),
+                                    trailing: ElevatedButton(
+                                      onPressed: () => printerController.connect(device),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: isConnected ? Colors.green : theme.colorScheme.primary,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                      ),
+                                      child: Text(isConnected ? 'Connected' : 'Connect'),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-              ),
-            ],
-          ),
-        ),
+                                );
+                              },
+                            ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

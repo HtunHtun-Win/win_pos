@@ -90,7 +90,7 @@ class SupplierScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 1,
