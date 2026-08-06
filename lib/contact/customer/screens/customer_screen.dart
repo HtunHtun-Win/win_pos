@@ -7,6 +7,7 @@ import 'package:win_pos/contact/customer/screens/customer_add_screen.dart';
 
 import 'customer_edit_screen.dart';
 
+// ignore: must_be_immutable
 class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
 
@@ -91,7 +92,7 @@ class CustomerScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 1,

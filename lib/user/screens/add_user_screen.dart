@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
-import 'package:win_pos/user/screens/user_screen.dart';
 
 class AddUserScreen extends StatefulWidget {
   const AddUserScreen({super.key});
@@ -34,7 +33,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
             const SizedBox(
               height: 5,
             ),
-            userInput(context, "Login Id", const Icon(Icons.fingerprint),
+            userInput(context, "Login Id", const Icon(Icons.badge),
                 loginIdController),
             const SizedBox(
               height: 5,
@@ -54,26 +53,48 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   currentOpt = value!;
                 });
               },
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 5,
                 children: [
-                  Row(
-                    children: [
-                      Text("Admin"),
-                      Radio<int>(value: 1)
-                    ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Row(
+                      children: [
+                        Text("Admin"),
+                        Radio<int>(value: 1)
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Text("Sale"),
-                      Radio(value: 2)
-                    ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Row(
+                      children: [
+                        Text("Sale"),
+                        Radio(value: 2)
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Text("Purchase"),
-                      Radio(value: 3)
-                    ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Row(
+                      children: [
+                        Text("Purchase"),
+                        Radio(value: 3)
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -108,7 +129,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         )
                     );
                   } else if (num != 0) {
-                    Get.off(() => UserScreen());
+                    Get.back();
                   } else {
                     Get.dialog(
                         AlertDialog(

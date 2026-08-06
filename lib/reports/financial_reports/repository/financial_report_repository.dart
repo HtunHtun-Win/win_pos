@@ -32,7 +32,7 @@ class FinancialReportRepository {
     (SELECT SUM(products.purchase_price * product_log.quantity) 
         FROM products 
         JOIN product_log ON products.id = product_log.product_id 
-        WHERE product_log.note = 'lose' AND product_log.created_at>'${date['start']}' AND product_log.created_at<'${date['end']}') AS lose
+        WHERE product_log.note = 'Lose' AND product_log.created_at>'${date['start']}' AND product_log.created_at<'${date['end']}') AS lose
         FROM sales_detail WHERE sales_detail.created_at>'${date['start']}' AND sales_detail.created_at<'${date['end']}';""";
     return await database.rawQuery(sql);
   }

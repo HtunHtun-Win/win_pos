@@ -20,10 +20,11 @@ class BankPaymentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     controller.getBankPayment();
+    paymentController.getAll();
     if(date != 'all'){
       controller.getBankPayment(date: daterangeCalculate(date));
     }else{
-      paymentController.getAll();
+      controller.getBankPayment();
     }
     final theme = Theme.of(context);
     return Scaffold(
@@ -110,7 +111,7 @@ class BankPaymentScreen extends StatelessWidget {
 
   Widget reportListTile({required int index, required SaleModel voucher}) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 6),
+      margin: const EdgeInsets.symmetric(vertical: 3),
       elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Padding(

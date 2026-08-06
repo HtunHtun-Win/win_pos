@@ -3,78 +3,129 @@ import 'package:get/get.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 import 'package:win_pos/shop/shop_model.dart';
 
-// ignore: must_be_immutable
-class ShopInfoScreen extends StatelessWidget {
+class ShopInfoScreen extends StatefulWidget {
   ShopInfoScreen({super.key});
-  ShopInfoController shopInfoController = ShopInfoController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+
+  @override
+  State<ShopInfoScreen> createState() => _ShopInfoScreenState();
+}
+
+class _ShopInfoScreenState extends State<ShopInfoScreen> {
+  final ShopInfoController shopInfoController = Get.put(ShopInfoController());
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  bool _hasLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    shopInfoController.getAll();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    addressController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
+
+  void _populateFields(Map shopData) {
+    if (!_hasLoaded && shopData.isNotEmpty) {
+      final shopModel = ShopModel.fromMap(shopData);
+      nameController.text = shopModel.name ?? '';
+      addressController.text = shopModel.address ?? '';
+      phoneController.text = shopModel.phone ?? '';
+      _hasLoaded = true;
+    }
+  }
+
+  Future<void> _saveInfo() async {
+    await shopInfoController.updateInfo(
+      nameController.text.trim(),
+      addressController.text.trim(),
+      phoneController.text.trim(),
+    );
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Success'),
+        content: const Text('Shop info successfully updated.'),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text('OK'))
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    shopInfoController.getAll();
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shop'),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Shop Info'),
       ),
       body: Obx(() {
-        if (shopInfoController.shop.isNotEmpty) {
-          ShopModel shopModel = ShopModel.fromMap(shopInfoController.shop);
-          nameController.text = shopModel.name!;
-          addressController.text = shopModel.address!;
-          phoneController.text = shopModel.phone!;
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            inputField("Name", nameController),
-            inputField("Phone", phoneController,type: TextInputType.number),
-            inputField("Address", addressController,maxLine: 3),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextButton(
-                  onPressed: () async{
-                    await shopInfoController.updateInfo(nameController.text,
-                        addressController.text, phoneController.text);
-                    Get.dialog(
-                        AlertDialog(
-                          title: const Text("Success"),
-                          content: const Text("Shop Info Successfully Updated."),
-                          actions: [
-                            TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
-                          ],
-                        )
-                    );
-                  },
-                  child: const Text("Update"),
+        _populateFields(shopInfoController.shop);
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildInputField('Shop Name', nameController, theme),
+                    const SizedBox(height: 16),
+                    _buildInputField('Phone', phoneController, theme, type: TextInputType.phone),
+                    const SizedBox(height: 16),
+                    _buildInputField('Address', addressController, theme, maxLines: 4),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: _saveInfo,
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(54),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      child: const Text('Update Shop Info'),
+                    ),
+                  ],
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         );
       }),
     );
   }
 
-  Widget inputField(title, controller,{maxLine,type}) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18),
+  Widget _buildInputField(String label, TextEditingController controller, ThemeData theme,
+      {TextInputType type = TextInputType.text, int maxLines = 1}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          keyboardType: type,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: theme.colorScheme.surface,
+            hintText: 'Enter $label',
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
           ),
-          TextField(
-            controller: controller,
-            keyboardType: type,
-            maxLines: maxLine,
-            decoration: const InputDecoration(border: OutlineInputBorder()),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

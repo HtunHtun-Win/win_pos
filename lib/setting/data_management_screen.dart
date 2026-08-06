@@ -14,42 +14,65 @@ class DataManagementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Data Management"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Data Management'),
       ),
-      body: ListView(
-        children: [
-          ListItem(context, const Icon(Icons.backup), "Data Backup", () async {
-            await exportDatabase();
-          }),
-          ListItem(context, const Icon(Icons.restore), "Data Restore",
-              () async {
-            await importDatabase();
-          }),
-          ListItem(
-              context, const Icon(Icons.delete_forever), "Delete Everything",
-              () async {
-            await Get.dialog(AlertDialog(
-              title: const Text("Format Everything"),
-              content: const Text("Backup data before format."),
-              actions: [
-                TextButton(
-                    onPressed: () async {
-                      Get.back();
-                      await format();
-                    },
-                    child: const Text("Yes")),
-                TextButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: const Text("No")),
-              ],
-            ));
-          }),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: ListView(
+          children: [
+            _dataTile(
+              context,
+              icon: Icons.backup,
+              title: 'Data Backup',
+              subtitle: 'Save a copy of your current database.',
+              color: theme.colorScheme.primary,
+              onTap: () async {
+                await exportDatabase();
+              },
+            ),
+            _dataTile(
+              context,
+              icon: Icons.restore,
+              title: 'Data Restore',
+              subtitle: 'Load a previously saved backup file.',
+              color: theme.colorScheme.secondary,
+              onTap: () async {
+                await importDatabase();
+              },
+            ),
+            _dataTile(
+              context,
+              icon: Icons.delete_forever,
+              title: 'Delete Everything',
+              subtitle: 'Reset the app to its initial state.',
+              color: theme.colorScheme.error,
+              onTap: () async {
+                await Get.dialog(AlertDialog(
+                  title: const Text('Format Everything'),
+                  content: const Text('Backup data before format.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: const Text('No'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        Get.back();
+                        await format();
+                      },
+                      child: const Text('Yes'),
+                    ),
+                  ],
+                ));
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -239,21 +262,43 @@ class DataManagementScreen extends StatelessWidget {
     }
   }
 
-  Widget ListItem(context, icon, text, VoidCallback fun) {
+  Widget _dataTile(BuildContext context,
+      {required IconData icon,
+      required String title,
+      required String subtitle,
+      required Color color,
+      required VoidCallback onTap}) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+      margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 1),
-          borderRadius: BorderRadius.circular(10)),
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: ListTile(
-        leading: icon,
-        iconColor: Colors.white,
-        title: Text(
-          text,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+        leading: CircleAvatar(
+          radius: 22,
+          backgroundColor: color.withValues(alpha: 0.14),
+          child: Icon(icon, color: color),
         ),
-        onTap: fun,
+        title: Text(
+          title,
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        subtitle: Text(subtitle),
+        trailing: Icon(Icons.chevron_right, color: color),
+        onTap: onTap,
       ),
     );
   }

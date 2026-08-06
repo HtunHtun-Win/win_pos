@@ -90,7 +90,7 @@ class PurchaseScreen extends StatelessWidget {
   Widget searchItem(BuildContext context, ProductModel product) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         elevation: 2,
@@ -173,7 +173,7 @@ class PurchaseScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      color: theme.colorScheme.primary.withOpacity(0.08),
+      color: theme.colorScheme.primary.withValues(alpha:0.08),
       child: ListTile(
         title: Text("Total : $amount", style: theme.textTheme.titleMedium),
         trailing: ElevatedButton(

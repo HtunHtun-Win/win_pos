@@ -31,17 +31,17 @@ class MyApp extends StatelessWidget {
     // subtle background
     scaffoldBackgroundColor: const Color(0xFFF8FAFC),
 
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
       backgroundColor: Colors.transparent,
       foregroundColor: Color(0xFF0F172A),
-      titleTextStyle: const TextStyle(
+      titleTextStyle: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w700,
         color: Color(0xFF0F172A),
       ),
-      iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+      iconTheme: IconThemeData(color: Color(0xFF0F172A)),
     ),
 
     cardTheme: CardThemeData(
@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: const Color(0xFFE6EEF6)),
+        borderSide: const BorderSide(color: Color(0xFFE6EEF6)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -116,21 +116,6 @@ class MyApp extends StatelessWidget {
       title: 'LightPOS',
       debugShowCheckedModeBanner: false,
       theme: theme,
-      // theme: ThemeData(
-      //   appBarTheme: const AppBarTheme(
-      //       titleTextStyle: TextStyle(fontSize: 20, color: Colors.white),
-      //       backgroundColor: Colors.blueAccent,
-      //       iconTheme: IconThemeData(
-      //         color: Colors.white,
-      //       )),
-      //   floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      //     backgroundColor: Colors.blueAccent,
-      //     foregroundColor: Colors.white,
-      //   ),
-      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-      //   primaryColor: Colors.blueAccent,
-      //   useMaterial3: true,
-      // ),
       home: SplashScreen(),
     );
   }
