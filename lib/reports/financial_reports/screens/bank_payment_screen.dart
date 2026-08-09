@@ -1,9 +1,11 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/payment/controller/payment_controller.dart';
 import 'package:win_pos/reports/financial_reports/controller/financial_report_controller.dart';
+import 'package:win_pos/sales/screens/sales_detail.dart';
+import 'package:win_pos/shop/shop_info_controller.dart';
 
 import '../../../sales/models/sale_model.dart';
 
@@ -13,6 +15,7 @@ class BankPaymentScreen extends StatelessWidget {
 
   FinancialReportController controller = FinancialReportController();
   PaymentController paymentController = PaymentController();
+  ShopInfoController shopInfoController = Get.find();
   int? paymentId;
   String date = 'today';
   final refreshController = RefreshController();
@@ -21,6 +24,7 @@ class BankPaymentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.getBankPayment();
     paymentController.getAll();
+    shopInfoController.getAll();
     if(date != 'all'){
       controller.getBankPayment(date: daterangeCalculate(date));
     }else{
@@ -110,19 +114,22 @@ class BankPaymentScreen extends StatelessWidget {
   }
 
   Widget reportListTile({required int index, required SaleModel voucher}) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 3),
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          children: [
-            Expanded(child: Text(index.toString())),
-            Expanded(flex: 2, child: Text(voucher.sale_no.toString())),
-            Expanded(flex: 2, child: Text(voucher.payment!)),
-            Expanded(flex: 2, child: Text(voucher.total_price.toString())),
-          ],
+    return InkWell(
+      onTap: () => Get.to(()=>SalesDetail(voucher: voucher)),
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 3),
+        elevation: 1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Row(
+            children: [
+              Expanded(child: Text(index.toString())),
+              Expanded(flex: 2, child: Text(voucher.sale_no.toString())),
+              Expanded(flex: 2, child: Text(voucher.payment!)),
+              Expanded(flex: 2, child: Text(voucher.total_price.toString())),
+            ],
+          ),
         ),
       ),
     );

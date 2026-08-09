@@ -1,189 +1,292 @@
-import 'dart:math';
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/expense/controller/expense_controller.dart';
 import 'package:win_pos/expense/model/expense_model.dart';
 
-// ignore: must_be_immutable
-class ExpenseEditScreen extends StatelessWidget {
+class ExpenseEditScreen extends StatefulWidget {
   final ExpenseModel expense;
 
-  ExpenseEditScreen(this.expense, {super.key});
+  const ExpenseEditScreen(this.expense, {super.key});
 
+  @override
+  State<ExpenseEditScreen> createState() => _ExpenseEditScreenState();
+}
+
+class _ExpenseEditScreenState extends State<ExpenseEditScreen> {
   final ExpenseController _expenseController = Get.find();
-  TextEditingController amountController = TextEditingController();
-  TextEditingController descController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
-  int flowType = 2;
+  late final TextEditingController amountController;
+  late final TextEditingController descController;
+  late final TextEditingController noteController;
+  late int flowType;
+
+  @override
+  void initState() {
+    super.initState();
+    amountController = TextEditingController(text: widget.expense.amount.toString());
+    descController = TextEditingController(text: widget.expense.description ?? '');
+    noteController = TextEditingController(text: widget.expense.note ?? '');
+    flowType = widget.expense.type ?? 2;
+    _expenseController.setDateTime(widget.expense.createdDate ?? DateTime.now().toString());
+  }
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    descController.dispose();
+    noteController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    amountController.text = expense.amount.toString();
-    descController.text = expense.description!;
-    noteController.text = expense.note!;
-    flowType = expense.type!;
-    _expenseController.setDateTime(expense.createdDate!);
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Expense"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Edit Expense'),
         actions: [
           IconButton(
-              onPressed: () {
-                onUpdate(amountController, descController, noteController);
-              },
-              icon: const Icon(Icons.save))
+            onPressed: _updateExpense,
+            icon: const Icon(Icons.save),
+          ),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(() {
-                    return Text(_expenseController.dateTime.value);
-                  }),
-                  TextButton(
-                      onPressed: () async {
-                        DateTime? dateTime =
-                        await showOmniDateTimePicker(context: context);
-                        if (dateTime != null) {
-                          _expenseController.setDateTime(dateTime.toString());
-                        }
-                      },
-                      child: const Text("Select Date"))
-                ],
-              ),
-            ),
-            userInput("Amount", amountController,
-                type: TextInputType.number,
-                filter: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ]),
-            userInput("Description", descController, type: TextInputType.text,
-                onChange: (value) {
-                  _expenseController.getDescByKeyword(value);
-                }),
-            Expanded(
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      userInput("Note (Optional)", noteController,
-                          type: TextInputType.text),
-                      flowDropdown(),
-                    ],
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
                   ),
-                  Obx(() {
-                    return _expenseController.searchList.isEmpty
-                        ? Container()
-                        : ListView.builder(
-                      itemCount: _expenseController.searchList.length,
-                      itemBuilder: (context, index) {
-                        var cat = _expenseController.searchList[index];
-                        return searchItem(context, cat);
-                      },
-                    );
-                  }),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Edit expense', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 16),
+                  _buildDateRow(context),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    label: 'Amount',
+                    controller: amountController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    label: 'Description',
+                    controller: descController,
+                    onChanged: (value) => _expenseController.getDescByKeyword(value),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTextField(
+                    label: 'Note (optional)',
+                    controller: noteController,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFlowDropdown(),
                 ],
               ),
             ),
+            const SizedBox(height: 18),
+            _buildActionButtons(context),
+            const SizedBox(height: 20),
+            Obx(() => _buildSuggestionList()),
           ],
         ),
       ),
     );
   }
 
-  void onUpdate(
-      TextEditingController amountController,
-      TextEditingController descController,
-      TextEditingController noteController) async {
-    ExpenseModel model = ExpenseModel(
-        id: expense.id!,
-        amount: int.parse(amountController.text),
-        description: descController.text,
-        note: noteController.text,
-        type: flowType,
-        userId: 1,
-        createdDate: _expenseController.dateTime.value);
-    var result = await _expenseController.updateExpense(model);
-    if (result['msg'] == "null") {
-      Get.snackbar("Null!", "Amount and description can't be empty");
+  Widget _buildDateRow(BuildContext context) {
+    return Obx(
+      () => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            prettyDate(_expenseController.dateTime.value),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          TextButton(
+            onPressed: () async {
+              final dateTime = await showOmniDateTimePicker(context: context);
+              if (dateTime != null) {
+                _expenseController.setDateTime(dateTime.toString());
+              }
+            },
+            child: const Text('Select Date'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+    void Function(String)? onChanged,
+  }) {
+    return TextField(
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      controller: controller,
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+      ),
+    );
+  }
+
+  Widget _buildFlowDropdown() {
+    return DropdownSearch<String>(
+      dropdownDecoratorProps: const DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          labelText: 'Type',
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+        ),
+      ),
+      items: const ['Expense', 'Income'],
+      selectedItem: flowType == 2 ? 'Expense' : 'Income',
+      onChanged: (value) {
+        setState(() {
+          flowType = value == 'Expense' ? 2 : 1;
+        });
+      },
+      popupProps: const PopupProps.menu(showSearchBox: false),
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton(
+            onPressed: _resetForm,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.primary,
+              side: BorderSide(color: Theme.of(context).colorScheme.primary.withOpacity(0.65)),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: const Text('Reset'),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: _updateExpense,
+            style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+            child: const Text('Update Expense'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSuggestionList() {
+    final list = _expenseController.searchList;
+    if (list.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Suggestions', style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 12),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: list.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final name = list[index];
+            return _searchItem(context, name);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _searchItem(BuildContext context, String name) {
+    final theme = Theme.of(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: () {
+        descController.text = name;
+        _expenseController.searchList.value = [];
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.history, color: theme.colorScheme.primary),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(name, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _resetForm() async {
+    amountController.text = '0';
+    descController.clear();
+    noteController.clear();
+    setState(() {
+      flowType = 2;
+    });
+    _expenseController.searchList.value = [];
+  }
+
+  Future<void> _updateExpense() async {
+    final model = ExpenseModel(
+      id: widget.expense.id!,
+      amount: int.tryParse(amountController.text) ?? 0,
+      description: descController.text,
+      note: noteController.text,
+      type: flowType,
+      userId: 1,
+      createdDate: _expenseController.dateTime.value,
+    );
+
+    final result = await _expenseController.updateExpense(model);
+    if (result['msg'] == 'null') {
+      Get.snackbar('Missing value', 'Amount and description cannot be empty', snackPosition: SnackPosition.BOTTOM);
     } else if (result['msg'] == 'success') {
       Get.back();
     }
-  }
-
-  Widget userInput(text, controller, {type, filter, onChange}) {
-    return Container(
-      margin: const EdgeInsets.all(5),
-      child: TextField(
-        keyboardType: type,
-        inputFormatters: filter,
-        controller: controller,
-        decoration: InputDecoration(
-          label: Text(text),
-          border: const OutlineInputBorder(),
-        ),
-        onChanged: onChange,
-      ),
-    );
-  }
-
-  Widget flowDropdown() {
-    return Container(
-      margin: const EdgeInsets.all(5),
-      child: DropdownSearch<String>(
-        dropdownDecoratorProps: const DropDownDecoratorProps(
-          dropdownSearchDecoration: InputDecoration(
-            // labelText: "Select Type",
-            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            border: OutlineInputBorder(),
-          ),
-        ),
-        items: const ["Expense","Income"],
-        onChanged: (value) {
-          if(value=="Expense"){
-            flowType = 2;
-          }else{
-            flowType = 1;
-          }
-        },
-        selectedItem: expense.type==2 ? "Expense" : "Income", // Optional: Can be null if no initial selection is required
-        popupProps: const PopupProps.menu(
-          showSearchBox: false,
-        ),
-      ),
-    );
-  }
-
-  Widget searchItem(context, String name) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withValues(alpha: .5),
-                offset: const Offset(5, 5),
-                blurRadius: 10)
-          ]),
-      child: ListTile(
-        title: Text(name),
-        onTap: () {
-          descController.text = name;
-          _expenseController.searchList.value = [];
-        },
-      ),
-    );
   }
 }

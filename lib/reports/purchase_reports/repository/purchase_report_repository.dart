@@ -6,8 +6,9 @@ class PurchaseReportRepository {
   Future<List> getAllVouchers({int? supplierId,Map? date}) async {
     final database = await dbObj.database;
     String sql = """
-      SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,purchase.created_at 
-      FROM purchase,suppliers,users WHERE purchase.isdeleted=0 AND purchase.supplier_id=suppliers.id AND purchase.user_id=users.id """;
+      SELECT purchase.id,purchase.purchase_no,suppliers.name as customer,users.name as user,purchase.net_price,purchase.discount,purchase.total_price,payment_type.name as payment,purchase.created_at 
+      FROM purchase,suppliers,users,payment_type WHERE purchase.isdeleted=0 AND purchase.supplier_id=suppliers.id AND purchase.user_id=users.id AND purchase.payment_type_id=payment_type.id
+      """;
     String endSql = "ORDER BY purchase.id DESC;";
     if(supplierId!=null){
       sql+="AND suppliers.id=$supplierId ";

@@ -24,12 +24,13 @@ class SalesVoucherScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserController controller = Get.find();
-    if(salesController.selectedDate == 'all') {
+    if (salesController.selectedDate == 'all') {
       salesController.getAllVouchers();
     } else {
-      salesController.getAllVouchers(map: daterangeCalculate(salesController.selectedDate));
+      salesController.getAllVouchers(
+          map: daterangeCalculate(salesController.selectedDate));
     }
-    
+
     shopInfoController.getAll();
 
     Future<bool> popAction() async {
@@ -81,7 +82,31 @@ class SalesVoucherScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            datePicker(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search...',
+                          isDense: true,
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onChanged: (value) {
+                          refreshController.loadFailed();
+                          salesController.searchByKeyWork(value);
+                        },
+                      ),
+                    ),
+                  ),
+                  datePicker()
+                ],
+              ),
+            ),
             Expanded(child: Obx(() {
               return SmartRefresher(
                 controller: refreshController,

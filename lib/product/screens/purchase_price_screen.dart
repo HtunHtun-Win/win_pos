@@ -15,109 +15,209 @@ class PurchasePriceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     productController.getPurchasePriceLog(product.id!);
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name.toString()),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             onPressed: () async {
-              await Get.defaultDialog(
-                  title: "Clear Zero Quantity",
-                  content: const Text("This action effect on all product"),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          Get.back();
-                        },
-                        child: const Text("Cancel")),
-                    TextButton(
-                        onPressed: () async {
-                          await productController.clearZeroQty();
-                          Get.back();
-                          productController.getPurchasePriceLog(product.id!);
-                        },
-                        child: const Text("Confirm")),
-                  ]);
+              await Get.dialog(AlertDialog(
+                title: const Text('Clear Zero Quantity'),
+                content: const Text('This action affects all products.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await productController.clearZeroQty();
+                      Get.back();
+                      productController.getPurchasePriceLog(product.id!);
+                    },
+                    child: const Text('Confirm'),
+                  ),
+                ],
+              ));
             },
             icon: const Icon(Icons.cleaning_services_outlined),
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.all(10),
-            child: const Text(
-              "Purchase Price History",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(22),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 18,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Purchase Price History',
+                          style: theme.textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Recent purchase rates for this product.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.75)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Badge(
+                    label: Text('${productController.purchasePriceLog.length}'),
+                    backgroundColor:
+                        theme.colorScheme.primary.withOpacity(0.12),
+                    textColor: theme.colorScheme.primary,
+                  ),
+                ],
               ),
             ),
-          ),
-          rowTitle("Qty", "Price", "Total"),
-          Obx(
-            () {
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: productController.purchasePriceLog.length,
-                  itemBuilder: (context, index) {
-                    var item = productController.purchasePriceLog[index];
-                    return listTile(
-                      item['quantity'].toString(),
-                      item['price'].toString(),
-                      "${item['quantity'] * item['price']}",
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Text('Qty',
+                          style: theme.textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.bold))),
+                  Expanded(
+                      child: Text('Price',
+                          style: theme.textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.bold))),
+                  Expanded(
+                      child: Text('Total',
+                          style: theme.textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.bold))),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: Obx(
+                () {
+                  final items = productController.purchasePriceLog;
+                  if (items.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'No price history found.',
+                        style: theme.textTheme.bodyLarge,
+                      ),
                     );
-                  },
-                ),
-              );
-            },
-          )
-        ],
+                  }
+                  return ListView.separated(
+                    itemCount: items.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      var item = items[index];
+                      return _historyRow(
+                        context,
+                        item['quantity'].toString(),
+                        item['price'].toString(),
+                        '${item['quantity'] * item['price']}',
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget listTile(String qty, String price, String total) {
+  Widget _historyRow(
+      BuildContext context, String qty, String price, String total) {
+    final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: Text(qty)),
-          Expanded(child: Text(price)),
-          Expanded(child: Text(total)),
+          Expanded(child: Text(qty, style: theme.textTheme.bodyMedium)),
+          Expanded(child: Text(price, style: theme.textTheme.bodyMedium)),
+          Expanded(child: Text(total, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
   }
+}
 
-  Widget rowTitle(String qty, String price, String total) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-              child: Text(
-            qty,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          )),
-          Expanded(
-              child: Text(
-            price,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          )),
-          Expanded(
-              child: Text(
-            total,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-          )),
-        ],
-      ),
-    );
-  }
+Widget listTile(String qty, String price, String total) {
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: Text(qty)),
+        Expanded(child: Text(price)),
+        Expanded(child: Text(total)),
+      ],
+    ),
+  );
+}
+
+Widget rowTitle(String qty, String price, String total) {
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+            child: Text(
+          qty,
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+        )),
+        Expanded(
+            child: Text(
+          price,
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+        )),
+        Expanded(
+            child: Text(
+          total,
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+        )),
+      ],
+    ),
+  );
 }

@@ -88,4 +88,26 @@ class PurchaseController extends GetxController {
       maxCount += nextCount;
     });
   }
+
+  /// Filter vouchers by keyword (search in invoice_no or supplier/customer)
+  void searchByKeyWork(String keyWork) {
+    final q = keyWork.trim().toLowerCase();
+    if (q.isEmpty) {
+      showVouchers.clear();
+      maxCount = vouchers.length < 10 ? vouchers.length : 10;
+      for (int i = 0; i < maxCount; i++) {
+        showVouchers.add(vouchers[i]);
+      }
+      return;
+    }
+
+    final results = vouchers.where((v) {
+      final inv = v.purchaseNo?.toLowerCase() ?? '';
+      final supplier = v.supplier?.toLowerCase() ?? '';
+      return inv.contains(q) || supplier.contains(q);
+    }).toList();
+
+    showVouchers.clear();
+    for (var r in results) showVouchers.add(r);
+  }
 }

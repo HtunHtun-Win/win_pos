@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/reports/financial_reports/screens/bank_payment_screen.dart';
 import 'package:win_pos/reports/financial_reports/screens/profit_lose_screen.dart';
+import 'package:win_pos/shop/shop_info_controller.dart';
 
 class FinancialReportScreen extends StatelessWidget {
-  const FinancialReportScreen({super.key});
+  FinancialReportScreen({super.key});
+  ShopInfoController shopInfoController = Get.put(ShopInfoController());
 
   @override
   Widget build(BuildContext context) {
