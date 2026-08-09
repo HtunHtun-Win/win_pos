@@ -24,6 +24,21 @@ class StockBalanceValuationScreen extends StatelessWidget {
       body: Column(
         children: [
           Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search item...',
+                isDense: true,
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onChanged: (value) {
+                refreshController.loadFailed();
+                reportController.searchProductsValue(value);
+              },
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: categoryBox(context),
           ),

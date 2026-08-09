@@ -3,9 +3,11 @@ import 'package:get/get.dart';
 import 'package:win_pos/reports/sale_reports/screens/most_sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_report_voucher_screen.dart';
+import 'package:win_pos/shop/shop_info_controller.dart';
 
 class SalesReportScreen extends StatelessWidget {
-  const SalesReportScreen({super.key});
+  SalesReportScreen({super.key});
+  ShopInfoController shopInfoController = Get.put(ShopInfoController());
 
   @override
   Widget build(BuildContext context) {

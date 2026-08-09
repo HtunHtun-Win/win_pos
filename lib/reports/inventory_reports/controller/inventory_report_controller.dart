@@ -85,6 +85,50 @@ class InventoryReportController extends GetxController {
     });
   }
 
+  /// Search products by name or code and update `showProducts`.
+  void searchProducts(String key) {
+    final q = key.trim().toLowerCase();
+    if (q.isEmpty) {
+      // restore initial page
+      showProducts.clear();
+      maxCount = products.length < 10 ? products.length : 10;
+      for (int i = 0; i < maxCount; i++) {
+        showProducts.add(products[i]);
+      }
+      return;
+    }
+
+    final results = products.where((p) {
+      final name = (p.name ?? '').toString().toLowerCase();
+      final code = (p.code ?? '').toString().toLowerCase();
+      return name.contains(q) || code.contains(q);
+    }).toList();
+
+    showProducts.clear();
+    for (var r in results) showProducts.add(r);
+  }
+
+  /// Search products-with-value by name and update `showProductsValue`.
+  void searchProductsValue(String key) {
+    final q = key.trim().toLowerCase();
+    if (q.isEmpty) {
+      showProductsValue.clear();
+      maxCount = productsValue.length < 10 ? productsValue.length : 10;
+      for (int i = 0; i < maxCount; i++) {
+        showProductsValue.add(productsValue[i]);
+      }
+      return;
+    }
+
+    final results = productsValue.where((p) {
+      final name = (p.name ?? '').toString().toLowerCase();
+      return name.contains(q);
+    }).toList();
+
+    showProductsValue.clear();
+    for (var r in results) showProductsValue.add(r);
+  }
+
   void productValueLoadMore() {
     Future.delayed(const Duration(microseconds: 1000), () {
       int rmData = productsValue.length - maxCount;

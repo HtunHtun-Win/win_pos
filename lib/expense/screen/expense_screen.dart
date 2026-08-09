@@ -5,7 +5,6 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/core/functions/date_range_calc.dart';
@@ -20,9 +19,14 @@ import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
-class ExpenseScreen extends StatelessWidget {
+class ExpenseScreen extends StatefulWidget {
   ExpenseScreen({super.key});
 
+  @override
+  State<ExpenseScreen> createState() => _ExpenseScreenState();
+}
+
+class _ExpenseScreenState extends State<ExpenseScreen> {
   final UserController userController = Get.find();
   final ExpenseController _expenseController = Get.put(ExpenseController());
   final refreshController = RefreshController();
@@ -30,10 +34,15 @@ class ExpenseScreen extends StatelessWidget {
   String desc = "all";
 
   @override
-  Widget build(BuildContext context) {
-    final user = User.fromMap(userController.current_user.toJson());
+  void initState() {
+    super.initState();
     _expenseController.getAll(date: daterangeCalculate("today"));
     _expenseController.getAllDesc();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = User.fromMap(userController.current_user.toJson());
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -160,12 +169,6 @@ class ExpenseScreen extends StatelessWidget {
         SlidableAction(
           onPressed: (_) {
             refreshController.loadFailed();
-            // Get.defaultDialog(
-            //     onCancel: () => Get.back(),
-            //     onConfirm: () {
-            //       _expenseController.deleteExpense(expense.id!);
-            //       Get.back();
-            //     });
             Get.dialog(
               AlertDialog(
                 title: const Text('Delete Expense'),
@@ -207,8 +210,8 @@ class ExpenseScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(expense.description.toString()),
-              Text(expense.type == 1 ? "-${expense.amount}" : "+${expense.amount}",style: TextStyle(
-                color: expense.type == 1 ? Colors.red : Colors.green
+              Text(expense.type == 2 ? "-${expense.amount}" : "+${expense.amount}",style: TextStyle(
+                color: expense.type == 2 ? Colors.red : Colors.green
               ),),
             ],
           ),
@@ -240,6 +243,7 @@ class ExpenseScreen extends StatelessWidget {
           var sValue = value!.toLowerCase();
           desc = sValue;
           refreshController.loadFailed();
+          _expenseController.desc = sValue;
           if (sValue == 'all') {
             if (date == "all") {
               _expenseController.getAll();

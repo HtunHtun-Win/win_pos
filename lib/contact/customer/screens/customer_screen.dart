@@ -27,7 +27,8 @@ class CustomerScreen extends StatelessWidget {
                 hintText: "Search...",
                 isDense: true,
                 prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onChanged: (value) {
                 refreshController.loadFailed();
@@ -92,68 +93,76 @@ class CustomerScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 1,
-        child: ListTile(
-          title: Text(customer.name.toString()),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(customer.phone.toString()),
-              Expanded(
-                child: Text(
-                  customer.address.toString(),
-                  overflow: TextOverflow.ellipsis,
-                ),
+      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(2, 2),
+              blurRadius: 10,
+            )
+          ]),
+      child: ListTile(
+        title: Text(customer.name.toString()),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(customer.phone.toString()),
+            Expanded(
+              child: Text(
+                customer.address.toString(),
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
-          trailing: customer.id == 1
-              ? const SizedBox()
-              : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          refreshController.loadFailed();
-                          Get.to(() => CustomerEditScreen(customer));
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: color,
-                        )),
-                    IconButton(
-                        onPressed: () {
-                          Get.defaultDialog(
-                              title: "Delete!",
-                              middleText: "Are you sure to delete!",
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                  child: const Text("Cancel"),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    refreshController.loadFailed();
-                                    customerController.delete(customer.id!);
-                                    customerController.searchByKeyWork(filterInput);
-                                    Get.back();
-                                  },
-                                  child: const Text("Ok"),
-                                ),
-                              ]);
-                        },
-                        icon: Icon(
-                          Icons.delete,
-                          color: color,
-                        )),
-                  ],
-                ),
+            ),
+          ],
         ),
+        trailing: customer.id == 1
+            ? const SizedBox()
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        refreshController.loadFailed();
+                        Get.to(() => CustomerEditScreen(customer));
+                      },
+                      icon: Icon(
+                        Icons.edit,
+                        color: color,
+                      )),
+                  IconButton(
+                      onPressed: () {
+                        Get.dialog(AlertDialog(
+                            title: const Text("Delete!"),
+                            content: const Text(
+                                "Are you sure to delete this contact!"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text("Cancel"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  refreshController.loadFailed();
+                                  customerController.delete(customer.id!);
+                                  customerController
+                                      .searchByKeyWork(filterInput);
+                                  Get.back();
+                                },
+                                child: const Text("Ok"),
+                              ),
+                            ]));
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      )),
+                ],
+              ),
       ),
     );
   }

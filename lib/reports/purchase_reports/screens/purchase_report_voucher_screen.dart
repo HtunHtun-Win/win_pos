@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
+import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/purchase/models/purchase_model.dart';
+import 'package:win_pos/purchase/screens/purchase_detail.dart';
+import 'package:win_pos/shop/shop_info_controller.dart';
 import '../controller/purchase_report_controller.dart';
 
 // ignore: must_be_immutable
@@ -13,6 +16,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
   PurchaseReportController purchaseController =
       Get.put(PurchaseReportController());
   SupplierController supplierController = SupplierController();
+  ShopInfoController shopInfoController = Get.find();
   int? supplierId;
   String date = 'today';
   final refreshController = RefreshController();
@@ -21,6 +25,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     purchaseController.getAllVouchers(date: daterangeCalculate('today'));
     supplierController.getAll();
+    shopInfoController.getAll();
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -106,40 +111,50 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
   }
 
   Widget reportListTile({required int index, required PurchaseModel voucher}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                index.toString(),
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Text(voucher.purchaseNo.toString()),
-            ),
-            Expanded(
-              flex: 2,
-              child: Text(
-                voucher.total_price.toString(),
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
+    return InkWell(
+      onTap: () => Get.to(()=>PurchaseDetail(voucher: voucher)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 14,
+              offset: const Offset(0, 3),
             ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  index.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(voucher.purchaseNo.toString()),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  voucher.total_price.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  prettyDate(voucher.created_at.toString()),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -265,6 +280,7 @@ class _TableHeader extends StatelessWidget {
           Expanded(child: Text('No.', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
           Expanded(flex: 2, child: Text('Inv No', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
           Expanded(flex: 2, child: Text('Amount', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
+          Expanded(flex: 2, child: Text('Date', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
         ],
       ),
     );

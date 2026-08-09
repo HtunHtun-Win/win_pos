@@ -2,7 +2,10 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
+import 'package:win_pos/sales/screens/sales_detail.dart';
+import 'package:win_pos/shop/shop_info_controller.dart';
 import '../../../contact/customer/controller/customer_controller.dart';
 import '../controller/sales_report_controller.dart';
 
@@ -12,6 +15,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
 
   final SalesReportController salesController = Get.put(SalesReportController());
   final CustomerController customerController = CustomerController();
+  ShopInfoController shopInfoController = Get.find();
   int? customerId;
   String date = 'today';
   final refreshController = RefreshController();
@@ -19,6 +23,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     salesController.getAllVouchers(date: daterangeCalculate('today'));
+    shopInfoController.getAll();
     customerController.getAll();
     final theme = Theme.of(context);
 
@@ -52,6 +57,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
                     Expanded(child: Text('No.', style: TextStyle(fontWeight: FontWeight.w600))),
                     Expanded(flex: 2, child: Text('Inv No', style: TextStyle(fontWeight: FontWeight.w600))),
                     Expanded(flex: 2, child: Text('Amount', style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(flex: 2, child: Text('Date', style: TextStyle(fontWeight: FontWeight.w600))),
                   ],
                 ),
               ),
@@ -136,41 +142,51 @@ class SalesReportVoucherScreen extends StatelessWidget {
   }
 
   Widget reportListTile({required int index, required SaleModel voucher}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                index.toString(),
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Text(voucher.sale_no.toString()),
-            ),
-            Expanded(
-              flex: 2,
-              child: Text(
-                voucher.total_price.toString(),
-                // textAlign: TextAlign.right,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
+    return InkWell(
+      onTap: () => Get.to(()=>SalesDetail(voucher: voucher)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 14,
+              offset: const Offset(0, 3),
             ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  index.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(voucher.sale_no.toString()),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  voucher.total_price.toString(),
+                  // textAlign: TextAlign.right,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  prettyDate(voucher.created_at.toString()),
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

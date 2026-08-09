@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/purchase/models/purchase_model.dart';
 

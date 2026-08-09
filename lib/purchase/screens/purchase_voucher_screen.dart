@@ -75,7 +75,31 @@ class PurchaseVoucherScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            datePicker(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search...',
+                          isDense: true,
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onChanged: (value) {
+                          refreshController.loadFailed();
+                          purchaseController.searchByKeyWork(value);
+                        },
+                      ),
+                    ),
+                  ),
+                  datePicker()
+                ],
+              ),
+            ),
             Expanded(child: Obx(() {
               return SmartRefresher(
                 controller: refreshController,

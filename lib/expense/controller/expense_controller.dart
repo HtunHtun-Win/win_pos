@@ -88,9 +88,17 @@ class ExpenseController extends GetxController {
   Future<Map> addExpense(ExpenseModel model) async {
     var num = await _expenseService.addExpense(model);
     if (date == "all") {
-      getAll();
+      if (desc == "all") {
+        getAll();
+      } else {
+        getAll(desc: desc);
+      }
     } else {
-      getAll(date: daterangeCalculate(date));
+      if (desc == "all") {
+        getAll(date: daterangeCalculate(date));
+      } else {
+        getAll(date: daterangeCalculate(date), desc: desc);
+      }
     }
     getAllDesc();
     return num;
@@ -99,9 +107,17 @@ class ExpenseController extends GetxController {
   Future<Map> updateExpense(ExpenseModel model) async {
     var num = await _expenseService.updateExpense(model);
     if (date == "all") {
-      getAll();
+      if (desc == "all") {
+        getAll();
+      } else {
+        getAll(desc: desc);
+      }
     } else {
-      getAll(date: daterangeCalculate(date));
+      if (desc == "all") {
+        getAll(date: daterangeCalculate(date));
+      } else {
+        getAll(date: daterangeCalculate(date), desc: desc);
+      }
     }
     getAllDesc();
     return num;
