@@ -79,7 +79,7 @@ class ReportsScreen extends StatelessWidget {
                 icon: Icons.shopping_cart,
                 title: 'Sales Reports',
                 subtitle: 'View sales analytics and trends',
-                onTap: () => Get.to(() => const SalesReportScreen()),
+                onTap: () => Get.to(() => SalesReportScreen()),
               ),
             if (user.role_id != 2)
               buildReportCard(
@@ -87,7 +87,7 @@ class ReportsScreen extends StatelessWidget {
                 icon: Icons.add_shopping_cart,
                 title: 'Purchase Reports',
                 subtitle: 'Track purchase orders and costs',
-                onTap: () => Get.to(() => const PurchaseReportScreen()),
+                onTap: () => Get.to(() => PurchaseReportScreen()),
               ),
             buildReportCard(
               context,
@@ -102,7 +102,7 @@ class ReportsScreen extends StatelessWidget {
                 icon: Icons.attach_money,
                 title: 'Financial Reports',
                 subtitle: 'Review income, expenses and cash flow',
-                onTap: () => Get.to(() => const FinancialReportScreen()),
+                onTap: () => Get.to(() => FinancialReportScreen()),
               ),
           ],
         ),

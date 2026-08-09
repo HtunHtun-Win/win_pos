@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/shop/shop_info_controller.dart';
 import 'purchase_product_screen.dart';
 import 'purchase_report_voucher_screen.dart';
 
 class PurchaseReportScreen extends StatelessWidget {
-  const PurchaseReportScreen({super.key});
+  PurchaseReportScreen({super.key});
+  ShopInfoController shopInfoController = Get.put(ShopInfoController());
 
   @override
   Widget build(BuildContext context) {

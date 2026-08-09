@@ -93,34 +93,41 @@ class SalesScreen extends StatelessWidget {
   Widget searchItem(context, ProductModel product) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      child: Card(
+      margin: const EdgeInsets.symmetric(vertical: 3,horizontal: 8),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            offset: Offset(2,2),
+            blurRadius: 10,
+          )
+        ]
+      ),
+      child: ListTile(
+        tileColor: theme.cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 2,
-        child: ListTile(
-          tileColor: theme.cardColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(product.name.toString()),
-              Text(product.sale_price.toString())
-            ],
-          ),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(product.code.toString()),
-              Text(product.quantity.toString())
-            ],
-          ),
-          onTap: () {
-            salesController.addToCart(product);
-            salesController.products.clear();
-            salesController.getTotal();
-            searchController.text = "";
-          },
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(product.name.toString()),
+            Text(product.sale_price.toString())
+          ],
         ),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(product.code.toString()),
+            Text(product.quantity.toString())
+          ],
+        ),
+        onTap: () {
+          salesController.addToCart(product);
+          salesController.products.clear();
+          salesController.getTotal();
+          searchController.text = "";
+        },
       ),
     );
   }

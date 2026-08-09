@@ -93,4 +93,26 @@ class SalesController extends GetxController {
       maxCount += nextCount;
     });
   }
+
+  /// Filter vouchers by keyword (search in sale_no and customer)
+  void searchByKeyWork(String keyWork) {
+    final q = keyWork.trim().toLowerCase();
+    if (q.isEmpty) {
+      showVouchers.clear();
+      maxCount = vouchers.length < 10 ? vouchers.length : 10;
+      for (int i = 0; i < maxCount; i++) {
+        showVouchers.add(vouchers[i]);
+      }
+      return;
+    }
+
+    final results = vouchers.where((v) {
+      final saleNo = v.sale_no?.toLowerCase() ?? '';
+      final customer = v.customer?.toLowerCase() ?? '';
+      return saleNo.contains(q) || customer.contains(q);
+    }).toList();
+
+    showVouchers.clear();
+    for (var r in results) showVouchers.add(r);
+  }
 }

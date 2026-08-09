@@ -90,34 +90,41 @@ class PurchaseScreen extends StatelessWidget {
   Widget searchItem(BuildContext context, ProductModel product) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-      child: Card(
+      margin: const EdgeInsets.symmetric(vertical: 3,horizontal: 8),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            offset: Offset(2,2),
+            blurRadius: 10,
+          )
+        ]
+      ),
+      child: ListTile(
+        tileColor: theme.cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-        elevation: 2,
-        child: ListTile(
-          tileColor: theme.cardColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(child: Text(product.name.toString())),
-              Text(product.purchase_price.toString()),
-            ],
-          ),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(product.code.toString()),
-              Text(product.quantity.toString()),
-            ],
-          ),
-          onTap: () {
-            purchaseController.addToCart(product);
-            purchaseController.products.clear();
-            purchaseController.getTotal();
-            searchController.clear();
-          },
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: Text(product.name.toString())),
+            Text(product.purchase_price.toString()),
+          ],
         ),
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(product.code.toString()),
+            Text(product.quantity.toString()),
+          ],
+        ),
+        onTap: () {
+          purchaseController.addToCart(product);
+          purchaseController.products.clear();
+          purchaseController.getTotal();
+          searchController.clear();
+        },
       ),
     );
   }
