@@ -39,7 +39,7 @@ class PurchaseController extends GetxController {
       for (int i = 0; i < maxCount; i++) {
         showVouchers.add(vouchers[i]);
       }
-    }else{
+    } else {
       showVouchers.clear();
     }
   }
@@ -108,6 +108,9 @@ class PurchaseController extends GetxController {
     }).toList();
 
     showVouchers.clear();
-    for (var r in results) showVouchers.add(r);
+    for (var r in results) {
+      showVouchers.add(r);
+    }
+    maxCount = vouchers.length;
   }
 }
