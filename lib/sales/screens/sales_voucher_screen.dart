@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -9,7 +8,6 @@ import 'package:win_pos/sales/screens/sales_screen.dart';
 import 'package:win_pos/sales/screens/voucher_item.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
-
 import '../../core/functions/date_range_calc.dart';
 import '../../shop/shop_info_controller.dart';
 
