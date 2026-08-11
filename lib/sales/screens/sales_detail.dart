@@ -7,6 +7,7 @@ import 'package:win_pos/sales/controller/sales_controller.dart';
 import 'package:win_pos/sales/controller/sales_detail_controller.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
 import '../../shop/shop_info_controller.dart';
 import '../../shop/shop_model.dart';
 
@@ -20,6 +21,7 @@ class SalesDetail extends StatelessWidget {
       Get.put(SalesDetailController());
   ShopInfoController shopInfoController = Get.find();
   SalesController salesController = Get.put(SalesController());
+  UserController userController = Get.find();
   late ShopModel shopModel;
 
   @override
@@ -33,10 +35,10 @@ class SalesDetail extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Sale Detail"),
         actions: [
-          IconButton(
-              onPressed: () async {
-                Get.dialog(
-                  AlertDialog(
+          if (userController.current_user["role_id"] == 1)
+            IconButton(
+                onPressed: () async {
+                  Get.dialog(AlertDialog(
                       title: const Text("Delete!"),
                       content: const Text("This process can't undo!"),
                       actions: [
@@ -53,19 +55,19 @@ class SalesDetail extends StatelessWidget {
                               );
                               //request all voucher after delete
                               salesController.getAllVouchers(
-                                map: daterangeCalculate(salesController.selectedDate),
+                                map: daterangeCalculate(
+                                    salesController.selectedDate),
                               );
                               if (flag == 0) {
                                 Get.off(() => SalesVoucherScreen());
                               }
                             },
                             child: const Text("Delete"))
-                      ])
-                );
-              },
-              icon: const Icon(
-                Icons.delete,
-              )),
+                      ]));
+                },
+                icon: const Icon(
+                  Icons.delete,
+                )),
           IconButton(
               onPressed: () async {
                 Get.to(() => PrintScreen(

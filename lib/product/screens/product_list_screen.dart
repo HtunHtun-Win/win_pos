@@ -75,7 +75,7 @@ class ProductListScreen extends StatelessWidget {
                       itemCount: productController.showProducts.length,
                       itemBuilder: (context, index) {
                         var product = productController.showProducts[index];
-                        return listItem(product);
+                        return listItem(context,product);
                       },
                     ),
                   )),
@@ -92,7 +92,9 @@ class ProductListScreen extends StatelessWidget {
     );
   }
 
-  Widget listItem(ProductModel product) {
+  Widget listItem(context,ProductModel product) {
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.primary;
     return Slidable(
       endActionPane: ActionPane(
         motion: const StretchMotion(),
@@ -102,12 +104,14 @@ class ProductListScreen extends StatelessWidget {
               Get.to(() => ProductDetailScreen(product));
             },
             icon: Icons.menu,
+            foregroundColor: color,
           ),
           SlidableAction(
             onPressed: (_) {
               Get.to(() => ProductEditScreen(product));
             },
             icon: Icons.edit,
+            foregroundColor: color,
           ),
           SlidableAction(
             onPressed: (_) {
@@ -131,6 +135,7 @@ class ProductListScreen extends StatelessWidget {
                   ]);
             },
             icon: Icons.delete,
+            foregroundColor: Colors.red,
           ),
         ],
       ),

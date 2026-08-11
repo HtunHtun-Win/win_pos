@@ -50,7 +50,7 @@ class ProductDetailScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(22),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -71,7 +71,7 @@ class ProductDetailScreen extends StatelessWidget {
                     'Product details and pricing information.',
                     style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color
-                            ?.withOpacity(0.75)),
+                            ?.withValues(alpha: 0.75)),
                   ),
                   const SizedBox(height: 20),
                   Wrap(
@@ -113,10 +113,10 @@ class ProductDetailScreen extends StatelessWidget {
   Widget _infoBadge(BuildContext context, String label, String value) {
     final theme = Theme.of(context);
     return Container(
-      width: MediaQuery.of(context).size.width / 2 - 28,
+      width: MediaQuery.of(context).size.width / 2 - 50,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withOpacity(0.08),
+        color: theme.colorScheme.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -148,7 +148,7 @@ class ProductDetailScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),

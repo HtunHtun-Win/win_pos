@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/contact/customer/controller/customer_controller.dart';
 import 'package:win_pos/contact/customer/model/customer_model.dart';
 import 'package:win_pos/contact/customer/screens/customer_add_screen.dart';
+import 'package:win_pos/user/controllers/user_controller.dart';
 
 import 'customer_edit_screen.dart';
 
@@ -12,6 +14,7 @@ class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
 
   final CustomerController customerController = Get.put(CustomerController());
+  final UserController userController = Get.find();
   final refreshController = RefreshController();
   String filterInput = '';
 
@@ -92,77 +95,64 @@ class CustomerScreen extends StatelessWidget {
   Widget listItem(context, CustomerModel customer) {
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(2, 2),
-              blurRadius: 10,
-            )
-          ]),
-      child: ListTile(
-        title: Text(customer.name.toString()),
-        subtitle: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(customer.phone.toString()),
-            Expanded(
-              child: Text(
-                customer.address.toString(),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
+    return Slidable(
+      enabled:userController.current_user["role_id"] == 1? true : false,
+      endActionPane: ActionPane(motion: const StretchMotion(), children: [
+        SlidableAction(
+          onPressed: (_) {
+            refreshController.loadFailed();
+            Get.to(() => CustomerEditScreen(customer));
+          },
+          icon: Icons.edit,
+          foregroundColor: color,
         ),
-        trailing: customer.id == 1
-            ? const SizedBox()
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        refreshController.loadFailed();
-                        Get.to(() => CustomerEditScreen(customer));
-                      },
-                      icon: Icon(
-                        Icons.edit,
-                        color: color,
-                      )),
-                  IconButton(
-                      onPressed: () {
-                        Get.dialog(AlertDialog(
-                            title: const Text("Delete!"),
-                            content: const Text(
-                                "Are you sure to delete this contact!"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: const Text("Cancel"),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  refreshController.loadFailed();
-                                  customerController.delete(customer.id!);
-                                  customerController
-                                      .searchByKeyWork(filterInput);
-                                  Get.back();
-                                },
-                                child: const Text("Ok"),
-                              ),
-                            ]));
-                      },
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      )),
-                ],
-              ),
+        SlidableAction(
+          onPressed: (_) {
+            Get.dialog(AlertDialog(
+                title: const Text("Delete!"),
+                content: const Text("Are you sure to delete this contact!"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      refreshController.loadFailed();
+                      customerController.delete(customer.id!);
+                      customerController.searchByKeyWork(filterInput);
+                      Get.back();
+                    },
+                    child: const Text("Ok"),
+                  ),
+                ]));
+          },
+          icon: Icons.delete,
+          foregroundColor: Colors.red,
+        )
+      ]),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                offset: Offset(2, 2),
+                blurRadius: 10,
+              )
+            ]),
+        child: ListTile(
+          title: Text(customer.name.toString()),
+          subtitle: Text(customer.phone.toString()),
+          trailing: Text(
+            customer.address.toString(),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ),
     );
   }
