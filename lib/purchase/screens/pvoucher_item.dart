@@ -34,14 +34,22 @@ class PVoucherItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(voucher.purchaseNo!),
-            Text(voucher.total_price.toString()),
+            Text("${voucher.total_price.toString()} MMK"),
           ],
         ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(prettyDate(voucher.created_at.toString())),
-            Text(voucher.supplier!),
+            SizedBox(
+              width: 120,
+              child: Text(voucher.supplier!,
+                maxLines: 1,
+                softWrap: false,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.end,
+              ),
+            ),
           ],
         ),
         onTap: () {

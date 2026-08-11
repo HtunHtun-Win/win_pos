@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/sales/screens/sales_detail.dart';
@@ -34,7 +33,7 @@ class VoucherItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(voucher.sale_no!),
-            Text(voucher.total_price.toString()),
+            Text("${voucher.total_price.toString()} MMK"),
           ],
         ),
         subtitle: Row(
@@ -47,6 +46,7 @@ class VoucherItem extends StatelessWidget {
                 maxLines: 1,
                 softWrap: false,
                 overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.end,
               ),
             ),
           ],
