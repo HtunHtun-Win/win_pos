@@ -42,7 +42,7 @@ class SalesReportRepository {
     String sql = """
     SELECT products.name,SUM(sales_detail.quantity) as quantity,SUM(sales_detail.quantity*sales_detail.price) as price
     FROM products,sales_detail WHERE products.id=sales_detail.product_id """;
-    String endSql = "GROUP BY products.name ORDER BY sales_detail.quantity DESC LIMIT 20;";
+    String endSql = "GROUP BY products.name ORDER BY quantity DESC LIMIT 20;";
     if(catId!=null){
       sql+="AND products.category_id=$catId ";
     }

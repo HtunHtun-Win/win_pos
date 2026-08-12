@@ -23,25 +23,49 @@ class _SupplierScreenState extends State<SupplierScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: "Search...",
-                isDense: true,
-                prefixIcon: const Icon(Icons.search),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Search...",
+                      isDense: true,
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onChanged: (value) {
+                      refreshController.loadFailed();
+                      filterInput = value;
+                      supplierController.searchByKeyWork(value);
+                    },
+                  ),
+                ),
               ),
-              onChanged: (value) {
-                refreshController.loadFailed();
-                filterInput = value;
-                supplierController.searchByKeyWork(value);
-              },
-            ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                margin: const EdgeInsets.only(right: 6),
+                width: 110,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Obx(() {
+                  return Text(
+                    '${supplierController.suppliers.length} entries',
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  );
+                }),
+              ),
+            ],
           ),
           Expanded(
             child: Obx(() => SmartRefresher(
@@ -99,7 +123,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
     return Slidable(
-      enabled:userController.current_user["role_id"] == 1? true : false,
+      enabled: userController.current_user["role_id"] == 1 ? true : false,
       endActionPane: ActionPane(motion: const StretchMotion(), children: [
         SlidableAction(
           onPressed: (_) {

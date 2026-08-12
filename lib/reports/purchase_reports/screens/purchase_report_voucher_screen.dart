@@ -87,24 +87,40 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
               );
             }),
           ),
-          Obx(() {
-            return Container(
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Container(
               height: 56,
               decoration: BoxDecoration(
                 color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Center(
-                child: Text(
-                  'Total: ${purchaseController.totalAmount}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Obx(
+                      () => Text(
+                        "${purchaseController.totalAmount} MMK",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          }),
+            ),
+          ),
         ],
       ),
     );
@@ -112,7 +128,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
 
   Widget reportListTile({required int index, required PurchaseModel voucher}) {
     return InkWell(
-      onTap: () => Get.to(()=>PurchaseDetail(voucher: voucher)),
+      onTap: () => Get.to(() => PurchaseDetail(voucher: voucher)),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -267,21 +283,42 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
 }
 
 class _TableHeader extends StatelessWidget {
-  const _TableHeader({super.key});
+  const _TableHeader();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(child: Text('No.', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-          Expanded(flex: 2, child: Text('Inv No', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-          Expanded(flex: 2, child: Text('Amount', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-          Expanded(flex: 2, child: Text('Date', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+                child: Text('No.',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold))),
+            Expanded(
+                flex: 2,
+                child: Text('Inv No',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold))),
+            Expanded(
+                flex: 2,
+                child: Text('Amount',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold))),
+            Expanded(
+                flex: 2,
+                child: Text('Date',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold))),
+          ],
+        ),
       ),
     );
   }

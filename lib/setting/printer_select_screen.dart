@@ -53,12 +53,21 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
-                        icon: state.isLoading ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Icon(Icons.search),
+                        icon: state.isLoading
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                    color: Colors.white, strokeWidth: 2))
+                            : const Icon(Icons.search),
                         label: Text(state.isLoading ? 'Scanning...' : 'Scan'),
-                        onPressed: state.isLoading ? null : printerController.getDevices,
+                        onPressed: state.isLoading
+                            ? null
+                            : printerController.getDevices,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
                         ),
                       ),
                     ),
@@ -71,7 +80,8 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           backgroundColor: theme.colorScheme.error,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
                         ),
                       ),
                     ),
@@ -86,7 +96,8 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
                     onPressed: printerController.testPrint,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
                     ),
                   ),
                 ),
@@ -99,7 +110,8 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
                       Expanded(
                         child: Text(
                           'Connected to ${connected.name}',
-                          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                          style: theme.textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ),
                     ],
@@ -107,7 +119,8 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
                 if (connected == null)
                   Text(
                     'No printer connected',
-                    style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7)),
                   ),
                 const SizedBox(height: 18),
                 Expanded(
@@ -123,8 +136,10 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
                           : ListView.builder(
                               itemCount: state.devices.length,
                               itemBuilder: (context, index) {
-                                final BluetoothInfo device = state.devices[index];
-                                final isConnected = device.macAdress == connected?.macAdress;
+                                final BluetoothInfo device =
+                                    state.devices[index];
+                                final isConnected =
+                                    device.macAdress == connected?.macAdress;
                                 return Container(
                                   margin: const EdgeInsets.only(bottom: 12),
                                   decoration: BoxDecoration(
@@ -132,24 +147,35 @@ class _PrinterSelectScreenState extends State<PrinterSelectScreen> {
                                     borderRadius: BorderRadius.circular(18),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
+                                        color: Colors.black
+                                            .withValues(alpha: 0.05),
                                         blurRadius: 18,
                                         offset: const Offset(0, 8),
                                       ),
                                     ],
                                   ),
                                   child: ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-                                    leading: Icon(Icons.bluetooth, color: theme.colorScheme.primary),
-                                    title: Text(device.name ?? 'Unknown printer'),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 18, vertical: 16),
+                                    leading: Icon(Icons.bluetooth,
+                                        color: theme.colorScheme.primary),
+                                    title:
+                                        Text(device.name ?? 'Unknown printer'),
                                     subtitle: Text(device.macAdress ?? ''),
                                     trailing: ElevatedButton(
-                                      onPressed: () => printerController.connect(device),
+                                      onPressed: () =>
+                                          printerController.connect(device),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: isConnected ? Colors.green : theme.colorScheme.primary,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                        backgroundColor: isConnected
+                                            ? Colors.green
+                                            : theme.colorScheme.primary,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(14)),
                                       ),
-                                      child: Text(isConnected ? 'Connected' : 'Connect'),
+                                      child: Text(isConnected
+                                          ? 'Connected'
+                                          : 'Connect'),
                                     ),
                                   ),
                                 );

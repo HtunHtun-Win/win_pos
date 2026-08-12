@@ -10,7 +10,8 @@ import '../controller/sales_report_controller.dart';
 class SalesProductScreen extends StatelessWidget {
   SalesProductScreen({super.key});
 
-  final SalesReportController salesController = Get.put(SalesReportController());
+  final SalesReportController salesController =
+      Get.put(SalesReportController());
   final CategoryController categoryController = CategoryController();
   String date = 'all';
   int? catId;
@@ -45,13 +46,25 @@ class SalesProductScreen extends StatelessWidget {
                 color: theme.cardColor,
                 borderRadius: BorderRadius.circular(18),
               ),
-              child: const  Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 child: Row(
                   children: [
-                    Expanded(child: Text('Name', style: TextStyle(fontWeight: FontWeight.w600))),
-                    Expanded(child: Text('Qty', style: TextStyle(fontWeight: FontWeight.w600))),
-                    Expanded(child: Text('Amount', style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(
+                        child: Text('No.',
+                            style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(
+                        flex: 2,
+                        child: Text('Name',
+                            style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(
+                        flex: 2,
+                        child: Text('Qty',
+                            style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(
+                        flex: 2,
+                        child: Text('Amount',
+                            style: TextStyle(fontWeight: FontWeight.w600))),
                   ],
                 ),
               ),
@@ -77,7 +90,8 @@ class SalesProductScreen extends StatelessWidget {
                   );
                 }),
                 onLoading: () {
-                  if (salesController.maxCount == salesController.items.length) {
+                  if (salesController.maxCount ==
+                      salesController.items.length) {
                     refreshController.loadNoData();
                   } else {
                     salesController.itemLoadMore();
@@ -90,7 +104,7 @@ class SalesProductScreen extends StatelessWidget {
                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final item = salesController.showItems[index];
-                    return reportListTile(item: item);
+                    return reportListTile(index: index + 1, item: item);
                   },
                 ),
               );
@@ -118,7 +132,7 @@ class SalesProductScreen extends StatelessWidget {
                     ),
                     Obx(
                       () => Text(
-                        salesController.itemTotalAmount.toString(),
+                        "${salesController.itemTotalAmount.value} MMK",
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -135,7 +149,7 @@ class SalesProductScreen extends StatelessWidget {
     );
   }
 
-  Widget reportListTile({required SaleItemModel item}) {
+  Widget reportListTile({required int index, required SaleItemModel item}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -152,9 +166,16 @@ class SalesProductScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
         child: Row(
           children: [
-            Expanded(child: Text(item.name.toString())),
-            Expanded(child: Text(item.quantity.toString())),
             Expanded(
+              child: Text(
+                index.toString(),
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+            Expanded(flex: 2, child: Text(item.name.toString())),
+            Expanded(flex: 2, child: Text(item.quantity.toString())),
+            Expanded(
+              flex: 2,
               child: Text(
                 item.price.toString(),
                 // textAlign: TextAlign.right,
@@ -176,7 +197,8 @@ class SalesProductScreen extends StatelessWidget {
             labelText: 'Category',
             filled: true,
             fillColor: theme.cardColor,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none,
