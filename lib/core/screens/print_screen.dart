@@ -6,6 +6,7 @@ import 'package:pdf/pdf.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:win_pos/core/service/pdf_service.dart';
 import 'package:win_pos/core/service/png_voucher_service.dart';
+import 'package:win_pos/core/service/show_toast.dart';
 import 'package:win_pos/core/widgets/custom_btn.dart';
 import 'package:win_pos/sales/models/sale_detail_model.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
@@ -15,7 +16,7 @@ import 'package:win_pos/shop/shop_model.dart';
 import 'package:image/image.dart' as img;
 
 class PrintScreen extends StatefulWidget {
-  PrintScreen({
+  const PrintScreen({
     super.key,
     required this.shopModel,
     required this.voucher,
@@ -39,99 +40,131 @@ class _PrintScreenState extends State<PrintScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     printerController.getDevices();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Print"),
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Print'),
       ),
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.blueAccent,
-                width: 2,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('Paper size',
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                            child:
+                                sizeBtn(label: 'A4', value: PdfPageFormat.a4)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child:
+                                sizeBtn(label: 'A5', value: PdfPageFormat.a5)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                            child: sizeBtn(
+                                label: '80mm', value: PdfPageFormat.roll80)),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              borderRadius: BorderRadius.circular(10),
             ),
-            child: Row(
-              spacing: 10,
+            const SizedBox(height: 16),
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                child: Obx(
+                  () {
+                    final connected =
+                        printerController.state.value.connectedMac;
+                    return Row(
+                      children: [
+                        const Icon(Icons.usb, size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            connected != null
+                                ? 'Connected device: ${connected.name}'
+                                : 'No printer connected',
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
               children: [
-                Expanded(child: sizeBtn(label: "A4", value: PdfPageFormat.a4)),
-                Expanded(child: sizeBtn(label: "A5", value: PdfPageFormat.a5)),
                 Expanded(
-                    child: sizeBtn(label: "80mm", value: PdfPageFormat.roll80)),
+                  child: CustomBtn(
+                    bgColor: size == PdfPageFormat.roll80 ? Colors.grey : null,
+                    fun: size == PdfPageFormat.roll80
+                        ? () {}
+                        : () async {
+                            PdfService pdfService = PdfService(
+                              size: size,
+                              shopModel: widget.shopModel,
+                              voucher: widget.voucher,
+                              saleDetailModels: widget.saleDetailModels,
+                            );
+                            var byteList = await pdfService.generatePdf();
+                            await pdfService.savePdf(byteList);
+                            ShowToast.showNotiToast(msg: "File was saved successfully in download folder.");
+                          },
+                    lable: 'Save as PDF',
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: CustomBtn(
+                    fun: () async {
+                      return isSlip ? printPng() : printPdf();
+                    },
+                    lable: 'Print',
+                  ),
+                ),
               ],
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.blueAccent,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Obx(
-              () => Center(
-                child: Text(printerController.state.value.connectedMac != null
-                    ? "Connected Device : ${printerController.state.value.connectedMac!.name}"
-                    : ""),
-              ),
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: CustomBtn(
-                  bgColor: size==PdfPageFormat.roll80 ? Colors.grey : null,
-                  fun: size==PdfPageFormat.roll80 ? (){} :  () async {
-                    PdfService pdfService = PdfService(
-                      size: size,
-                      shopModel: widget.shopModel,
-                      voucher: widget.voucher,
-                      saleDetailModels: widget.saleDetailModels,
-                    );
-                    var byteList = await pdfService.generatePdf();
-                    await pdfService.savePdf(byteList);
-                    Get.snackbar(
-                      "Success",
-                      "PDF file was saved in download folder!",
-                      colorText: Colors.white,
-                      backgroundColor: Colors.black.withValues(alpha: 0.5),
-                      duration: const Duration(seconds: 1),
-                    );
-                  },
-                  lable: "Save as PDF",
+            if (pngBytes != null) ...[
+              const SizedBox(height: 16),
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Image.memory(pngBytes!, fit: BoxFit.contain),
                 ),
               ),
-              Expanded(
-                child: CustomBtn(
-                  fun: () async {
-                    return isSlip ? printPng() : printPdf();
-                  },
-                  lable: "Print",
-                ),
-              ),
-            ],
-          ),
-          pngBytes == null
-              ? Container()
-              : Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Image.memory(pngBytes!, fit: BoxFit.contain))
-        ],
+            ]
+          ],
+        ),
       ),
     );
   }

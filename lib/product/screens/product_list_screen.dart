@@ -20,25 +20,50 @@ class ProductListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: "Search...",
-                isDense: true,
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              onChanged: (value) {
-                productController.searchKeywork = value;
-                productController.maxCount = 10;
-                refreshController.loadFailed();
-                filterInput = value;
-                productController.getAll(input: value);
-              },
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Search...",
+                      isDense: true,
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    onChanged: (value) {
+                      productController.searchKeywork = value;
+                      productController.maxCount = 10;
+                      refreshController.loadFailed();
+                      filterInput = value;
+                      productController.getAll(input: value);
+                    },
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  margin: const EdgeInsets.only(left: 6),
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Obx(() {
+                    return Text(
+                      '${productController.products.length} items',
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    );
+                  }),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -75,7 +100,7 @@ class ProductListScreen extends StatelessWidget {
                       itemCount: productController.showProducts.length,
                       itemBuilder: (context, index) {
                         var product = productController.showProducts[index];
-                        return listItem(context,product);
+                        return listItem(context, product);
                       },
                     ),
                   )),
@@ -92,7 +117,7 @@ class ProductListScreen extends StatelessWidget {
     );
   }
 
-  Widget listItem(context,ProductModel product) {
+  Widget listItem(context, ProductModel product) {
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
     return Slidable(
@@ -131,7 +156,6 @@ class ProductListScreen extends StatelessWidget {
                           Get.back();
                         },
                         child: const Text("Delete")),
-                    
                   ]);
             },
             icon: Icons.delete,
@@ -153,7 +177,8 @@ class ProductListScreen extends StatelessWidget {
                   Expanded(
                       child: Text(
                     product.name.toString(),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
                   )),
                   Text("${product.quantity} pcs"),
                 ],

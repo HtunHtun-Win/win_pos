@@ -8,6 +8,7 @@ import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer' as dev;
 import 'package:image/image.dart' as img;
+import 'package:win_pos/core/service/show_toast.dart';
 
 class PrinterController extends GetxController {
   var state = PrinterState.initial().obs;
@@ -36,9 +37,9 @@ class PrinterController extends GetxController {
       prefs.setString(
           "printer", jsonEncode({"name": info.name, "mac": info.macAdress}));
       state.value = state.value.copyWith(connectedMac: info);
-      _showSnackBar(title: "Connection status", message: "Successfully connected");
+      _showSnackBar(message: "Successfully connected.");
     } else {
-      _showSnackBar(title: "Connection status", message: "Fail");
+      _showSnackBar(message: "Can't connect to printer.");
     }
   }
 
@@ -46,17 +47,11 @@ class PrinterController extends GetxController {
     await PrintBluetoothThermal.disconnect;
     state.value = state.value
         .copyWith(connectedMac: BluetoothInfo(name: "", macAdress: ""));
-    _showSnackBar(title: "Disconnected", message: "Printer is successfully disconnected");
+    _showSnackBar(message: "Printer is successfully disconnected");
   }
 
-  void _showSnackBar({required String title, required String message}) {
-    Get.snackbar(
-      title,
-      message,
-      duration: const Duration(seconds: 1),
-      backgroundColor: Colors.black.withAlpha(150),
-      colorText: Colors.white,
-    );
+  void _showSnackBar({required String message}) {
+    ShowToast.showNotiToast(msg: message);
   }
 
   void loadPrinter() async {
@@ -73,8 +68,7 @@ class PrinterController extends GetxController {
       bool conState = await PrintBluetoothThermal.connectionStatus;
       if (conState) {
         dev.log("connected");
-        state.value = state.value
-            .copyWith(connectedMac: info);
+        state.value = state.value.copyWith(connectedMac: info);
       } else {
         connect(info);
       }
@@ -96,10 +90,9 @@ class PrinterController extends GetxController {
       bytes += generator.feed(3); // Feed a few lines before cutting
       bytes += generator.cut(); // Auto cut
       await PrintBluetoothThermal.writeBytes(bytes);
-    }else{
-      _showSnackBar(title: "Printer no found!", message: "Select a printer");
+    } else {
+      _showSnackBar(message: "Select a printer");
     }
-
   }
 
   Future<Uint8List> _generateBurmeseVoucher() async {
@@ -198,12 +191,6 @@ class PrinterController extends GetxController {
       "----------------------------------------",
       align: TextAlign.center,
     );
-
-    // 🧺 Item list
-    // for (final item in items) {
-    //   drawText("${item['name']}", style: textStyle);
-    //   drawText("${item['price']}", style: textStyle, align: TextAlign.right);
-    // }
 
     for (final item in items) {
       drawRowText("${item['name']}", "5", "${item['price']}", style: textStyle);

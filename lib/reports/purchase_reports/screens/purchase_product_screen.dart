@@ -13,7 +13,7 @@ class PurchaseProductScreen extends StatelessWidget {
   PurchaseReportController purchaseController =
       Get.put(PurchaseReportController());
   CategoryController categoryController = CategoryController();
-  String date = 'all';
+  String date = 'today';
   int? catId;
   final refreshController = RefreshController();
 
@@ -76,82 +76,44 @@ class PurchaseProductScreen extends StatelessWidget {
                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     var item = purchaseController.showItems[index];
-                    return reportListTile(item: item);
+                    return reportListTile(index: index + 1, item: item);
                   },
                 ),
               );
             }),
           ),
-          Obx(() {
-            return Container(
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Container(
               height: 56,
               decoration: BoxDecoration(
                 color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Center(
-                child: Text(
-                  'Total: ${purchaseController.itemTotalAmount}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Obx(
+                      () => Text(
+                        "${purchaseController.itemTotalAmount} MMK",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(ThemeData theme) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.primary,
-            theme.colorScheme.primaryContainer
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: theme.colorScheme.onPrimary.withAlpha(24),
-            ),
-            child: Icon(Icons.inventory_2,
-                color: theme.colorScheme.onPrimary, size: 28),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Purchase Items',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Browse purchased items with filters for category and date.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary.withAlpha(220),
-                  ),
-                ),
-              ],
             ),
           ),
         ],
@@ -159,7 +121,7 @@ class PurchaseProductScreen extends StatelessWidget {
     );
   }
 
-  Widget reportListTile({required PurchaseItemModel item}) {
+  Widget reportListTile({required int index, required PurchaseItemModel item}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -176,9 +138,10 @@ class PurchaseProductScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Expanded(child: Text(item.name.toString())),
-            Expanded(child: Text(item.quantity.toString())),
-            Expanded(child: Text(item.price.toString())),
+            Expanded(flex: 1, child: Text(index.toString())),
+            Expanded(flex: 2, child: Text(item.name.toString())),
+            Expanded(flex: 2, child: Text(item.quantity.toString())),
+            Expanded(flex: 2, child: Text(item.price.toString())),
           ],
         ),
       ),
@@ -292,27 +255,44 @@ class PurchaseProductScreen extends StatelessWidget {
 }
 
 class _TableHeader extends StatelessWidget {
-  const _TableHeader({super.key});
+  const _TableHeader();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-            child: Text('Name',
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(fontWeight: FontWeight.bold))),
-        Expanded(
-            child: Text('Qty',
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(fontWeight: FontWeight.bold))),
-        Expanded(
-            child: Text('Amount',
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(fontWeight: FontWeight.bold))),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+                flex: 1,
+                child: Text('No.',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold))),
+            Expanded(
+                flex: 2,
+                child: Text('Name',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold))),
+            Expanded(
+                flex: 2,
+                child: Text('Qty',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold))),
+            Expanded(
+                flex: 2,
+                child: Text('Amount',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.bold))),
+          ],
+        ),
+      ),
     );
   }
 }

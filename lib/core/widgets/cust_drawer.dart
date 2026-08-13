@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:win_pos/ai/screens/ai_chat_screen.dart';
+import 'package:win_pos/ai/screens/ai_report_screen.dart';
 import 'package:win_pos/contact/contact_screen.dart';
 import 'package:win_pos/expense/screen/expense_screen.dart';
 import 'package:win_pos/product/screens/product_screen.dart';
@@ -14,11 +16,6 @@ import '../../user/models/user.dart';
 class CustDrawer extends StatelessWidget {
   final User user;
   const CustDrawer({super.key, required this.user});
-
-  void _navigate(BuildContext context, VoidCallback action) {
-    Navigator.of(context).pop();
-    action();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,10 +190,8 @@ class CustDrawer extends StatelessWidget {
         () => Get.off(() => ExpenseScreen())));
     items.add(_DrawerItem(
         'Report', Icons.menu_book, () => Get.off(() => const ReportsScreen())));
-    // if (user.role_id == 1) {
-    //   items.add(_DrawerItem('Setting', Icons.settings, () => Get.off(() => const SettingScreen())));
-    // }
-    // Logout handled separately with prominent red action
+    items.add(_DrawerItem('AI Analysis', Icons.auto_awesome, () => Get.off(() => const AiReportScreen())));
+    items.add(_DrawerItem('AI Chat', Icons.message, () => Get.off(() => const AiChatScreen())));
     return items;
   }
 }
@@ -210,13 +205,16 @@ class _DrawerItem {
 
 class _DrawerTile extends StatelessWidget {
   final _DrawerItem item;
-  const _DrawerTile({super.key, required this.item});
+  const _DrawerTile({required this.item});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return InkWell(
-      onTap: () => item.onTap(),
+      onTap: () {
+        Navigator.of(context).pop();
+        item.onTap();
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         child: Row(
@@ -244,7 +242,7 @@ class _DrawerTile extends StatelessWidget {
 
 class _LogoutTile extends StatelessWidget {
   final Future<void> Function() onLogout;
-  const _LogoutTile({super.key, required this.onLogout});
+  const _LogoutTile({required this.onLogout});
 
   @override
   Widget build(BuildContext context) {
@@ -287,8 +285,7 @@ class _HeaderAction extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _HeaderAction(
-      {super.key,
+  const _HeaderAction({
       required this.icon,
       required this.label,
       required this.onTap});
@@ -333,5 +330,5 @@ String _roleLabel(int? roleId) {
 }
 
 String _appVersion() {
-  return '3.0.0';
+  return '3.1.0';
 }
