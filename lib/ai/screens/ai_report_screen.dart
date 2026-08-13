@@ -4,6 +4,8 @@ import 'package:win_pos/ai/controllers/ai_report_controller.dart';
 import 'package:win_pos/ai/services/ai_service.dart';
 import 'package:win_pos/core/database/db_helper.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
+import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
@@ -17,8 +19,8 @@ class AiReportScreen extends StatefulWidget {
 class _AiReportScreenState extends State<AiReportScreen> {
   final AiService _aiService = AiService();
   final DbHelper _dbHelper = DbHelper();
-
   late final AiReportController controller;
+  final UserController userController = Get.find();
 
   @override
   void initState() {
@@ -32,10 +34,6 @@ class _AiReportScreenState extends State<AiReportScreen> {
       );
     }
   }
-
-  // ============================================================
-  // GENERATE AI REPORT
-  // ============================================================
 
   Future<void> _generateReport() async {
     controller.setLoading(true);
@@ -181,29 +179,21 @@ class _AiReportScreenState extends State<AiReportScreen> {
     // CONVERT DATABASE VALUES
     // ==========================================================
 
-    final salesCount =
-        _toInt(salesStats.first['count']);
+    final salesCount = _toInt(salesStats.first['count']);
 
-    final salesTotal =
-        _toInt(salesStats.first['total']);
+    final salesTotal = _toInt(salesStats.first['total']);
 
-    final purchaseCount =
-        _toInt(purchaseStats.first['count']);
+    final purchaseCount = _toInt(purchaseStats.first['count']);
 
-    final purchaseTotal =
-        _toInt(purchaseStats.first['total']);
+    final purchaseTotal = _toInt(purchaseStats.first['total']);
 
-    final expenseCount =
-        _toInt(expenseStats.first['count']);
+    final expenseCount = _toInt(expenseStats.first['count']);
 
-    final expenseTotal =
-        _toInt(expenseStats.first['total']);
+    final expenseTotal = _toInt(expenseStats.first['total']);
 
-    final productCount =
-        _toInt(productStats.first['count']);
+    final productCount = _toInt(productStats.first['count']);
 
-    final totalQuantity =
-        _toInt(productStats.first['total_quantity']);
+    final totalQuantity = _toInt(productStats.first['total_quantity']);
 
     // ==========================================================
     // LOW STOCK TEXT
@@ -215,14 +205,11 @@ class _AiReportScreenState extends State<AiReportScreen> {
                 'low-stock threshold.'
           ]
         : lowStockProducts.map((row) {
-            final name =
-                row['name']?.toString() ?? 'Unknown';
+            final name = row['name']?.toString() ?? 'Unknown';
 
-            final quantity =
-                row['quantity']?.toString() ?? '0';
+            final quantity = row['quantity']?.toString() ?? '0';
 
-            final price =
-                row['sale_price']?.toString() ?? '0';
+            final price = row['sale_price']?.toString() ?? '0';
 
             return '- $name: '
                 '$quantity units remaining, '
@@ -234,24 +221,19 @@ class _AiReportScreenState extends State<AiReportScreen> {
     // ==========================================================
 
     final popularItemLines = topSaleItems.isEmpty
-        ? [
-            'No sales item data available.'
-          ]
+        ? ['No sales item data available.']
         : topSaleItems.map((row) {
-            final name =
-                row['name']?.toString() ?? 'Unknown';
+            final name = row['name']?.toString() ?? 'Unknown';
 
-            final quantity =
-                row['quantity']?.toString() ?? '0';
+            final quantity = row['quantity']?.toString() ?? '0';
 
-            final revenue =
-                row['revenue']?.toString() ?? '0';
+            final revenue = row['revenue']?.toString() ?? '0';
 
             return '- $name: '
                 '$quantity sold, '
                 'revenue ${_formatCurrency(
-                  _toInt(revenue),
-                )}';
+              _toInt(revenue),
+            )}';
           }).toList();
 
     // ==========================================================
@@ -259,23 +241,18 @@ class _AiReportScreenState extends State<AiReportScreen> {
     // ==========================================================
 
     final vipCustomerLines = vipCustomers.isEmpty
-        ? [
-            'No VIP customer data available.'
-          ]
+        ? ['No VIP customer data available.']
         : vipCustomers.map((row) {
-            final name =
-                row['name']?.toString() ?? 'Unknown';
+            final name = row['name']?.toString() ?? 'Unknown';
 
-            final total =
-                row['total_spent']?.toString() ?? '0';
+            final total = row['total_spent']?.toString() ?? '0';
 
-            final vouchers =
-                row['vouchers']?.toString() ?? '0';
+            final vouchers = row['vouchers']?.toString() ?? '0';
 
             return '- $name: '
                 '${_formatCurrency(
-                  _toInt(total),
-                )} '
+              _toInt(total),
+            )} '
                 'across $vouchers vouchers';
           }).toList();
 
@@ -475,8 +452,8 @@ Also include:
           value.toString(),
         ) ??
         double.tryParse(
-              value.toString(),
-            )?.toInt() ??
+          value.toString(),
+        )?.toInt() ??
         0;
   }
 
@@ -496,8 +473,7 @@ Also include:
   // ============================================================
 
   String _generateButtonLabel() {
-    if (controller.selectedQuestion.value ==
-        'Overall business report') {
+    if (controller.selectedQuestion.value == 'Overall business report') {
       return 'Generate AI Report';
     }
 
@@ -517,8 +493,7 @@ Also include:
         ),
         child: Obx(
           () => DropdownButtonFormField<String>(
-            initialValue:
-                controller.selectedQuestion.value,
+            initialValue: controller.selectedQuestion.value,
             decoration: const InputDecoration(
               border: InputBorder.none,
               labelText: 'Choose AI question',
@@ -526,8 +501,7 @@ Also include:
                 Icons.help_outline,
               ),
             ),
-            items:
-                controller.questionOptions.map(
+            items: controller.questionOptions.map(
               (option) {
                 return DropdownMenuItem<String>(
                   value: option,
@@ -595,8 +569,7 @@ Also include:
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Row(
                   children: [
@@ -609,32 +582,25 @@ Also include:
                         'AI Analysis',
                         style: TextStyle(
                           fontSize: 18,
-                          fontWeight:
-                              FontWeight.bold,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 6),
-
                 Obx(
                   () => Text(
-                    controller
-                        .selectedQuestion
-                        .value,
+                    controller.selectedQuestion.value,
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.grey.shade600,
                     ),
                   ),
                 ),
-
                 const Divider(
                   height: 28,
                 ),
-
                 SelectableText(
                   report,
                   style: const TextStyle(
@@ -656,95 +622,93 @@ Also include:
 
   @override
   Widget build(BuildContext context) {
-    final UserController userController =
-        Get.find<UserController>();
+    final user = User.fromMap(userController.current_user.toJson());
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          children: [
-            Icon(
-              Icons.analytics_outlined,
-            ),
-            SizedBox(width: 10),
-            Text('AI Report'),
-          ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          if (user.role_id == 3) {
+            Get.off(() => PurchaseVoucherScreen());
+          } else {
+            Get.off(() => SalesVoucherScreen());
+          }
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Row(
+            children: [
+              Icon(
+                Icons.analytics_outlined,
+              ),
+              SizedBox(width: 10),
+              Text('AI Report'),
+            ],
+          ),
         ),
-      ),
-
-      drawer: CustDrawer(
-        user: User.fromMap(
-          userController.current_user.toJson(),
+        drawer: CustDrawer(
+          user: User.fromMap(
+            userController.current_user.toJson(),
+          ),
         ),
-      ),
+        body: RefreshIndicator(
+          onRefresh: _generateReport,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            children: [
+              const SizedBox(height: 16),
 
-      body: RefreshIndicator(
-        onRefresh: _generateReport,
+              // --------------------------------------------------
+              // QUESTION DROPDOWN
+              // --------------------------------------------------
 
-        child: ListView(
-          physics:
-              const AlwaysScrollableScrollPhysics(),
+              _buildQuestionDropdown(),
 
-          padding: const EdgeInsets.all(16),
+              const SizedBox(height: 16),
 
-          children: [
+              // --------------------------------------------------
+              // REPORT
+              // --------------------------------------------------
 
-            const SizedBox(height: 16),
+              _buildReport(),
 
-            // --------------------------------------------------
-            // QUESTION DROPDOWN
-            // --------------------------------------------------
+              const SizedBox(height: 20),
 
-            _buildQuestionDropdown(),
+              // --------------------------------------------------
+              // GENERATE BUTTON
+              // --------------------------------------------------
 
-            const SizedBox(height: 16),
-
-            // --------------------------------------------------
-            // REPORT
-            // --------------------------------------------------
-
-            _buildReport(),
-
-            const SizedBox(height: 20),
-
-            // --------------------------------------------------
-            // GENERATE BUTTON
-            // --------------------------------------------------
-
-            Obx(
-              () => SizedBox(
-                height: 52,
-
-                child: FilledButton.icon(
-                  onPressed:
-                      controller.loading.value
-                          ? null
-                          : _generateReport,
-
-                  icon: controller.loading.value
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child:
-                              CircularProgressIndicator(
-                            strokeWidth: 2,
+              Obx(
+                () => SizedBox(
+                  height: 52,
+                  child: FilledButton.icon(
+                    onPressed:
+                        controller.loading.value ? null : _generateReport,
+                    icon: controller.loading.value
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Icon(
+                            Icons.auto_awesome,
                           ),
-                        )
-                      : const Icon(
-                          Icons.auto_awesome,
-                        ),
-
-                  label: Text(
-                    controller.loading.value
-                        ? 'Generating...'
-                        : _generateButtonLabel(),
+                    label: Text(
+                      controller.loading.value
+                          ? 'Generating...'
+                          : _generateButtonLabel(),
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            const SizedBox(height: 30),
-          ],
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );

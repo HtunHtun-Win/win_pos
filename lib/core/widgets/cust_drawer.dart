@@ -190,8 +190,12 @@ class CustDrawer extends StatelessWidget {
         () => Get.off(() => ExpenseScreen())));
     items.add(_DrawerItem(
         'Report', Icons.menu_book, () => Get.off(() => const ReportsScreen())));
-    items.add(_DrawerItem('AI Analysis', Icons.auto_awesome, () => Get.off(() => const AiReportScreen())));
-    items.add(_DrawerItem('AI Chat', Icons.message, () => Get.off(() => const AiChatScreen())));
+    if (user.role_id == 1) {
+      items.add(_DrawerItem('AI Analysis', Icons.auto_awesome,
+          () => Get.off(() => const AiReportScreen())));
+      items.add(_DrawerItem(
+          'AI Chat', Icons.message, () => Get.off(() => const AiChatScreen())));
+    }
     return items;
   }
 }
@@ -285,10 +289,8 @@ class _HeaderAction extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _HeaderAction({
-      required this.icon,
-      required this.label,
-      required this.onTap});
+  const _HeaderAction(
+      {required this.icon, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

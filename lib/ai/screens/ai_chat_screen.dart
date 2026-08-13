@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:win_pos/ai/controllers/ai_chat_controller.dart';
 import 'package:win_pos/ai/models/ai_chat_message.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
+import 'package:win_pos/purchase/screens/purchase_voucher_screen.dart';
+import 'package:win_pos/sales/screens/sales_voucher_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/models/user.dart';
 
@@ -15,7 +17,7 @@ class AiChatScreen extends StatefulWidget {
 
 class _AiChatScreenState extends State<AiChatScreen> {
   final TextEditingController _controller = TextEditingController();
-
+  final UserController userController = Get.find();
   late final AiChatController _aiController;
 
   @override
@@ -72,73 +74,84 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UserController controller = Get.find<UserController>();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          children: [
-            Icon(Icons.auto_awesome),
-            SizedBox(width: 10),
-            Text('AI Assistant'),
-          ],
-        ),
-        actions: [
-          Obx(
-            () => IconButton(
-              tooltip: 'Update AI data',
-              onPressed:
-                  _aiController.isUpdatingData.value ? null : _updateAiData,
-              icon: _aiController.isUpdatingData.value
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : const Icon(Icons.sync),
-            ),
+    final user = User.fromMap(userController.current_user.toJson());
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          if (user.role_id == 3) {
+            Get.off(() => PurchaseVoucherScreen());
+          } else {
+            Get.off(() => SalesVoucherScreen());
+          }
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Row(
+            children: [
+              Icon(Icons.auto_awesome),
+              SizedBox(width: 10),
+              Text('AI Assistant'),
+            ],
           ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'clear') {
-                _showClearChatDialog(context);
-              }
-            },
-            itemBuilder: (context) {
-              return const [
-                PopupMenuItem(
-                  value: 'clear',
-                  child: Row(
-                    children: [
-                      Icon(Icons.delete_outline),
-                      SizedBox(width: 10),
-                      Text('Clear chat'),
-                    ],
+          actions: [
+            Obx(
+              () => IconButton(
+                tooltip: 'Update AI data',
+                onPressed:
+                    _aiController.isUpdatingData.value ? null : _updateAiData,
+                icon: _aiController.isUpdatingData.value
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(Icons.sync),
+              ),
+            ),
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'clear') {
+                  _showClearChatDialog(context);
+                }
+              },
+              itemBuilder: (context) {
+                return const [
+                  PopupMenuItem(
+                    value: 'clear',
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete_outline),
+                        SizedBox(width: 10),
+                        Text('Clear chat'),
+                      ],
+                    ),
                   ),
-                ),
-              ];
-            },
-          ),
-        ],
-      ),
-      drawer: CustDrawer(
-        user: User.fromMap(
-          controller.current_user.toJson(),
-        ),
-      ),
-      body: Obx(
-        () => Column(
-          children: [
-            if (_aiController.isUpdatingData.value)
-              const LinearProgressIndicator(),
-            Expanded(
-              child: _buildContent(),
+                ];
+              },
             ),
-            if (_aiController.isLoading.value) _buildLoading(),
-            _buildInput(),
           ],
+        ),
+        drawer: CustDrawer(
+          user: User.fromMap(
+            userController.current_user.toJson(),
+          ),
+        ),
+        body: Obx(
+          () => Column(
+            children: [
+              if (_aiController.isUpdatingData.value)
+                const LinearProgressIndicator(),
+              Expanded(
+                child: _buildContent(),
+              ),
+              if (_aiController.isLoading.value) _buildLoading(),
+              _buildInput(),
+            ],
+          ),
         ),
       ),
     );
