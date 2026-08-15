@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:win_pos/core/functions/date_range_calc.dart';
 import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 import 'package:win_pos/sales/screens/sales_detail.dart';
@@ -13,7 +14,8 @@ import '../controller/sales_report_controller.dart';
 class SalesReportVoucherScreen extends StatelessWidget {
   SalesReportVoucherScreen({super.key});
 
-  final SalesReportController salesController = Get.put(SalesReportController());
+  final SalesReportController salesController =
+      Get.put(SalesReportController());
   final CustomerController customerController = CustomerController();
   ShopInfoController shopInfoController = Get.find();
   int? customerId;
@@ -54,10 +56,21 @@ class SalesReportVoucherScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 child: Row(
                   children: [
-                    Expanded(child: Text('No.', style: TextStyle(fontWeight: FontWeight.w600))),
-                    Expanded(flex: 2, child: Text('Inv No', style: TextStyle(fontWeight: FontWeight.w600))),
-                    Expanded(flex: 2, child: Text('Amount', style: TextStyle(fontWeight: FontWeight.w600))),
-                    Expanded(flex: 2, child: Text('Date', style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(
+                        child: Text('No.',
+                            style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(
+                        flex: 2,
+                        child: Text('Inv No',
+                            style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(
+                        flex: 2,
+                        child: Text('Amount',
+                            style: TextStyle(fontWeight: FontWeight.w600))),
+                    Expanded(
+                        flex: 2,
+                        child: Text('Date',
+                            style: TextStyle(fontWeight: FontWeight.w600))),
                   ],
                 ),
               ),
@@ -83,7 +96,8 @@ class SalesReportVoucherScreen extends StatelessWidget {
                   );
                 }),
                 onLoading: () {
-                  if (salesController.maxCount == salesController.vouchers.length) {
+                  if (salesController.maxCount ==
+                      salesController.vouchers.length) {
                     refreshController.loadNoData();
                   } else {
                     salesController.voucherLoadMore();
@@ -143,7 +157,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
 
   Widget reportListTile({required int index, required SaleModel voucher}) {
     return InkWell(
-      onTap: () => Get.to(()=>SalesDetail(voucher: voucher)),
+      onTap: () => Get.to(() => SalesDetail(voucher: voucher)),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -201,7 +215,8 @@ class SalesReportVoucherScreen extends StatelessWidget {
             labelText: 'Customer',
             filled: true,
             fillColor: theme.cardColor,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none,
@@ -251,15 +266,7 @@ class SalesReportVoucherScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: const [
-          'All',
-          'Today',
-          'Yesterday',
-          'ThisMonth',
-          'LastMonth',
-          'ThisYear',
-          'LastYear',
-        ],
+        items: dateOptionList,
         onChanged: (value) {
           refreshController.loadFailed();
           date = value!.toLowerCase();
@@ -274,32 +281,5 @@ class SalesReportVoucherScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Map daterangeCalculate(String selectedDate) {
-    String startDate = '';
-    String endDate = '';
-    var now = DateTime.now();
-    var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == 'today') {
-      startDate = today.toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == 'yesterday') {
-      startDate = DateTime(now.year, now.month, now.day - 1).toString();
-      endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == 'thismonth') {
-      startDate = DateTime(now.year, now.month, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == 'lastmonth') {
-      startDate = DateTime(now.year, now.month - 1, 1).toString();
-      endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == 'thisyear') {
-      startDate = DateTime(now.year, 1, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == 'lastyear') {
-      startDate = DateTime(now.year - 1, 1, 1).toString();
-      endDate = DateTime(now.year, 1, 1).toString();
-    }
-    return {'start': startDate, 'end': endDate};
   }
 }

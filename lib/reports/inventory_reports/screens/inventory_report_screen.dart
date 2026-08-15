@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/reports/inventory_reports/screens/low_stock_balance_screen.dart';
 import 'package:win_pos/reports/inventory_reports/screens/sale_log_screen.dart';
 import 'package:win_pos/reports/inventory_reports/screens/stock_balance_screen.dart';
 import 'package:win_pos/reports/inventory_reports/screens/stock_balance_valuation_screen.dart';
@@ -36,6 +37,13 @@ class InventoryReportScreen extends StatelessWidget {
                     subtitle: 'See current stock quantities and availability',
                     onTap: () => Get.to(() => StockBalanceScreen()),
                   ),
+                  _buildMenuCard(
+                    context,
+                    icon: Icons.trending_down,
+                    title: 'Low Quantity Stock',
+                    subtitle: 'See stock Which quantity are lower then 10.',
+                    onTap: () => Get.to(() => LowStockBalanceScreen()),
+                  ),
                   if (user.role_id == 1)
                     _buildMenuCard(
                       context,
@@ -48,7 +56,7 @@ class InventoryReportScreen extends StatelessWidget {
                     context,
                     icon: Icons.history,
                     title: 'Sale Price History',
-                    subtitle: 'Track product price changes over time',
+                    subtitle: 'Track product price changes over time.',
                     onTap: () => Get.to(() => SaleLogScreen()),
                   ),
                 ],

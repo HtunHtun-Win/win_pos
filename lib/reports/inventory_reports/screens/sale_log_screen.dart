@@ -1,7 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/core/functions/date_range_calc.dart';
 import 'package:win_pos/core/functions/pretty_date_format.dart';
@@ -178,15 +177,7 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
             border: OutlineInputBorder(),
           ),
         ),
-        items: const [
-          'All',
-          'Today',
-          'Yesterday',
-          'ThisMonth',
-          'LastMonth',
-          'ThisYear',
-          'LastYear',
-        ],
+        items: dateOptionList,
         onChanged: (value) {
           refreshController.resetNoData();
           date = value!.toLowerCase();

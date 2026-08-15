@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/core/widgets/cust_drawer.dart';
-import 'package:win_pos/ai/screens/ai_chat_screen.dart';
-import 'package:win_pos/ai/screens/ai_report_screen.dart';
 import 'package:win_pos/reports/purchase_reports/screens/purchase_report_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_report_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/reports/purchase_reports/screens/monthly_purchase_report_screen.dart';
+import 'package:win_pos/reports/purchase_reports/screens/yearly_purchase_report_screen.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 import 'purchase_product_screen.dart';
 import 'purchase_report_voucher_screen.dart';
@@ -38,6 +40,20 @@ class PurchaseReportScreen extends StatelessWidget {
                     title: 'Purchase Items',
                     subtitle: 'Review purchased items and quantities',
                     onTap: () => Get.to(() => PurchaseProductScreen()),
+                  ),
+                  _buildMenuCard(
+                    context,
+                    icon: Icons.bar_chart,
+                    title: 'Monthly Purchase Report',
+                    subtitle: 'See Purchase report by monthly',
+                    onTap: () => Get.to(() => const MonthlyPurchaseReportScreen()),
+                  ),
+                  _buildMenuCard(
+                    context,
+                    icon: Icons.bar_chart,
+                    title: 'Yearly Purchase Report',
+                    subtitle: 'See Purchase report by yearly',
+                    onTap: () => Get.to(() => const YearlyPurchaseReportScreen()),
                   ),
                 ],
               ),

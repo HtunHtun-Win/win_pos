@@ -32,6 +32,23 @@ class InventoryReportController extends GetxController {
     }
   }
 
+  Future<void> getLowQtyStock({int? catId}) async {
+    maxCount = 10;
+    products.clear();
+    var datas = await reportService.getLowQtyStock(catId: catId);
+    products = datas;
+    // getTotal();
+    if (products.isNotEmpty) {
+      showProducts.clear();
+      maxCount = products.length < maxCount ? products.length : maxCount;
+      for (int i = 0; i < maxCount; i++) {
+        showProducts.add(products[i]);
+      }
+    } else {
+      showProducts.clear();
+    }
+  }
+
   Future<void> getWithValue({int? catId}) async {
     maxCount = 10;
     productsValue.clear();

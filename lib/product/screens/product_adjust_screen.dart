@@ -4,7 +4,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/product/controller/product_log_controller.dart';
 import 'package:win_pos/product/models/product_log_model.dart';
-import 'package:intl/intl.dart';
 import 'package:win_pos/product/screens/product_adjust_add_screen.dart';
 
 import '../../core/functions/date_range_calc.dart';

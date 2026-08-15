@@ -3,7 +3,7 @@ import 'package:win_pos/reports/sale_reports/models/sale_item_model.dart';
 import 'package:win_pos/reports/sale_reports/services/sales_report_service.dart';
 import '../../../sales/models/sale_model.dart';
 
-class SalesReportController extends GetxController{
+class SalesReportController extends GetxController {
   SalesReportService service = SalesReportService();
 
   var vouchers = <SaleModel>[];
@@ -16,10 +16,11 @@ class SalesReportController extends GetxController{
   var showItems = <SaleItemModel>[].obs;
   var maxCount = 10;
 
-  Future<void> getAllVouchers({int? customerId,Map? date}) async {
+  Future<void> getAllVouchers({int? customerId, Map? date}) async {
     maxCount = 10;
     vouchers.clear();
-    var datas = await service.getAllVouchers(customerId: customerId,date: date);
+    var datas =
+        await service.getAllVouchers(customerId: customerId, date: date);
     vouchers = datas;
     getTotal();
     if (vouchers.isNotEmpty) {
@@ -28,15 +29,15 @@ class SalesReportController extends GetxController{
       for (int i = 0; i < maxCount; i++) {
         showVouchers.add(vouchers[i]);
       }
-    }else{
+    } else {
       showVouchers.clear();
     }
   }
 
-  Future<void> getSaleItems({int? catId,Map? date}) async {
+  Future<void> getSaleItems({int? catId, Map? date}) async {
     maxCount = 10;
     items.clear();
-    var datas = await service.getSaleItems(catId: catId,date: date);
+    var datas = await service.getSaleItems(catId: catId, date: date);
     items = datas;
     itemTotal();
     if (items.isNotEmpty) {
@@ -45,15 +46,15 @@ class SalesReportController extends GetxController{
       for (int i = 0; i < maxCount; i++) {
         showItems.add(items[i]);
       }
-    }else{
+    } else {
       showItems.clear();
     }
   }
 
-  Future<void> getMostSaleItems({int? catId,Map? date}) async {
+  Future<void> getMostSaleItems({int? catId, Map? date}) async {
     maxCount = 10;
     items.clear();
-    var datas = await service.getMostSaleItems(catId: catId,date: date);
+    var datas = await service.getMostSaleItems(catId: catId, date: date);
     items = datas;
     itemTotal();
     if (items.isNotEmpty) {
@@ -62,23 +63,35 @@ class SalesReportController extends GetxController{
       for (int i = 0; i < maxCount; i++) {
         showItems.add(items[i]);
       }
-    }else{
+    } else {
       showItems.clear();
     }
   }
 
-  int? getTotal(){
+  Future<List<Map<String, dynamic>>> getMonthlySales({
+    int? year,
+  }) async {
+    return await service.getMonthlySales(year: year);
+  }
+
+  Future<List<Map<String, dynamic>>> getYearlySales({
+    int? year,
+  }) async {
+    return await service.getYearlySales();
+  }
+
+  int? getTotal() {
     int total = 0;
-    for(var t in vouchers){
+    for (var t in vouchers) {
       total += t.total_price!;
     }
     totalAmount.value = total;
     return totalAmount.value;
   }
 
-  int? itemTotal(){
+  int? itemTotal() {
     int total = 0;
-    for(var t in items){
+    for (var t in items) {
       total += t.price;
     }
     itemTotalAmount.value = total;

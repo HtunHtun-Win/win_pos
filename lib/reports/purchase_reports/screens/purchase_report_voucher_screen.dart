@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
+import 'package:win_pos/core/functions/date_range_calc.dart';
 import 'package:win_pos/core/functions/pretty_date_format.dart';
 import 'package:win_pos/purchase/models/purchase_model.dart';
 import 'package:win_pos/purchase/screens/purchase_detail.dart';
@@ -229,15 +230,7 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: const [
-          'All',
-          'Today',
-          'Yesterday',
-          'ThisMonth',
-          'LastMonth',
-          'ThisYear',
-          'LastYear',
-        ],
+        items: dateOptionList,
         onChanged: (value) {
           refreshController.loadFailed();
           date = value!.toLowerCase();
@@ -252,33 +245,6 @@ class PurchaseReportVoucherScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Map<String, String> daterangeCalculate(String selectedDate) {
-    String startDate = '';
-    String endDate = '';
-    var now = DateTime.now();
-    var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == 'today') {
-      startDate = today.toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == 'yesterday') {
-      startDate = DateTime(now.year, now.month, now.day - 1).toString();
-      endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == 'thismonth') {
-      startDate = DateTime(now.year, now.month, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == 'lastmonth') {
-      startDate = DateTime(now.year, now.month - 1, 1).toString();
-      endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == 'thisyear') {
-      startDate = DateTime(now.year, 1, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == 'lastyear') {
-      startDate = DateTime(now.year - 1, 1, 1).toString();
-      endDate = DateTime(now.year, 1, 1).toString();
-    }
-    return {'start': startDate, 'end': endDate};
   }
 }
 

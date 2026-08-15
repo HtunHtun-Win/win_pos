@@ -42,12 +42,6 @@ class _ExpenseAddScreenState extends State<ExpenseAddScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Expense'),
-        actions: [
-          IconButton(
-            onPressed: () => _saveExpense(),
-            icon: const Icon(Icons.save),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

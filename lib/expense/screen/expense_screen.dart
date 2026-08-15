@@ -144,7 +144,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                     itemCount: _expenseController.showExpenseList.length,
                     itemBuilder: (context, index) {
                       var expense = _expenseController.showExpenseList[index];
-                      return listItem(expense);
+                      return listItem(context,expense);
                     },
                   ),
                 ),
@@ -156,7 +156,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     );
   }
 
-  Widget listItem(ExpenseModel expense) {
+  Widget listItem(context,ExpenseModel expense) {
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.primary;
     return Slidable(
       endActionPane: ActionPane(motion: const StretchMotion(), children: [
         SlidableAction(
@@ -165,6 +167,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
             Get.to(() => ExpenseEditScreen(expense));
           },
           icon: Icons.edit,
+          foregroundColor: color,
         ),
         SlidableAction(
           onPressed: (_) {
@@ -190,6 +193,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
             );
           },
           icon: Icons.delete,
+          foregroundColor: Colors.red,
         )
       ]),
       child: Container(
