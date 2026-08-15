@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import 'package:win_pos/user/screens/add_user_screen.dart';
@@ -55,32 +56,90 @@ class UserScreen extends StatelessWidget {
 
   Widget _userCard(BuildContext context, User user, ThemeData theme) {
     final bool isCurrentUser = controller.current_user['id'] == user.id;
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                user.name.toString(),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w700),
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.primary;
+    return Slidable(
+      endActionPane: ActionPane(motion: const StretchMotion(), children: [
+        SlidableAction(
+          onPressed: (_) {
+            controller.edit_user.value = user;
+            Get.to(() => const EditUserScreen());
+          },
+          icon: Icons.edit,
+          foregroundColor: color,
+        ),
+        SlidableAction(
+          onPressed: isCurrentUser? (_){} : (_) {
+            Get.dialog(
+              AlertDialog(
+                title: const Text('Delete User'),
+                content: const Text('This process can\'t be undone.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      controller.deleteUser(user.id!);
+                      Get.back();
+                    },
+                    child: const Text('Delete'),
+                  ),
+                ],
               ),
+            );
+          },
+          icon: Icons.delete,
+          foregroundColor: isCurrentUser
+              ? theme.colorScheme.onSurface.withValues(alpha: 0.4)
+              : theme.colorScheme.error,
+        )
+      ]),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
             ),
-            if (isCurrentUser)
+          ],
+        ),
+        child: ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  user.name.toString(),
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+              if (isCurrentUser)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Active',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
               Container(
+                margin: const EdgeInsets.only(left: 5),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
@@ -88,66 +147,22 @@ class UserScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Active',
+                  roles[user.role_id!],
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-          ],
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Login: ${user.login_id}'),
-            Text('Password: ${user.password}'),
-            Text('Role: ${roles[user.role_id!]}'),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              onPressed: () {
-                controller.edit_user.value = user;
-                Get.to(() => const EditUserScreen());
-              },
-              icon: const Icon(Icons.edit),
-              color: theme.colorScheme.primary,
-            ),
-            IconButton(
-              onPressed: isCurrentUser
-                  ? null
-                  : () {
-                      Get.dialog(
-                        AlertDialog(
-                          title: const Text('Delete User'),
-                          content: const Text('This process can\'t be undone.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                controller.deleteUser(user.id!);
-                                Get.back();
-                              },
-                              child: const Text('Delete'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-              icon: const Icon(Icons.delete),
-              color: isCurrentUser
-                  ? theme.colorScheme.onSurface.withValues(alpha: 0.4)
-                  : theme.colorScheme.error,
-            ),
-          ],
+            ],
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Login: ${user.login_id}'),
+              Text('Password: ${user.password}'),
+            ],
+          ),
         ),
       ),
     );

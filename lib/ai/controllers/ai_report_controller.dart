@@ -17,6 +17,7 @@ class AiReportController extends GetxController {
     'VIP customers by amount',
     'Low stock products',
     'Expense control suggestions',
+    'Low selling items',
   ];
 
   /// Change selected question

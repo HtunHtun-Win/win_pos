@@ -35,6 +35,7 @@ dependencies:
   flutter_gen_ai_chat_ui: ^2.15.0
   flutter_dotenv: ^6.0.1
   fluttertoast: ^9.1.0
+  fl_chart: ^1.2.0
 
 dev_dependencies:
   flutter_test:

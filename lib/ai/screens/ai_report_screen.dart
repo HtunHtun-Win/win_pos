@@ -122,7 +122,7 @@ class _AiReportScreenState extends State<AiReportScreen> {
 
     final lowStockProducts = await database.rawQuery(
       '''
-      SELECT 
+`      SELECT 
         name,
         quantity,
         sale_price
@@ -130,7 +130,7 @@ class _AiReportScreenState extends State<AiReportScreen> {
       WHERE isdeleted = 0
         AND quantity <= 5
       ORDER BY quantity ASC
-      LIMIT 5;
+      LIMIT 5;`
       ''',
     );
 
@@ -154,6 +154,32 @@ class _AiReportScreenState extends State<AiReportScreen> {
       ORDER BY quantity DESC
       LIMIT 5;
       ''',
+    );
+
+    // ----------------------------------------------------------
+// LOW SALE ITEMS
+// ----------------------------------------------------------
+
+    final lowSaleItems = await database.rawQuery(
+      '''
+  SELECT 
+    products.name,
+    COALESCE(SUM(sales_detail.quantity), 0) AS quantity,
+    COALESCE(
+      SUM(sales_detail.quantity * sales_detail.price),
+      0
+    ) AS revenue
+  FROM products
+  LEFT JOIN sales_detail
+    ON products.id = sales_detail.product_id
+  LEFT JOIN sales
+    ON sales_detail.sales_id = sales.id
+    AND sales.isdeleted = 0
+  WHERE products.isdeleted = 0
+  GROUP BY products.id, products.name
+  ORDER BY quantity ASC
+  LIMIT 5;
+  ''',
     );
 
     // ----------------------------------------------------------
@@ -254,6 +280,26 @@ class _AiReportScreenState extends State<AiReportScreen> {
               _toInt(total),
             )} '
                 'across $vouchers vouchers';
+          }).toList();
+
+    // ==========================================================
+    // LOW SELLING ITEMS TEXT
+    // ==========================================================
+
+    final lowSaleItemLines = lowSaleItems.isEmpty
+        ? ['No low-selling product data available.']
+        : lowSaleItems.map((row) {
+            final name = row['name']?.toString() ?? 'Unknown';
+
+            final quantity = row['quantity']?.toString() ?? '0';
+
+            final revenue = row['revenue']?.toString() ?? '0';
+
+            return '- $name: '
+                '$quantity sold, '
+                'revenue ${_formatCurrency(
+              _toInt(revenue),
+            )}';
           }).toList();
 
     // ==========================================================
@@ -401,6 +447,36 @@ Give practical suggestions for:
 3. Improving profit margins
 4. Controlling operating costs
 5. Improving business efficiency
+''';
+        break;
+
+      ///
+      case 'Low selling items':
+        extraSection = '''
+Low-selling products:
+
+${lowSaleItemLines.join('\n')}
+
+Analyze these products as slow-moving products.
+
+Explain:
+
+1. Which products have the weakest sales.
+2. Possible reasons for low sales.
+3. Whether the products may be overstocked.
+4. Whether the pricing could be a problem.
+5. Whether the products may need better promotion.
+
+Give practical recommendations for:
+
+1. Discount or promotion
+2. Bundle offers
+3. Cross-selling
+4. Pricing strategy
+5. Stock management
+6. Whether to reduce future purchases
+
+Do not claim a specific reason unless the available data supports it.
 ''';
         break;
 

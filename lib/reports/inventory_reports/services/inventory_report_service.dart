@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:win_pos/product/models/product_model.dart';
 import 'package:win_pos/reports/inventory_reports/models/product_value_model.dart';
 import 'package:win_pos/reports/inventory_reports/models/sale_log_model.dart';
@@ -10,6 +8,11 @@ class InventoryReportService {
 
   Future<List> getAll({int? catId}) async {
     var datas = await reportRepository.getAll(catId: catId);
+    return datas.map((data) => ProductModel.fromMap(data)).toList();
+  }
+
+  Future<List> getLowQtyStock({int? catId}) async {
+    var datas = await reportRepository.getLowQtyStock(catId: catId);
     return datas.map((data) => ProductModel.fromMap(data)).toList();
   }
 

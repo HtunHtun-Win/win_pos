@@ -47,12 +47,6 @@ class _ExpenseEditScreenState extends State<ExpenseEditScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Expense'),
-        actions: [
-          IconButton(
-            onPressed: _updateExpense,
-            icon: const Icon(Icons.save),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

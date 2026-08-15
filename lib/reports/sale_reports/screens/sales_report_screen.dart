@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/reports/sale_reports/screens/monthly_sales_report_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/most_sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_report_voucher_screen.dart';
+import 'package:win_pos/reports/sale_reports/screens/yearly_sales_report_screen.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 
 class SalesReportScreen extends StatelessWidget {
@@ -96,9 +98,23 @@ class SalesReportScreen extends StatelessWidget {
                   buildMenuCard(
                     context,
                     icon: Icons.star,
-                    title: 'Best Sellers',
+                    title: 'Best Selling Items',
                     subtitle: 'Discover your top-selling products',
                     onTap: () => Get.to(() => MostSalesProductScreen()),
+                  ),
+                  buildMenuCard(
+                    context,
+                    icon: Icons.bar_chart,
+                    title: 'Monthly Sales Report',
+                    subtitle: 'See sales report by monthly',
+                    onTap: () => Get.to(() => const MonthlySalesReportScreen()),
+                  ),
+                  buildMenuCard(
+                    context,
+                    icon: Icons.bar_chart,
+                    title: 'Yearly Sales Report',
+                    subtitle: 'See sales report by yearly',
+                    onTap: () => Get.to(() => const YearlySalesReportScreen()),
                   ),
                 ],
               ),

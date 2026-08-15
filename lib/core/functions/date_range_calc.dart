@@ -9,6 +9,25 @@ Map daterangeCalculate(String selectedDate) {
   } else if (selectedDate == "yesterday") {
     startDate = DateTime(now.year, now.month, now.day - 1).toString();
     endDate = DateTime(now.year, now.month, now.day).toString();
+  } else if (selectedDate == "thisweek") {
+    final startOfWeek = today.subtract(
+      Duration(days: today.weekday - 1),
+    );
+    startDate = startOfWeek.toString();
+    endDate = DateTime(
+      now.year,
+      now.month,
+      now.day + 1,
+    ).toString();
+  } else if (selectedDate == "lastweek") {
+    final startOfThisWeek = today.subtract(
+      Duration(days: today.weekday - 1),
+    );
+    final startOfLastWeek = startOfThisWeek.subtract(
+      const Duration(days: 7),
+    );
+    startDate = startOfLastWeek.toString();
+    endDate = startOfThisWeek.toString();
   } else if (selectedDate == "thismonth") {
     startDate = DateTime(now.year, now.month, 1).toString();
     endDate = DateTime(now.year, now.month, now.day + 1).toString();
@@ -24,3 +43,15 @@ Map daterangeCalculate(String selectedDate) {
   }
   return {'start': startDate, 'end': endDate};
 }
+
+List<String> dateOptionList = const [
+  'All',
+  'Today',
+  'Yesterday',
+  'ThisWeek',
+  'LastWeek',
+  'ThisMonth',
+  'LastMonth',
+  'ThisYear',
+  'LastYear',
+];

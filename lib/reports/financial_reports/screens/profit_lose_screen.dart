@@ -1,14 +1,28 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:win_pos/core/functions/date_range_calc.dart';
+import 'package:win_pos/expense/controller/expense_controller.dart';
 import 'package:win_pos/reports/financial_reports/controller/financial_report_controller.dart';
 
 // ignore: must_be_immutable
-class ProfitLoseScreen extends StatelessWidget {
+class ProfitLoseScreen extends StatefulWidget {
   ProfitLoseScreen({super.key});
 
+  @override
+  State<ProfitLoseScreen> createState() => _ProfitLoseScreenState();
+}
+
+class _ProfitLoseScreenState extends State<ProfitLoseScreen> {
   FinancialReportController controller = FinancialReportController();
+  final ExpenseController _expenseController = ExpenseController();
   String date = 'today';
+
+  @override
+  void initState() {
+    super.initState();
+    _expenseController.getAll(date: daterangeCalculate("today"));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +43,10 @@ class ProfitLoseScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 gradient: LinearGradient(
-                  colors: [theme.colorScheme.primary, theme.colorScheme.primaryContainer],
+                  colors: [
+                    theme.colorScheme.primary,
+                    theme.colorScheme.primaryContainer
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -43,7 +60,8 @@ class ProfitLoseScreen extends StatelessWidget {
                       color: theme.colorScheme.onPrimary.withAlpha(24),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(Icons.insights, color: theme.colorScheme.onPrimary, size: 30),
+                    child: Icon(Icons.insights,
+                        color: theme.colorScheme.onPrimary, size: 30),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -85,12 +103,18 @@ class ProfitLoseScreen extends StatelessWidget {
                     var incomeTotal = 0;
                     var expenseTotal = 0;
                     for (var p in controller.profitLose) {
-                      incomeTotal += (p.saleTotal ?? 0) + (p.purchaseDiscount ?? 0) - (p.orgTotal ?? 0);
-                      expenseTotal += (p.saleDiscount ?? 0) + (p.lose?.abs() ?? 0);
+                      incomeTotal += (p.saleTotal) +
+                          (p.purchaseDiscount) +
+                          (_expenseController.totalIncome.value) -
+                          (p.orgTotal);
+                      expenseTotal += (p.saleDiscount) +
+                          (p.lose.abs()) +
+                          (_expenseController.totalExpense.value);
                     }
                     final profit = incomeTotal - expenseTotal;
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
                       decoration: BoxDecoration(
                         color: theme.cardColor,
                         borderRadius: BorderRadius.circular(12),
@@ -102,7 +126,8 @@ class ProfitLoseScreen extends StatelessWidget {
                           const SizedBox(height: 6),
                           Text(
                             profit.toString(),
-                            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                            style: theme.textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -119,12 +144,18 @@ class ProfitLoseScreen extends StatelessWidget {
           Expanded(
             child: Obx(() {
               return ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 itemCount: controller.profitLose.length,
                 itemBuilder: (context, index) {
                   final p = controller.profitLose[index];
-                  final income = (p.saleTotal ?? 0) + (p.purchaseDiscount ?? 0) - (p.orgTotal ?? 0);
-                  final expense = (p.saleDiscount ?? 0) + (p.lose?.abs() ?? 0);
+                  final income = (p.saleTotal) +
+                      (p.purchaseDiscount) +
+                      (_expenseController.totalIncome.value) -
+                      (p.orgTotal);
+                  final expense = (p.saleDiscount) +
+                      (p.lose.abs()) +
+                      (_expenseController.totalExpense.value);
                   final net = income - expense;
 
                   return Container(
@@ -134,7 +165,7 @@ class ProfitLoseScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha:0.04),
+                          color: Colors.black.withValues(alpha: 0.04),
                           blurRadius: 14,
                           offset: const Offset(0, 3),
                         ),
@@ -148,8 +179,12 @@ class ProfitLoseScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Income', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                              Text(income.toString(), style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                              Text('Income',
+                                  style: theme.textTheme.titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.w600)),
+                              Text(income.toString(),
+                                  style: theme.textTheme.titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.w700)),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -157,17 +192,26 @@ class ProfitLoseScreen extends StatelessWidget {
                             spacing: 8,
                             runSpacing: 8,
                             children: [
-                              _statTile('Sales Total', p.saleTotal ?? 0),
-                              _statTile('Sold Item Value', p.orgTotal ?? 0),
-                              _statTile('Purchase Discount', p.purchaseDiscount ?? 0),
+                              _statTile(context, 'Sales Total', p.saleTotal),
+                              _statTile(
+                                  context, 'Sold Item Value', -(p.orgTotal)),
+                              _statTile(context, 'Purchase Discount',
+                                  p.purchaseDiscount),
+                              Obx(() => _statTile(context, 'Income',
+                                  _expenseController.totalIncome.value)),
                             ],
                           ),
                           const Divider(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Expense', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                              Text(expense.toString(), style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: Colors.red)),
+                              Text('Expense',
+                                  style: theme.textTheme.titleSmall
+                                      ?.copyWith(fontWeight: FontWeight.w600)),
+                              Text(expense.toString(),
+                                  style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.red)),
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -175,16 +219,26 @@ class ProfitLoseScreen extends StatelessWidget {
                             spacing: 8,
                             runSpacing: 8,
                             children: [
-                              _statTile('Sale Discount', -(p.saleDiscount ?? 0)),
-                              _statTile('Item Lose', -(p.lose?.abs() ?? 0)),
+                              _statTile(
+                                  context, 'Sale Discount', -(p.saleDiscount)),
+                              _statTile(context, 'Item Lose', -(p.lose.abs())),
+                              _statTile(context, 'Expense',
+                                  -(_expenseController.totalExpense.value)),
                             ],
                           ),
                           const Divider(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Profit / Loss', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-                              Text(net.toString(), style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: net >= 0 ? Colors.green : Colors.red)),
+                              Text('Profit / Loss',
+                                  style: theme.textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.w700)),
+                              Text(net.toString(),
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: net >= 0
+                                          ? Colors.green
+                                          : Colors.red)),
                             ],
                           ),
                         ],
@@ -200,9 +254,9 @@ class ProfitLoseScreen extends StatelessWidget {
     );
   }
 
-  Widget _statTile(String label, num value) {
+  Widget _statTile(context, String label, num value) {
     return Container(
-      width: 160,
+      width: MediaQuery.of(context).size.width / 2 - 50,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.grey[50],
@@ -211,15 +265,18 @@ class ProfitLoseScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontSize: 12, color: Colors.black54)),
+          Text(label,
+              style: const TextStyle(fontSize: 12, color: Colors.black54)),
           const SizedBox(height: 6),
-          Text(value.toString(), style: const TextStyle(fontWeight: FontWeight.w700)),
+          Text(value.toString(),
+              style: const TextStyle(fontWeight: FontWeight.w700)),
         ],
       ),
     );
   }
 
   Widget datePicker() {
+    List<String> dateOption = dateOptionList.where((e) => e != "All").toList();
     return Container(
       margin: const EdgeInsets.all(0),
       child: DropdownSearch<String>(
@@ -229,18 +286,11 @@ class ProfitLoseScreen extends StatelessWidget {
             border: OutlineInputBorder(),
           ),
         ),
-        items: const [
-          'All',
-          'Today',
-          'Yesterday',
-          'ThisMonth',
-          'LastMonth',
-          'ThisYear',
-          'LastYear',
-        ],
+        items: dateOption,
         onChanged: (value) {
           date = value!.toLowerCase();
           controller.getProfitLose(daterangeCalculate(date));
+          _expenseController.getAll(date: daterangeCalculate(date));
         },
         selectedItem: 'Today',
         popupProps: const PopupProps.menu(
@@ -248,35 +298,5 @@ class ProfitLoseScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Map daterangeCalculate(String selectedDate) {
-    String startDate = "";
-    String endDate = "";
-    var now = DateTime.now();
-    var today = DateTime(now.year, now.month, now.day);
-    if (selectedDate == "all") {
-      startDate = DateTime(now.year - 50, now.month, now.day).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "today") {
-      startDate = today.toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "yesterday") {
-      startDate = DateTime(now.year, now.month, now.day - 1).toString();
-      endDate = DateTime(now.year, now.month, now.day).toString();
-    } else if (selectedDate == "thismonth") {
-      startDate = DateTime(now.year, now.month, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastmonth") {
-      startDate = DateTime(now.year, now.month - 1, 1).toString();
-      endDate = DateTime(now.year, now.month, 1).toString();
-    } else if (selectedDate == "thisyear") {
-      startDate = DateTime(now.year, 1, 1).toString();
-      endDate = DateTime(now.year, now.month, now.day + 1).toString();
-    } else if (selectedDate == "lastyear") {
-      startDate = DateTime(now.year - 1, 1, 1).toString();
-      endDate = DateTime(now.year, 1, 1).toString();
-    }
-    return {'start': startDate, 'end': endDate};
   }
 }

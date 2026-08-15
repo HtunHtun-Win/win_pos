@@ -16,6 +16,18 @@ class InventoryReportRepository{
     );
   }
 
+  Future<List> getLowQtyStock({int? catId}) async {
+    final database = await dbObj.database;
+    String sql = '''select * from products where isdeleted=0 AND quantity<=10 ''';
+    String endSql = "ORDER BY name;";
+    if(catId!=null){
+      sql+="AND category_id=$catId ";
+    }
+    return await database.rawQuery(
+        "$sql$endSql"
+    );
+  }
+
   Future<List> getWithValue({int? catId}) async {
     final database = await dbObj.database;
     String sql = '''

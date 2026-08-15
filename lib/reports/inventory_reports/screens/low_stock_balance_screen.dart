@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:win_pos/reports/inventory_reports/controller/inventory_report_controller.dart';
-import 'package:win_pos/reports/inventory_reports/models/product_value_model.dart';
 import '../../../category/controller/category_controller.dart';
+import '../../../product/models/product_model.dart';
 
 // ignore: must_be_immutable
-class StockBalanceValuationScreen extends StatelessWidget {
-  StockBalanceValuationScreen({super.key});
+class LowStockBalanceScreen extends StatelessWidget {
+  LowStockBalanceScreen({super.key});
+
   InventoryReportController reportController = InventoryReportController();
   CategoryController categoryController = Get.put(CategoryController());
   final refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
-    reportController.getWithValue();
-    final theme = Theme.of(context);
+    reportController.getLowQtyStock();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Balance With Valuation'),
+        title: const Text('Low Quantity Stock'),
       ),
       body: Column(
         children: [
@@ -30,12 +30,11 @@ class StockBalanceValuationScreen extends StatelessWidget {
                 hintText: 'Search item...',
                 isDense: true,
                 prefixIcon: const Icon(Icons.search),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onChanged: (value) {
                 refreshController.loadFailed();
-                reportController.searchProductsValue(value);
+                reportController.searchProducts(value);
               },
             ),
           ),
@@ -64,65 +63,29 @@ class StockBalanceValuationScreen extends StatelessWidget {
                 }),
                 onLoading: () {
                   if (reportController.maxCount ==
-                      reportController.productsValue.length) {
+                      reportController.products.length) {
                     refreshController.loadNoData();
                   } else {
-                    reportController.productValueLoadMore();
+                    reportController.productLoadMore();
                     refreshController.loadComplete();
                   }
                 },
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: reportController.showProductsValue.length,
+                  itemCount: reportController.showProducts.length,
                   itemBuilder: (context, index) {
-                    var item = reportController.showProductsValue[index];
+                    var item = reportController.showProducts[index];
                     return stockItem(product: item);
                   },
                 ),
               );
-            }),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Container(
-              height: 56,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Total',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Obx(
-                      () => Text(
-                        '${reportController.totalValue} MMK',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+            })),
         ],
       ),
     );
   }
 
-  Widget stockItem({required ProductValueModel product}) {
+  Widget stockItem({required ProductModel product}) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 3),
       elevation: 1,
@@ -130,22 +93,20 @@ class StockBalanceValuationScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              product.name,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Expanded(child: Text(product.name!)),
                 Text('${product.quantity} pcs'),
-                Text('${product.price} MMK'),
-                Text('${product.total} MMK'),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(product.code!),
+                Text('${product.sale_price} MMK'),
               ],
             ),
           ],
@@ -174,9 +135,9 @@ class StockBalanceValuationScreen extends StatelessWidget {
             final selected = categoryController.categories.firstWhere(
               (category) => category.name == selectedCategory,
             );
-            reportController.getWithValue(catId: selected.id);
+            reportController.getLowQtyStock(catId: selected.id);
           } else {
-            reportController.getWithValue();
+            reportController.getLowQtyStock();
           }
         },
         selectedItem: 'All',
