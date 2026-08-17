@@ -34,7 +34,7 @@ class PurchaseVoucherScreen extends StatelessWidget {
             return AlertDialog(
               content: Text(
                 "Are you sure to exit?",
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
               actions: [
                 TextButton(

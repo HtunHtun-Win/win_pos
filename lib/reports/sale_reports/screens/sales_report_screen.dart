@@ -4,6 +4,7 @@ import 'package:win_pos/reports/sale_reports/screens/monthly_sales_report_screen
 import 'package:win_pos/reports/sale_reports/screens/most_sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_report_voucher_screen.dart';
+import 'package:win_pos/reports/sale_reports/screens/vip_customer_report_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/yearly_sales_report_screen.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 
@@ -42,7 +43,8 @@ class SalesReportScreen extends StatelessWidget {
                     width: 54,
                     height: 54,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.onPrimary.withValues(alpha: 0.16),
+                      color:
+                          theme.colorScheme.onPrimary.withValues(alpha: 0.16),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Icon(
@@ -67,7 +69,8 @@ class SalesReportScreen extends StatelessWidget {
                         Text(
                           'Browse vouchers, items, and top-selling products in a clean dashboard.',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onPrimary.withValues(alpha: 0.9),
+                            color: theme.colorScheme.onPrimary
+                                .withValues(alpha: 0.9),
                           ),
                         ),
                       ],
@@ -101,6 +104,13 @@ class SalesReportScreen extends StatelessWidget {
                     title: 'Best Selling Items',
                     subtitle: 'Discover your top-selling products',
                     onTap: () => Get.to(() => MostSalesProductScreen()),
+                  ),
+                  buildMenuCard(
+                    context,
+                    icon: Icons.people,
+                    title: 'Vip Customer Report',
+                    subtitle: 'Discover your vip customer',
+                    onTap: () => Get.to(() => VipCustomerReportScreen()),
                   ),
                   buildMenuCard(
                     context,
@@ -170,7 +180,8 @@ class SalesReportScreen extends StatelessWidget {
                       Text(
                         subtitle,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                          color: theme.textTheme.bodySmall?.color
+                              ?.withValues(alpha: 0.7),
                         ),
                       ),
                     ],

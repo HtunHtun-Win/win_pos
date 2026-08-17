@@ -10,7 +10,7 @@ import 'package:win_pos/reports/inventory_reports/models/sale_log_model.dart';
 
 // ignore: must_be_immutable
 class SaleLogScreen extends StatefulWidget {
-  SaleLogScreen({super.key});
+  const SaleLogScreen({super.key});
 
   @override
   State<SaleLogScreen> createState() => _SaleLogScreenState();
@@ -196,7 +196,7 @@ class _SaleLogScreenState extends State<SaleLogScreen> {
 }
 
 class _TableHeader extends StatelessWidget {
-  const _TableHeader({super.key});
+  const _TableHeader();
 
   @override
   Widget build(BuildContext context) {

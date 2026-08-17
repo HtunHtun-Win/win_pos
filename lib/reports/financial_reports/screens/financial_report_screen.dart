@@ -30,7 +30,7 @@ class FinancialReportScreen extends StatelessWidget {
                     icon: Icons.attach_money,
                     title: 'Profit and Loss',
                     subtitle: 'Analyze your profit, loss and net totals',
-                    onTap: () => Get.to(() => ProfitLoseScreen()),
+                    onTap: () => Get.to(() => const ProfitLoseScreen()),
                   ),
                   _buildMenuCard(
                     context,
