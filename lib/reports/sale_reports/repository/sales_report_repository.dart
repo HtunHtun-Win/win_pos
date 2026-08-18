@@ -64,7 +64,40 @@ class SalesReportRepository {
     return await database.rawQuery("$sql$endSql");
   }
 
-  //by month
+  //sales item report by month
+  Future<List<Map<String, dynamic>>> getMonthlySalesItem({
+    required int year,
+    required int productId,
+  }) async {
+    final database = await dbObj.database;
+
+    final result = await database.rawQuery(
+      '''
+    SELECT
+      CAST(strftime('%m', sales.created_at) AS INTEGER) AS month,
+      COALESCE(
+        SUM(sales_detail.quantity * sales_detail.price),
+        0
+      ) AS total
+    FROM sales
+    INNER JOIN sales_detail
+      ON sales.id = sales_detail.sales_id
+    WHERE sales.isdeleted = 0
+      AND sales_detail.product_id = ?
+      AND strftime('%Y', sales.created_at) = ?
+    GROUP BY strftime('%m', sales.created_at)
+    ORDER BY month ASC
+    ''',
+      [
+        productId,
+        year.toString(),
+      ],
+    );
+
+    return List<Map<String, dynamic>>.from(result);
+  }
+
+  //sale report by month
   Future<List<Map<String, dynamic>>> getMonthlySales({
     int? year,
   }) async {
@@ -116,7 +149,7 @@ class SalesReportRepository {
     return months;
   }
 
-  // by yearly
+  //sale report by yearly
   Future<List<Map<String, dynamic>>> getYearlySales() async {
     final database = await dbObj.database;
 

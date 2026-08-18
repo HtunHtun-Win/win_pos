@@ -168,16 +168,16 @@ class MostSalesProductScreen extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
+                flex: 1,
                 child: Text(
-              index.toString(),
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            )),
+                  index.toString(),
+                )),
             Expanded(flex: 2, child: Text(item.name.toString())),
             Expanded(flex: 2, child: Text(item.quantity.toString())),
             Expanded(
+              flex: 2,
               child: Text(
                 item.price.toString(),
-                // textAlign: TextAlign.right,
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),

@@ -12,7 +12,8 @@ class SalesReportService {
     return datas.map((data) => SaleModel.fromMap(data)).toList();
   }
 
-  Future<List<VipCustomerModel>> getVipCustomer({int? customerId, Map? date}) async {
+  Future<List<VipCustomerModel>> getVipCustomer(
+      {int? customerId, Map? date}) async {
     List datas = await salesRepository.getVipCustomer(date: date);
     return datas.map((data) => VipCustomerModel.fromJson(data)).toList();
   }
@@ -26,6 +27,14 @@ class SalesReportService {
     List datas =
         await salesRepository.getMostSaleItems(catId: catId, date: date);
     return datas.map((data) => SaleItemModel.fromJson(data)).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getMonthlySalesItem({
+    required int productId,
+    required int year,
+  }) async {
+    return await salesRepository.getMonthlySalesItem(
+        productId: productId, year: year);
   }
 
   Future<List<Map<String, dynamic>>> getMonthlySales({
