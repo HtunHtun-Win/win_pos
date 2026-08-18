@@ -76,6 +76,13 @@ class SalesReportController extends GetxController {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getMonthlySalesItem({
+    required int productId,
+    required int year,
+  }) async {
+    return await service.getMonthlySalesItem(productId: productId, year: year);
+  }
+
   Future<List<Map<String, dynamic>>> getMonthlySales({
     int? year,
   }) async {

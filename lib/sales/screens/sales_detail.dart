@@ -161,9 +161,9 @@ class SalesDetail extends StatelessWidget {
             const Divider(),
             const Row(
               children: [
-                Expanded(child: Text("No")),
-                Expanded(flex: 2, child: Text("Name")),
-                Expanded(child: Text("Qty")),
+                // Expanded(child: Text("No")),
+                Expanded(child: Text("Name")),
+                // Expanded(child: Text("Qty")),
                 Expanded(child: Text("Price")),
                 Expanded(child: Text("Amount")),
               ],
@@ -173,8 +173,8 @@ class SalesDetail extends StatelessWidget {
             const Divider(),
             Row(
               children: [
-                Expanded(flex: 3, child: Container()),
-                const Expanded(flex: 2, child: Text("Net Price")),
+                Expanded(child: Container()),
+                const Expanded(child: Text("Net Price")),
                 Expanded(child: Text(voucher.net_price.toString())),
               ],
             ),
@@ -182,16 +182,16 @@ class SalesDetail extends StatelessWidget {
                 ? Container()
                 : Row(
                     children: [
-                      Expanded(flex: 3, child: Container()),
-                      const Expanded(flex: 2, child: Text("Discount")),
+                      Expanded(child: Container()),
+                      const Expanded(child: Text("Discount")),
                       Expanded(child: Text(voucher.discount.toString())),
                     ],
                   ),
             const Divider(),
             Row(
               children: [
-                Expanded(flex: 3, child: Container()),
-                const Expanded(flex: 2, child: Text("Total")),
+                Expanded(child: Container()),
+                const Expanded(child: Text("Total")),
                 Expanded(child: Text(voucher.total_price.toString())),
               ],
             ),
@@ -207,10 +207,10 @@ class SalesDetail extends StatelessWidget {
       var data = salesDetailController.saleDatas[i];
       itemList.add(Row(
         children: [
-          Expanded(child: Text("${i + 1}")),
-          Expanded(flex: 2, child: Text(data.product!)),
-          Expanded(child: Text(data.quantity.toString())),
-          Expanded(child: Text(data.price.toString())),
+          // Expanded(child: Text("${i + 1}")),
+          Expanded(child: Text(data.product!)),
+          // Expanded(child: Text(data.quantity.toString())),
+          Expanded(child: Text("${data.price} x ${data.quantity}")),
           Expanded(
               child:
                   Text("${data.quantity! * int.parse(data.price.toString())}")),

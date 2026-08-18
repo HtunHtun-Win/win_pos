@@ -1,5 +1,8 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/reports/sale_reports/screens/monthly_sales_item_report_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/monthly_sales_report_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/most_sales_product_screen.dart';
 import 'package:win_pos/reports/sale_reports/screens/sales_product_screen.dart';
@@ -111,6 +114,13 @@ class SalesReportScreen extends StatelessWidget {
                     title: 'Vip Customer Report',
                     subtitle: 'Discover your vip customer',
                     onTap: () => Get.to(() => VipCustomerReportScreen()),
+                  ),
+                  buildMenuCard(
+                    context,
+                    icon: Icons.stacked_bar_chart_sharp,
+                    title: 'Monthly Sales Items Report',
+                    subtitle: 'See sales item report by monthly',
+                    onTap: () => Get.to(() => const MonthlySalesItemReportScreen()),
                   ),
                   buildMenuCard(
                     context,
