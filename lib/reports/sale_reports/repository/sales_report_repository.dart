@@ -19,6 +19,19 @@ class SalesReportRepository {
     return await database.rawQuery("$sql$endSql");
   }
 
+  Future<List> getVipCustomer({Map? date}) async {
+    final database = await dbObj.database;
+    String sql = """
+      SELECT customers.name as customer,SUM(sales.total_price) as total
+      FROM sales,customers WHERE sales.isdeleted=0 AND sales.customer_id=customers.id """;
+    String endSql = "GROUP BY customers.name ORDER BY total DESC LIMIT 50;";
+    if (date != null) {
+      sql +=
+          "AND sales.created_at>'${date['start']}' AND sales.created_at<'${date['end']}' ";
+    }
+    return await database.rawQuery("$sql$endSql");
+  }
+
   Future<List> getSaleItems({int? catId, Map? date}) async {
     final database = await dbObj.database;
     String sql = """

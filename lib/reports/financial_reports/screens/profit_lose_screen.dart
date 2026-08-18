@@ -7,7 +7,7 @@ import 'package:win_pos/reports/financial_reports/controller/financial_report_co
 
 // ignore: must_be_immutable
 class ProfitLoseScreen extends StatefulWidget {
-  ProfitLoseScreen({super.key});
+  const ProfitLoseScreen({super.key});
 
   @override
   State<ProfitLoseScreen> createState() => _ProfitLoseScreenState();

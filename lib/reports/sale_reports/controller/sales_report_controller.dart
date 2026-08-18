@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:win_pos/reports/sale_reports/models/sale_item_model.dart';
+import 'package:win_pos/reports/sale_reports/models/vip_customer_model.dart';
 import 'package:win_pos/reports/sale_reports/services/sales_report_service.dart';
 import '../../../sales/models/sale_model.dart';
 
@@ -7,6 +8,7 @@ class SalesReportController extends GetxController {
   SalesReportService service = SalesReportService();
 
   var vouchers = <SaleModel>[];
+  var vipList = <VipCustomerModel>[].obs;
   var items = <SaleItemModel>[];
   var totalAmount = 0.obs;
   var itemTotalAmount = 0.obs;
@@ -32,6 +34,12 @@ class SalesReportController extends GetxController {
     } else {
       showVouchers.clear();
     }
+  }
+
+  Future<void> getVipCustomer({Map? date}) async {
+    vipList.clear();
+    var datas = await service.getVipCustomer(date: date);
+    vipList.value = datas;
   }
 
   Future<void> getSaleItems({int? catId, Map? date}) async {

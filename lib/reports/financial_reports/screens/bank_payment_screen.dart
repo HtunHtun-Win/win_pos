@@ -206,7 +206,7 @@ class BankPaymentScreen extends StatelessWidget {
 }
 
 class _TableHeader extends StatelessWidget {
-  const _TableHeader({super.key});
+  const _TableHeader();
 
   @override
   Widget build(BuildContext context) {

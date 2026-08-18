@@ -1,4 +1,5 @@
 import 'package:win_pos/reports/sale_reports/models/sale_item_model.dart';
+import 'package:win_pos/reports/sale_reports/models/vip_customer_model.dart';
 import 'package:win_pos/reports/sale_reports/repository/sales_report_repository.dart';
 import 'package:win_pos/sales/models/sale_model.dart';
 
@@ -9,6 +10,11 @@ class SalesReportService {
     List datas = await salesRepository.getAllVouchers(
         customerId: customerId, date: date);
     return datas.map((data) => SaleModel.fromMap(data)).toList();
+  }
+
+  Future<List<VipCustomerModel>> getVipCustomer({int? customerId, Map? date}) async {
+    List datas = await salesRepository.getVipCustomer(date: date);
+    return datas.map((data) => VipCustomerModel.fromJson(data)).toList();
   }
 
   Future<List<SaleItemModel>> getSaleItems({int? catId, Map? date}) async {
