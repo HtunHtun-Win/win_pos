@@ -26,7 +26,7 @@ class PurchaseVoucherScreen extends StatelessWidget {
     UserController controller = Get.find();
     purchaseController.getAllVouchers(map: daterangeCalculate('today'));
     shopInfoController.getAll();
-    Future<bool> popAction() async {
+    Future<bool> popAction(context) async {
       bool state = false;
       await showDialog(
           context: context,
@@ -60,7 +60,7 @@ class PurchaseVoucherScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
-        bool state = await popAction();
+        bool state = await popAction(context);
         if (state) {
           exit(0);
         }

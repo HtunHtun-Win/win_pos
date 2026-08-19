@@ -31,7 +31,7 @@ class SalesVoucherScreen extends StatelessWidget {
 
     shopInfoController.getAll();
 
-    Future<bool> popAction() async {
+    Future<bool> popAction(context) async {
       bool state = false;
       await showDialog(
           context: context,
@@ -65,7 +65,7 @@ class SalesVoucherScreen extends StatelessWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
-        bool state = await popAction();
+        bool state = await popAction(context);
         if (state) {
           exit(0);
         }
