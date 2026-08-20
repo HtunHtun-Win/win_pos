@@ -55,13 +55,15 @@ class ProductListScreen extends StatelessWidget {
                     color: theme.colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Obx(() {
-                    return Text(
-                      '${productController.products.length} items',
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    );
-                  }),
+                  child: Center(
+                    child: Obx(() {
+                      return Text(
+                        '${productController.products.length}',
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      );
+                    }),
+                  ),
                 ),
               ],
             ),

@@ -3,7 +3,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
-
 import '../controller/sales_report_controller.dart';
 
 class MonthlySalesReportScreen extends StatefulWidget {

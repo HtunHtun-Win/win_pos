@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:win_pos/core/service/show_toast.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 import '../controller/sales_report_controller.dart';
@@ -100,11 +101,7 @@ class _MonthlySalesItemReportScreenState
       debugPrint('Initialize error: $e');
 
       if (mounted) {
-        Get.snackbar(
-          'Error',
-          'Failed to load products.',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        ShowToast.showNotiToast(msg: "Failed to load products.");
       }
     } finally {
       if (mounted) {
@@ -148,11 +145,7 @@ class _MonthlySalesItemReportScreenState
 
       if (!mounted) return;
 
-      Get.snackbar(
-        'Error',
-        'Failed to load monthly sales.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      ShowToast.showNotiToast(msg: "Failed to load monthly sales.");
     } finally {
       if (mounted) {
         setState(() {
