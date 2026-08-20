@@ -52,18 +52,20 @@ class _SupplierScreenState extends State<SupplierScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                 margin: const EdgeInsets.only(right: 6),
-                width: 110,
+                width: 100,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Obx(() {
-                  return Text(
-                    '${supplierController.suppliers.length} entries',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  );
-                }),
+                child: Center(
+                  child: Obx(() {
+                    return Text(
+                      '${supplierController.suppliers.length}',
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    );
+                  }),
+                ),
               ),
             ],
           ),
@@ -173,12 +175,19 @@ class _SupplierScreenState extends State<SupplierScreen> {
               )
             ]),
         child: ListTile(
-            title: Text(supplier.name.toString()),
-            subtitle: Text(supplier.phone.toString()),
-            trailing: Text(
-              supplier.address.toString(),
-              overflow: TextOverflow.ellipsis,
-            )),
+          title: Text(supplier.name.toString(),style: const TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Row(
+            children: [
+              Expanded(child: Text(supplier.phone.toString())),
+              Expanded(
+                child: Text(
+                  supplier.address.toString(),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

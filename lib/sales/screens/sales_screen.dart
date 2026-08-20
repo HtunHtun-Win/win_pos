@@ -111,7 +111,7 @@ class SalesScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(product.name.toString()),
+            Expanded(child: Text(product.name.toString(),style: const TextStyle(fontWeight: FontWeight.w500),)),
             Text(product.sale_price.toString())
           ],
         ),
@@ -162,7 +162,7 @@ class SalesScreen extends StatelessWidget {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(item.product.name.toString()),
+              Expanded(child: Text(item.product.name.toString(),style: const TextStyle(fontWeight: FontWeight.w500),)),
               Text(total.toString())
             ],
           ),

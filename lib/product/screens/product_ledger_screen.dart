@@ -31,23 +31,21 @@ class ProductLedgerScreen extends StatelessWidget {
                 Expanded(child: datePicker(context)),
                 const SizedBox(width: 12),
                 Container(
+                  width: 100,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Obx(() {
-                        return Text(
-                          '${productLogController.showLogs.length} entries',
-                          style: theme.textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        );
-                      }),
-                    ],
+                  child: Center(
+                    child: Obx(() {
+                      return Text(
+                        '${productLogController.showLogs.length}',
+                        style: theme.textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      );
+                    }),
                   ),
                 ),
               ],

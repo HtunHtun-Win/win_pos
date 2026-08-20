@@ -19,12 +19,17 @@ class AiReportScreen extends StatefulWidget {
 class _AiReportScreenState extends State<AiReportScreen> {
   final AiService _aiService = AiService();
   final DbHelper _dbHelper = DbHelper();
+
   late final AiReportController controller;
+
   final UserController userController = Get.find();
+
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
+
     if (Get.isRegistered<AiReportController>()) {
       controller = Get.find<AiReportController>();
     } else {
@@ -35,7 +40,19 @@ class _AiReportScreenState extends State<AiReportScreen> {
     }
   }
 
+  // ============================================================
+  // GENERATE REPORT
+  // ============================================================
+
   Future<void> _generateReport() async {
+    if (controller.loading.value) {
+      return;
+    }
+
+    setState(() {
+      _errorMessage = null;
+    });
+
     controller.setLoading(true);
 
     try {
@@ -43,14 +60,49 @@ class _AiReportScreenState extends State<AiReportScreen> {
 
       final result = await _aiService.generateText(prompt);
 
-      controller.setReport(result);
+      if (!mounted) {
+        return;
+      }
+
+      // IMPORTANT:
+      // Do not clear the previous report before generating.
+      // Replace it only after successful generation.
+      if (result.trim().isNotEmpty) {
+        controller.setReport(result);
+
+        setState(() {
+          _errorMessage = null;
+        });
+      } else {
+        setState(() {
+          _errorMessage = 'AI returned an empty report.';
+        });
+      }
     } catch (e) {
-      controller.setReport(
-        'Failed to generate report.\n\n$e',
-      );
+      if (!mounted) {
+        return;
+      }
+
+      // IMPORTANT:
+      // Do NOT replace the existing report with an error message.
+      // The previous report remains visible.
+
+      setState(() {
+        _errorMessage = _friendlyErrorMessage(e);
+      });
     } finally {
       controller.setLoading(false);
     }
+  }
+
+  String _friendlyErrorMessage(Object error) {
+    final message = error.toString();
+
+    if (message.length > 250) {
+      return '${message.substring(0, 250)}...';
+    }
+
+    return message;
   }
 
   // ============================================================
@@ -66,11 +118,11 @@ class _AiReportScreenState extends State<AiReportScreen> {
 
     final salesStats = await database.rawQuery(
       '''
-      SELECT 
+      SELECT
         COUNT(*) AS count,
         COALESCE(SUM(total_price), 0) AS total
       FROM sales
-      WHERE isdeleted = 0;
+      WHERE isdeleted = 0
       ''',
     );
 
@@ -80,11 +132,11 @@ class _AiReportScreenState extends State<AiReportScreen> {
 
     final purchaseStats = await database.rawQuery(
       '''
-      SELECT 
+      SELECT
         COUNT(*) AS count,
         COALESCE(SUM(total_price), 0) AS total
       FROM purchase
-      WHERE isdeleted = 0;
+      WHERE isdeleted = 0
       ''',
     );
 
@@ -94,11 +146,11 @@ class _AiReportScreenState extends State<AiReportScreen> {
 
     final expenseStats = await database.rawQuery(
       '''
-      SELECT 
+      SELECT
         COUNT(*) AS count,
         COALESCE(SUM(amount), 0) AS total
       FROM income_expense
-      WHERE isdeleted = 0;
+      WHERE isdeleted = 0
       ''',
     );
 
@@ -108,138 +160,212 @@ class _AiReportScreenState extends State<AiReportScreen> {
 
     final productStats = await database.rawQuery(
       '''
-      SELECT 
+      SELECT
         COUNT(*) AS count,
         COALESCE(SUM(quantity), 0) AS total_quantity
       FROM products
-      WHERE isdeleted = 0;
+      WHERE isdeleted = 0
       ''',
     );
 
     // ----------------------------------------------------------
     // LOW STOCK PRODUCTS
+    //
+    // FIX:
+    // The previous query contained invalid Dart/SQL quoting:
+    //
+    // '''
+    // ` SELECT ...
+    // LIMIT 5;`
+    // '''
+    //
     // ----------------------------------------------------------
 
     final lowStockProducts = await database.rawQuery(
       '''
-`      SELECT 
+      SELECT
+        id,
         name,
         quantity,
         sale_price
       FROM products
       WHERE isdeleted = 0
-        AND quantity <= 5
-      ORDER BY quantity ASC
-      LIMIT 5;`
+        AND COALESCE(quantity, 0) <= 5
+      ORDER BY COALESCE(quantity, 0) ASC, name ASC
+      LIMIT 5
       ''',
     );
 
     // ----------------------------------------------------------
     // TOP SALE ITEMS
+    //
+    // FIX:
+    // Use explicit JOIN instead of:
+    //
+    // FROM products, sales_detail, sales
+    //
+    // Also group by product ID so two products with the same
+    // name don't get incorrectly merged.
     // ----------------------------------------------------------
 
     final topSaleItems = await database.rawQuery(
       '''
-      SELECT 
-        products.name,
-        SUM(sales_detail.quantity) AS quantity,
-        SUM(
-          sales_detail.quantity * sales_detail.price
+      SELECT
+        products.id AS product_id,
+        products.name AS name,
+        COALESCE(SUM(sales_detail.quantity), 0) AS quantity,
+        COALESCE(
+          SUM(sales_detail.quantity * sales_detail.price),
+          0
         ) AS revenue
-      FROM products, sales_detail, sales
-      WHERE products.id = sales_detail.product_id
-        AND sales_detail.sales_id = sales.id
+      FROM products
+      INNER JOIN sales_detail
+        ON products.id = sales_detail.product_id
+      INNER JOIN sales
+        ON sales_detail.sales_id = sales.id
+      WHERE products.isdeleted = 0
         AND sales.isdeleted = 0
-      GROUP BY products.name
-      ORDER BY quantity DESC
-      LIMIT 5;
+      GROUP BY products.id, products.name
+      ORDER BY quantity DESC, revenue DESC
+      LIMIT 5
       ''',
     );
 
     // ----------------------------------------------------------
-// LOW SALE ITEMS
-// ----------------------------------------------------------
+    // LOW SALE ITEMS
+    //
+    // FIX:
+    // Keep products with zero sales.
+    //
+    // sales.isdeleted = 0 must stay inside the JOIN condition.
+    // If it is placed in WHERE, the LEFT JOIN becomes effectively
+    // an INNER JOIN and products with no valid sales disappear.
+    // ----------------------------------------------------------
 
     final lowSaleItems = await database.rawQuery(
       '''
-  SELECT 
-    products.name,
-    COALESCE(SUM(sales_detail.quantity), 0) AS quantity,
-    COALESCE(
-      SUM(sales_detail.quantity * sales_detail.price),
-      0
-    ) AS revenue
-  FROM products
-  LEFT JOIN sales_detail
-    ON products.id = sales_detail.product_id
-  LEFT JOIN sales
-    ON sales_detail.sales_id = sales.id
-    AND sales.isdeleted = 0
-  WHERE products.isdeleted = 0
-  GROUP BY products.id, products.name
-  ORDER BY quantity ASC
-  LIMIT 5;
-  ''',
+      SELECT
+        products.id AS product_id,
+        products.name AS name,
+        COALESCE(
+          SUM(
+            CASE
+              WHEN sales.id IS NOT NULL
+              THEN sales_detail.quantity
+              ELSE 0
+            END
+          ),
+          0
+        ) AS quantity,
+        COALESCE(
+          SUM(
+            CASE
+              WHEN sales.id IS NOT NULL
+              THEN sales_detail.quantity * sales_detail.price
+              ELSE 0
+            END
+          ),
+          0
+        ) AS revenue
+      FROM products
+      LEFT JOIN sales_detail
+        ON products.id = sales_detail.product_id
+      LEFT JOIN sales
+        ON sales_detail.sales_id = sales.id
+        AND sales.isdeleted = 0
+      WHERE products.isdeleted = 0
+      GROUP BY products.id, products.name
+      ORDER BY quantity ASC, revenue ASC, products.name ASC
+      LIMIT 5
+      ''',
     );
 
     // ----------------------------------------------------------
     // VIP CUSTOMERS
+    //
+    // Explicit JOIN is easier to understand and avoids accidental
+    // Cartesian joins.
     // ----------------------------------------------------------
 
     final vipCustomers = await database.rawQuery(
       '''
-      SELECT 
-        customers.name,
-        SUM(sales.total_price) AS total_spent,
-        COUNT(*) AS vouchers
-      FROM sales, customers
-      WHERE sales.customer_id = customers.id
-        AND sales.isdeleted = 0
+      SELECT
+        customers.id AS customer_id,
+        customers.name AS name,
+        COALESCE(SUM(sales.total_price), 0) AS total_spent,
+        COUNT(sales.id) AS vouchers
+      FROM customers
+      INNER JOIN sales
+        ON sales.customer_id = customers.id
+      WHERE sales.isdeleted = 0
       GROUP BY customers.id, customers.name
-      ORDER BY total_spent DESC
-      LIMIT 5;
+      ORDER BY total_spent DESC, vouchers DESC
+      LIMIT 5
       ''',
     );
 
     // ==========================================================
-    // CONVERT DATABASE VALUES
+    // SAFE DATABASE VALUES
     // ==========================================================
 
-    final salesCount = _toInt(salesStats.first['count']);
+    final salesCount = _toInt(
+      salesStats.isNotEmpty ? salesStats.first['count'] : 0,
+    );
 
-    final salesTotal = _toInt(salesStats.first['total']);
+    final salesTotal = _toInt(
+      salesStats.isNotEmpty ? salesStats.first['total'] : 0,
+    );
 
-    final purchaseCount = _toInt(purchaseStats.first['count']);
+    final purchaseCount = _toInt(
+      purchaseStats.isNotEmpty ? purchaseStats.first['count'] : 0,
+    );
 
-    final purchaseTotal = _toInt(purchaseStats.first['total']);
+    final purchaseTotal = _toInt(
+      purchaseStats.isNotEmpty ? purchaseStats.first['total'] : 0,
+    );
 
-    final expenseCount = _toInt(expenseStats.first['count']);
+    final expenseCount = _toInt(
+      expenseStats.isNotEmpty ? expenseStats.first['count'] : 0,
+    );
 
-    final expenseTotal = _toInt(expenseStats.first['total']);
+    final expenseTotal = _toInt(
+      expenseStats.isNotEmpty ? expenseStats.first['total'] : 0,
+    );
 
-    final productCount = _toInt(productStats.first['count']);
+    final productCount = _toInt(
+      productStats.isNotEmpty ? productStats.first['count'] : 0,
+    );
 
-    final totalQuantity = _toInt(productStats.first['total_quantity']);
+    final totalQuantity = _toInt(
+      productStats.isNotEmpty ? productStats.first['total_quantity'] : 0,
+    );
+
+    // ==========================================================
+    // BASIC BUSINESS CALCULATIONS
+    // ==========================================================
+
+    final grossDifference = salesTotal - purchaseTotal;
+
+    final estimatedOperatingResult = salesTotal - purchaseTotal - expenseTotal;
+
+    final averageSale = salesCount > 0 ? salesTotal ~/ salesCount : 0;
 
     // ==========================================================
     // LOW STOCK TEXT
     // ==========================================================
 
     final lowStockLines = lowStockProducts.isEmpty
-        ? [
-            'No products are currently below the '
-                'low-stock threshold.'
-          ]
+        ? <String>['No products are currently below the low-stock threshold.']
         : lowStockProducts.map((row) {
             final name = row['name']?.toString() ?? 'Unknown';
 
-            final quantity = row['quantity']?.toString() ?? '0';
+            final quantity = _toInt(row['quantity']);
 
-            final price = row['sale_price']?.toString() ?? '0';
+            final price = _toInt(row['sale_price']);
 
             return '- $name: '
                 '$quantity units remaining, '
-                'sale price $price';
+                'sale price ${_formatCurrency(price)}';
           }).toList();
 
     // ==========================================================
@@ -247,19 +373,17 @@ class _AiReportScreenState extends State<AiReportScreen> {
     // ==========================================================
 
     final popularItemLines = topSaleItems.isEmpty
-        ? ['No sales item data available.']
+        ? <String>['No sales item data available.']
         : topSaleItems.map((row) {
             final name = row['name']?.toString() ?? 'Unknown';
 
-            final quantity = row['quantity']?.toString() ?? '0';
+            final quantity = _toInt(row['quantity']);
 
-            final revenue = row['revenue']?.toString() ?? '0';
+            final revenue = _toInt(row['revenue']);
 
             return '- $name: '
                 '$quantity sold, '
-                'revenue ${_formatCurrency(
-              _toInt(revenue),
-            )}';
+                'revenue ${_formatCurrency(revenue)}';
           }).toList();
 
     // ==========================================================
@@ -267,18 +391,16 @@ class _AiReportScreenState extends State<AiReportScreen> {
     // ==========================================================
 
     final vipCustomerLines = vipCustomers.isEmpty
-        ? ['No VIP customer data available.']
+        ? <String>['No VIP customer data available.']
         : vipCustomers.map((row) {
             final name = row['name']?.toString() ?? 'Unknown';
 
-            final total = row['total_spent']?.toString() ?? '0';
+            final total = _toInt(row['total_spent']);
 
-            final vouchers = row['vouchers']?.toString() ?? '0';
+            final vouchers = _toInt(row['vouchers']);
 
             return '- $name: '
-                '${_formatCurrency(
-              _toInt(total),
-            )} '
+                '${_formatCurrency(total)} '
                 'across $vouchers vouchers';
           }).toList();
 
@@ -287,19 +409,17 @@ class _AiReportScreenState extends State<AiReportScreen> {
     // ==========================================================
 
     final lowSaleItemLines = lowSaleItems.isEmpty
-        ? ['No low-selling product data available.']
+        ? <String>['No low-selling product data available.']
         : lowSaleItems.map((row) {
             final name = row['name']?.toString() ?? 'Unknown';
 
-            final quantity = row['quantity']?.toString() ?? '0';
+            final quantity = _toInt(row['quantity']);
 
-            final revenue = row['revenue']?.toString() ?? '0';
+            final revenue = _toInt(row['revenue']);
 
             return '- $name: '
                 '$quantity sold, '
-                'revenue ${_formatCurrency(
-              _toInt(revenue),
-            )}';
+                'revenue ${_formatCurrency(revenue)}';
           }).toList();
 
     // ==========================================================
@@ -309,25 +429,44 @@ class _AiReportScreenState extends State<AiReportScreen> {
     final generalPrompt = '''
 You are an AI analytics assistant for a small POS business.
 
-Use the data below to answer the selected question clearly in Burmese.
+Analyze the POS data below and answer the selected question clearly in Burmese.
 
-Include practical suggestions for the shop owner.
+Important rules:
 
-Question: ${controller.selectedQuestion.value}
+1. Use only information supported by the provided data.
+2. Do not invent customers, products, sales, expenses, or reasons.
+3. If the data is insufficient to determine a reason, clearly say that it cannot be determined from the available data.
+4. Give practical recommendations that a small shop owner can understand.
+5. Use MMK for monetary values.
+6. Keep the report structured and easy to read.
+7. Do not make unsupported claims.
 
-POS data snapshot:
+Selected question:
+${controller.selectedQuestion.value}
 
+POS DATA SNAPSHOT
+
+Sales:
 - Sales vouchers: $salesCount
 - Sales revenue: ${_formatCurrency(salesTotal)}
+- Average revenue per sales voucher: ${_formatCurrency(averageSale)}
 
+Purchases:
 - Purchase vouchers: $purchaseCount
 - Purchase cost: ${_formatCurrency(purchaseTotal)}
 
+Expenses:
 - Expense records: $expenseCount
 - Expenses total: ${_formatCurrency(expenseTotal)}
 
+Inventory:
 - Total products: $productCount
 - Total inventory quantity: $totalQuantity
+
+Financial indicators:
+- Sales minus purchase cost: ${_formatCurrency(grossDifference)}
+- Estimated result after purchases and expenses:
+  ${_formatCurrency(estimatedOperatingResult)}
 
 ''';
 
@@ -348,17 +487,22 @@ Low stock products:
 
 ${lowStockLines.join('\n')}
 
-Also include:
+Create an overall business report.
 
-1. A short summary of the current business condition.
-2. Current strengths.
-3. Current weaknesses.
-4. Sales recommendations.
-5. Restocking recommendations.
-6. Promotion recommendations.
-7. Cost control recommendations.
+Include:
 
-Give practical advice that a small shop owner can understand.
+1. Short business condition summary
+2. Sales performance
+3. Inventory condition
+4. Financial condition
+5. Current strengths
+6. Current weaknesses
+7. Restocking recommendations
+8. Promotion recommendations
+9. Cost control recommendations
+10. Practical next steps
+
+Do not claim that the business is profitable or unprofitable unless the provided numbers support the conclusion.
 ''';
         break;
 
@@ -372,15 +516,19 @@ Top popular products:
 
 ${popularItemLines.join('\n')}
 
-Explain why these products may be selling well.
+Analyze the best-selling products.
 
-Give suggestions for:
+Explain:
 
-1. Promotion
-2. Stocking
-3. Bundle offers
-4. Cross-selling
-5. Pricing strategy
+1. Which products have the highest sales quantity.
+2. Which products generate the most revenue based on the data.
+3. Stocking recommendations.
+4. Promotion opportunities.
+5. Bundle opportunities.
+6. Cross-selling opportunities.
+7. Pricing considerations.
+
+Do not invent reasons why customers buy these products.
 ''';
         break;
 
@@ -394,7 +542,14 @@ VIP customer summary:
 
 ${vipCustomerLines.join('\n')}
 
-Explain what this means for customer loyalty.
+Analyze customer spending.
+
+Explain:
+
+1. Highest-value customers.
+2. Customer spending concentration.
+3. Customer loyalty indicators based on voucher count.
+4. Possible retention opportunities.
 
 Give suggestions for:
 
@@ -402,7 +557,9 @@ Give suggestions for:
 2. Customer retention
 3. Follow-up communication
 4. Loyalty rewards
-5. VIP customer promotions
+5. VIP promotions
+
+Do not claim customer preferences that are not present in the data.
 ''';
         break;
 
@@ -416,13 +573,17 @@ Low stock products:
 
 ${lowStockLines.join('\n')}
 
+Analyze inventory risk.
+
 Give suggestions for:
 
 1. Restocking priority
-2. Reorder timing
-3. Products that need urgent attention
+2. Products needing urgent attention
+3. Reorder timing
 4. Avoiding stockouts
-5. Promotions for remaining stock
+5. Promotion opportunities for remaining stock
+
+Prioritize products with the lowest quantities first.
 ''';
         break;
 
@@ -440,6 +601,9 @@ Expense and cost snapshot:
 - Purchase cost:
   ${_formatCurrency(purchaseTotal)}
 
+- Sales revenue:
+  ${_formatCurrency(salesTotal)}
+
 Give practical suggestions for:
 
 1. Reducing unnecessary expenses
@@ -447,10 +611,15 @@ Give practical suggestions for:
 3. Improving profit margins
 4. Controlling operating costs
 5. Improving business efficiency
+
+Do not identify a specific expense as unnecessary because the expense category details are not included in this snapshot.
 ''';
         break;
 
-      ///
+      // --------------------------------------------------------
+      // LOW SELLING ITEMS
+      // --------------------------------------------------------
+
       case 'Low selling items':
         extraSection = '''
 Low-selling products:
@@ -462,10 +631,14 @@ Analyze these products as slow-moving products.
 Explain:
 
 1. Which products have the weakest sales.
-2. Possible reasons for low sales.
-3. Whether the products may be overstocked.
-4. Whether the pricing could be a problem.
-5. Whether the products may need better promotion.
+2. Which products have zero or very low sales.
+3. Whether products may be overstocked based on the available inventory/sales information.
+4. Whether pricing could potentially be a factor.
+5. Whether promotion may be useful.
+
+Important:
+
+Do not claim a specific reason for low sales unless the available data supports it.
 
 Give practical recommendations for:
 
@@ -474,9 +647,7 @@ Give practical recommendations for:
 3. Cross-selling
 4. Pricing strategy
 5. Stock management
-6. Whether to reduce future purchases
-
-Do not claim a specific reason unless the available data supports it.
+6. Reducing future purchases
 ''';
         break;
 
@@ -490,13 +661,14 @@ Low stock products:
 
 ${lowStockLines.join('\n')}
 
-Also include:
+Include:
 
 1. Current strengths
 2. Current weaknesses
 3. Restocking recommendations
 4. Promotion recommendations
 5. Cost control recommendations
+6. Practical next steps
 ''';
     }
 
@@ -516,20 +688,14 @@ Also include:
       return value;
     }
 
-    if (value is double) {
-      return value.toInt();
-    }
-
     if (value is num) {
       return value.toInt();
     }
 
-    return int.tryParse(
-          value.toString(),
-        ) ??
-        double.tryParse(
-          value.toString(),
-        )?.toInt() ??
+    final stringValue = value.toString();
+
+    return int.tryParse(stringValue) ??
+        double.tryParse(stringValue)?.toInt() ??
         0;
   }
 
@@ -557,7 +723,7 @@ Also include:
   }
 
   // ============================================================
-  // DROPDOWN
+  // QUESTION DROPDOWN
   // ============================================================
 
   Widget _buildQuestionDropdown() {
@@ -570,6 +736,7 @@ Also include:
         child: Obx(
           () => DropdownButtonFormField<String>(
             initialValue: controller.selectedQuestion.value,
+            isExpanded: true,
             decoration: const InputDecoration(
               border: InputBorder.none,
               labelText: 'Choose AI question',
@@ -581,20 +748,126 @@ Also include:
               (option) {
                 return DropdownMenuItem<String>(
                   value: option,
-                  child: Text(option),
+                  child: Text(
+                    option,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               },
             ).toList(),
-            onChanged: (value) {
-              if (value == null) {
-                return;
-              }
+            onChanged: controller.loading.value
+                ? null
+                : (value) {
+                    if (value == null) {
+                      return;
+                    }
 
-              controller.setQuestion(value);
-            },
+                    controller.setQuestion(value);
+                  },
           ),
         ),
       ),
+    );
+  }
+
+  // ============================================================
+  // ERROR MESSAGE
+  // ============================================================
+
+  Widget _buildErrorMessage() {
+    if (_errorMessage == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Card(
+      margin: const EdgeInsets.only(
+        top: 12,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Could not generate the new report',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _errorMessage!,
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Your previous report is still available.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            IconButton(
+              tooltip: 'Dismiss',
+              onPressed: () {
+                setState(() {
+                  _errorMessage = null;
+                });
+              },
+              icon: const Icon(
+                Icons.close,
+                size: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ============================================================
+  // REPORT HEADER
+  // ============================================================
+
+  Widget _buildReportHeader() {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(9),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(
+            Icons.auto_awesome,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+          ),
+        ),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: Text(
+            'AI Analysis',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -607,7 +880,11 @@ Also include:
       () {
         final report = controller.report.value;
 
-        if (report.isEmpty) {
+        // --------------------------------------------------------
+        // EMPTY REPORT
+        // --------------------------------------------------------
+
+        if (report.trim().isEmpty) {
           return Card(
             child: Padding(
               padding: const EdgeInsets.all(30),
@@ -641,42 +918,36 @@ Also include:
           );
         }
 
+        // --------------------------------------------------------
+        // EXISTING REPORT
+        // --------------------------------------------------------
+
         return Card(
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.auto_awesome,
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'AI Analysis',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Obx(
-                  () => Text(
-                    controller.selectedQuestion.value,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey.shade600,
-                    ),
+                _buildReportHeader(),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  controller.selectedQuestion.value,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
                   ),
                 ),
+
                 const Divider(
                   height: 28,
                 ),
+
+                // ------------------------------------------------
+                // KEEP OLD REPORT VISIBLE WHILE GENERATING
+                // ------------------------------------------------
+
                 SelectableText(
                   report,
                   style: const TextStyle(
@@ -684,7 +955,73 @@ Also include:
                     fontSize: 15,
                   ),
                 ),
+
+                // ------------------------------------------------
+                // GENERATING INDICATOR
+                // ------------------------------------------------
+
+                if (controller.loading.value) ...[
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Generating a new report... '
+                          'Your current report is still available.',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ============================================================
+  // GENERATE BUTTON
+  // ============================================================
+
+  Widget _buildGenerateButton() {
+    return Obx(
+      () {
+        final loading = controller.loading.value;
+
+        return SizedBox(
+          height: 52,
+          width: double.infinity,
+          child: FilledButton.icon(
+            onPressed: loading ? null : _generateReport,
+            icon: loading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(
+                    Icons.auto_awesome,
+                  ),
+            label: Text(
+              loading ? 'Generating...' : _generateButtonLabel(),
             ),
           ),
         );
@@ -698,16 +1035,22 @@ Also include:
 
   @override
   Widget build(BuildContext context) {
-    final user = User.fromMap(userController.current_user.toJson());
+    final user = User.fromMap(
+      userController.current_user.toJson(),
+    );
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (user.role_id == 3) {
-            Get.off(() => PurchaseVoucherScreen());
+            Get.off(
+              () => PurchaseVoucherScreen(),
+            );
           } else {
-            Get.off(() => SalesVoucherScreen());
+            Get.off(
+              () => SalesVoucherScreen(),
+            );
           }
         }
       },
@@ -734,13 +1077,19 @@ Also include:
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16),
             children: [
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
 
               // --------------------------------------------------
-              // QUESTION DROPDOWN
+              // QUESTION
               // --------------------------------------------------
 
               _buildQuestionDropdown(),
+
+              // --------------------------------------------------
+              // ERROR
+              // --------------------------------------------------
+
+              _buildErrorMessage(),
 
               const SizedBox(height: 16),
 
@@ -756,31 +1105,7 @@ Also include:
               // GENERATE BUTTON
               // --------------------------------------------------
 
-              Obx(
-                () => SizedBox(
-                  height: 52,
-                  child: FilledButton.icon(
-                    onPressed:
-                        controller.loading.value ? null : _generateReport,
-                    icon: controller.loading.value
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : const Icon(
-                            Icons.auto_awesome,
-                          ),
-                    label: Text(
-                      controller.loading.value
-                          ? 'Generating...'
-                          : _generateButtonLabel(),
-                    ),
-                  ),
-                ),
-              ),
+              _buildGenerateButton(),
 
               const SizedBox(height: 30),
             ],

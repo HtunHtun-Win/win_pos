@@ -34,8 +34,8 @@ class CustomerScreen extends StatelessWidget {
                       hintText: "Search...",
                       isDense: true,
                       prefixIcon: const Icon(Icons.search),
-                      border:
-                          OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                     onChanged: (value) {
                       refreshController.loadFailed();
@@ -46,22 +46,24 @@ class CustomerScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                  margin: const EdgeInsets.only(right: 6),
-                  width: 110,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                margin: const EdgeInsets.only(right: 6),
+                width: 100,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(
                   child: Obx(() {
                     return Text(
-                      '${customerController.customers.length} entries',
+                      '${customerController.customers.length}',
                       style: theme.textTheme.titleMedium
                           ?.copyWith(fontWeight: FontWeight.bold),
                     );
                   }),
                 ),
+              ),
             ],
           ),
           Expanded(
@@ -120,7 +122,7 @@ class CustomerScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final color = theme.colorScheme.primary;
     return Slidable(
-      enabled:userController.current_user["role_id"] == 1? true : false,
+      enabled: userController.current_user["role_id"] == 1 ? true : false,
       endActionPane: ActionPane(motion: const StretchMotion(), children: [
         SlidableAction(
           onPressed: (_) {
@@ -170,11 +172,17 @@ class CustomerScreen extends StatelessWidget {
               )
             ]),
         child: ListTile(
-          title: Text(customer.name.toString()),
-          subtitle: Text(customer.phone.toString()),
-          trailing: Text(
-            customer.address.toString(),
-            overflow: TextOverflow.ellipsis,
+          title: Text(customer.name.toString(),style: const TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Row(
+            children: [
+              Expanded(child: Text(customer.phone.toString())),
+              Expanded(
+                child: Text(
+                  customer.address.toString(),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
+            ],
           ),
         ),
       ),

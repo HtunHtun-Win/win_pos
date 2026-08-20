@@ -88,7 +88,18 @@ class AiChatController extends GetxController {
     }
   }
 
-  String _buildPrompt(String question) {
+  String _buildPrompt(String currentQuestion) {
+    // Build the conversation history from existing messages
+    // Excluding the very last message since it is the current question we are appending at the bottom.
+    final historyBuffer = StringBuffer();
+    if (messages.length > 1) {
+      for (int i = 0; i < messages.length - 1; i++) {
+        final msg = messages[i];
+        final role = msg.isUser ? 'USER' : 'ASSISTANT';
+        historyBuffer.writeln('$role: ${msg.text}\n');
+      }
+    }
+
     return '''
 You are the AI business assistant for a Point of Sale (POS) application.
 
@@ -114,9 +125,12 @@ $_databaseContext
 
 END POS DATABASE DATA.
 
+CONVERSATION HISTORY:
+${historyBuffer.toString().isEmpty ? 'No previous conversation.' : historyBuffer.toString()}
+
 USER QUESTION:
 
-$question
+$currentQuestion
 ''';
   }
 
