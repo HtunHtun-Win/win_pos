@@ -35,7 +35,7 @@ class CustomerEditScreen extends StatelessWidget {
           children: [
             userInput("Name", nameController),
             userInput("Phone", phoneController, type: TextInputType.number),
-            userInput("Address", addressController, maxlines: 2),
+            userInput("Address", addressController, maxlines: 3),
           ],
         ),
       ),

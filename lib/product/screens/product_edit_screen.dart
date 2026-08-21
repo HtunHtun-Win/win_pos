@@ -58,7 +58,7 @@ class ProductEditScreen extends StatelessWidget {
             const SizedBox(width: 8),
             userInput("Name", nameController),
             userInput("Code", codeController),
-            userInput("Description", descController, num: 2),
+            userInput("Description", descController, lineNumber: 4),
             userInput("Quantity", quantityController,type: TextInputType.number,state: true),
             Row(
               children: [
@@ -107,13 +107,13 @@ class ProductEditScreen extends StatelessWidget {
     }
   }
 
-  Widget userInput(text, controller, {type, num, state}) {
+  Widget userInput(text, controller, {type, lineNumber, state}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 7),
       child: TextField(
         controller: controller,
         keyboardType: type,
-        maxLines: num,
+        maxLines: lineNumber,
         readOnly: state ?? false,
         decoration: InputDecoration(
             labelText: text, border: const OutlineInputBorder()),
