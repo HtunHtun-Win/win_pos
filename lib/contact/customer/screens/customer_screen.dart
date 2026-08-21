@@ -98,9 +98,6 @@ class CustomerScreen extends StatelessWidget {
                     itemCount: customerController.showCustomers.length,
                     itemBuilder: (context, index) {
                       var customer = customerController.showCustomers[index];
-                      if (customer.id == 1) {
-                        return Container();
-                      }
                       return listItem(context, customer);
                     },
                   ),
@@ -125,36 +122,41 @@ class CustomerScreen extends StatelessWidget {
       enabled: userController.current_user["role_id"] == 1 ? true : false,
       endActionPane: ActionPane(motion: const StretchMotion(), children: [
         SlidableAction(
-          onPressed: (_) {
-            refreshController.loadFailed();
-            Get.to(() => CustomerEditScreen(customer));
-          },
+          onPressed: customer.id == 1
+              ? (_) {}
+              : (_) {
+                  refreshController.loadFailed();
+                  Get.to(() => CustomerEditScreen(customer));
+                },
           icon: Icons.edit,
           foregroundColor: color,
         ),
         SlidableAction(
-          onPressed: (_) {
-            Get.dialog(AlertDialog(
-                title: const Text("Delete!"),
-                content: const Text("Are you sure to delete this contact!"),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: const Text("Cancel"),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      refreshController.loadFailed();
-                      customerController.delete(customer.id!);
-                      customerController.searchByKeyWork(filterInput);
-                      Get.back();
-                    },
-                    child: const Text("Ok"),
-                  ),
-                ]));
-          },
+          onPressed: customer.id == 1
+              ? (_) {}
+              : (_) {
+                  Get.dialog(AlertDialog(
+                      title: const Text("Delete!"),
+                      content:
+                          const Text("Are you sure to delete this contact!"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            refreshController.loadFailed();
+                            customerController.delete(customer.id!);
+                            customerController.searchByKeyWork(filterInput);
+                            Get.back();
+                          },
+                          child: const Text("Ok"),
+                        ),
+                      ]));
+                },
           icon: Icons.delete,
           foregroundColor: Colors.red,
         )
@@ -172,7 +174,8 @@ class CustomerScreen extends StatelessWidget {
               )
             ]),
         child: ListTile(
-          title: Text(customer.name.toString(),style: const TextStyle(fontWeight: FontWeight.w500)),
+          title: Text(customer.name.toString(),
+              style: const TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Row(
             children: [
               Expanded(child: Text(customer.phone.toString())),
