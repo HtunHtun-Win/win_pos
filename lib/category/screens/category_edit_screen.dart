@@ -29,7 +29,7 @@ class CategoryEditScreen extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            userInput("Description", descController),
+            userInput("Description", descController,lineNumber: 4),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -78,11 +78,17 @@ class CategoryEditScreen extends StatelessWidget {
     );
   }
 
-  Widget userInput(text, controller) {
-    return TextField(
-      controller: controller,
-      decoration:
-          InputDecoration(hintText: text, border: const OutlineInputBorder()),
+  Widget userInput(text, controller, {type, lineNumber,filter}) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 7),
+      child: TextField(
+        controller: controller,
+        keyboardType: type,
+        maxLines: lineNumber,
+        inputFormatters: filter,
+        decoration: InputDecoration(
+            labelText: text, border: const OutlineInputBorder()),
+      ),
     );
   }
 }
