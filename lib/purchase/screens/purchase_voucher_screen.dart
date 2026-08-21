@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -20,6 +21,7 @@ class PurchaseVoucherScreen extends StatelessWidget {
   PurchaseController purchaseController = Get.put(PurchaseController());
   ShopInfoController shopInfoController = Get.put(ShopInfoController());
   final refreshController = RefreshController();
+  String date = 'today';
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +98,7 @@ class PurchaseVoucherScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  datePicker()
+                  Expanded(child: datePicker())
                 ],
               ),
             ),
@@ -151,28 +153,30 @@ class PurchaseVoucherScreen extends StatelessWidget {
 
   Widget datePicker() {
     return Container(
-      padding: const EdgeInsets.only(top: 5, right: 10),
-      child: DropdownMenu(
-        initialSelection: purchaseController.selectedDate,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: "all", label: "All"),
-          DropdownMenuEntry(value: "today", label: "Today"),
-          DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
-          DropdownMenuEntry(value: "thismonth", label: "This month"),
-          DropdownMenuEntry(value: "lastmonth", label: "Last month"),
-          DropdownMenuEntry(value: "thisyear", label: "This year"),
-          DropdownMenuEntry(value: "lastyear", label: "Last year"),
-        ],
-        onSelected: (value) {
-          purchaseController.selectedDate=value!;
-          purchaseController.maxCount=10;
+      margin: const EdgeInsets.all(5),
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: dateOptionList,
+        onChanged: (value) {
+          date = value!.toLowerCase();
+          purchaseController.selectedDate=date;
+          purchaseController.maxCount = 10;
           refreshController.loadFailed();
-          if (value == 'all') {
+          if (date == 'all') {
             purchaseController.getAllVouchers();
           } else {
-            purchaseController.getAllVouchers(map: daterangeCalculate(value));
+            purchaseController.getAllVouchers(map: daterangeCalculate(date));
           }
         },
+        selectedItem: 'Today',
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
       ),
     );
   }
