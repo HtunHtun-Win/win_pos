@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/controller/category_controller.dart';
+import 'package:win_pos/category/screens/category_add_screen.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:win_pos/product/models/product_model.dart';
 
@@ -54,7 +55,16 @@ class ProductEditScreen extends StatelessWidget {
         child: ListView(
           children: [
             const SizedBox(width: 8),
-            categoryBox(context),
+            Row(
+              children: [
+                Expanded(child: Obx(() => categoryBox(context))),
+                IconButton(
+                    onPressed: () {
+                      Get.to(() => CategoryAddScreen());
+                    },
+                    icon: const Icon(Icons.add_circle))
+              ],
+            ),
             const SizedBox(width: 8),
             userInput("Name", nameController),
             userInput("Code", codeController),
