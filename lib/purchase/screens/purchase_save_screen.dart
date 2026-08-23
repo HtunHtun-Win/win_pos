@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/supplier/controller/supplier_controller.dart';
+import 'package:win_pos/contact/supplier/screens/supplier_add_screen.dart';
+import 'package:win_pos/payment/screens/payment_add_screen.dart';
 import 'package:win_pos/user/controllers/user_controller.dart';
 import '../../core/functions/date_range_calc.dart';
 import '../../payment/controller/payment_controller.dart';
@@ -11,10 +13,11 @@ import '../controller/purchase_controller.dart';
 // ignore: must_be_immutable
 class PurchaseSaveScreen extends StatelessWidget {
   PurchaseSaveScreen({super.key});
+
   PurchaseController purchaseController = Get.find();
   UserController userController = Get.find();
-  SupplierController supplierController = SupplierController();
-  PaymentController paymentController = PaymentController();
+  SupplierController supplierController = Get.put(SupplierController());
+  PaymentController paymentController = Get.put(PaymentController());
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController netAmountController = TextEditingController();
@@ -33,7 +36,7 @@ class PurchaseSaveScreen extends StatelessWidget {
     totalController.text = totalPrice.toString();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Save Vouchers"),
+        title: const Text("Save Purchase Voucher"),
         // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
@@ -48,13 +51,29 @@ class PurchaseSaveScreen extends StatelessWidget {
           margin: const EdgeInsets.all(10),
           child: Column(
             children: [
-              suppliersBox(),
+              Row(
+                children: [
+                  Expanded(child: suppliersBox()),
+                  IconButton(
+                      onPressed: () {
+                        Get.to(()=>SupplierAddScreen());
+                      }, icon: const Icon(Icons.add_circle))
+                ],
+              ),
               const SizedBox(height: 10),
               infoBox(controller: phoneController, text: "Phone"),
               const SizedBox(height: 10),
               infoBox(controller: addressController, line: 2, text: "Address"),
               const SizedBox(height: 10),
-              paymentBox(),
+              Row(
+                children: [
+                  Expanded(child: paymentBox()),
+                  IconButton(
+                      onPressed: () {
+                        Get.to(()=>PaymentAddScreen());
+                      }, icon: const Icon(Icons.add_circle))
+                ],
+              ),
               const SizedBox(height: 10),
               infoBox(controller: netAmountController, text: "Net Price"),
               const SizedBox(height: 10),
@@ -82,7 +101,8 @@ class PurchaseSaveScreen extends StatelessWidget {
     if (purchaseController.selectedDate == 'all') {
       purchaseController.getAllVouchers();
     } else {
-      purchaseController.getAllVouchers(map: daterangeCalculate(purchaseController.selectedDate));
+      purchaseController.getAllVouchers(
+          map: daterangeCalculate(purchaseController.selectedDate));
     }
 
     purchaseController.getTotal();
@@ -94,7 +114,7 @@ class PurchaseSaveScreen extends StatelessWidget {
       return DropdownSearch<String>(
         dropdownDecoratorProps: const DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-            labelText: "Customer",
+            labelText: "Supplier",
             contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             border: OutlineInputBorder(),
           ),
@@ -110,14 +130,14 @@ class PurchaseSaveScreen extends StatelessWidget {
           phoneController.text = supplier.phone.toString();
           addressController.text = supplier.address.toString();
         },
-        selectedItem:
-            "DefaultCustomer", // Optional: Can be null if no initial selection is required
+        selectedItem: "DefaultSupplier",
+        // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(
             autofocus: true,
             decoration: InputDecoration(
-              labelText: "Customer",
+              labelText: "Supplier",
             ),
           ),
         ),
@@ -144,8 +164,8 @@ class PurchaseSaveScreen extends StatelessWidget {
           );
           paymentId = payment.id;
         },
-        selectedItem:
-            "Cash", // Optional: Can be null if no initial selection is required
+        selectedItem: "Cash",
+        // Optional: Can be null if no initial selection is required
         popupProps: const PopupProps.menu(
           showSearchBox: true,
           searchFieldProps: TextFieldProps(

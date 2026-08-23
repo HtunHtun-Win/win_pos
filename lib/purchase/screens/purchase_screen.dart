@@ -109,14 +109,14 @@ class PurchaseScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: Text(product.name.toString())),
-            Text(product.purchase_price.toString()),
+            Text("${product.purchase_price} MMK"),
           ],
         ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(product.code.toString()),
-            Text(product.quantity.toString()),
+            Text("${product.quantity} pcs"),
           ],
         ),
         onTap: () {
@@ -161,13 +161,13 @@ class PurchaseScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: Text(item.product.name.toString(), style: theme.textTheme.titleMedium)),
-              Text(total.toString(), style: theme.textTheme.titleMedium),
+              Text("$total MMK", style: theme.textTheme.titleMedium),
             ],
           ),
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("${item.pprice} x ${item.quantity}"),
+              Text("${item.pprice} MMK x ${item.quantity} pcs"),
             ],
           ),
         ),

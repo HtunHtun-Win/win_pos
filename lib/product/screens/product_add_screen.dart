@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/category/controller/category_controller.dart';
+import 'package:win_pos/category/screens/category_add_screen.dart';
 import 'package:win_pos/product/controller/product_controller.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
 // ignore: must_be_immutable
 class ProductAddScreen extends StatelessWidget {
   ProductAddScreen({super.key});
+
   final ProductController productController = Get.find();
   final CategoryController categoryController = Get.find();
   final TextEditingController codeController = TextEditingController();
@@ -48,38 +50,40 @@ class ProductAddScreen extends StatelessWidget {
         child: ListView(
           children: [
             const SizedBox(height: 8),
-            categoryBox(context),
+            Row(
+              children: [
+                Expanded(child: Obx(() => categoryBox(context))),
+                IconButton(
+                    onPressed: () {
+                      Get.to(() => CategoryAddScreen());
+                    },
+                    icon: const Icon(Icons.add_circle))
+              ],
+            ),
             const SizedBox(height: 8),
             userInput("Name", nameController),
             userInput("Code", codeController),
             userInput("Description", descController, lineNumber: 4),
-            userInput(
-                "Quantity",
-                quantityController,
+            userInput("Quantity", quantityController,
                 type: TextInputType.number,
-              filter: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ]
-            ),
+                filter: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ]),
             Row(
               children: [
                 Expanded(
-                    child: userInput(
-                        "Purchase Price", ppriceController,
+                    child: userInput("Purchase Price", ppriceController,
                         type: TextInputType.number,
                         filter: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ]
-                    )),
+                      FilteringTextInputFormatter.digitsOnly
+                    ])),
                 const SizedBox(width: 10),
                 Expanded(
-                    child: userInput(
-                        "Sale Price", spriceController,
+                    child: userInput("Sale Price", spriceController,
                         type: TextInputType.number,
                         filter: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ]
-                    )),
+                      FilteringTextInputFormatter.digitsOnly
+                    ])),
               ],
             )
           ],
@@ -93,31 +97,35 @@ class ProductAddScreen extends StatelessWidget {
     var map = await productController.addProduct(code, name, description,
         quantity, categoryId, purchasePrice, salePrice);
     if (map["msg"] == "null") {
-      Get.dialog(
-          AlertDialog(
-            title: const Text("Empty!"),
-            content: const Text("Name, code and purchase price can't be empty..."),
-            actions: [
-              TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
-            ],
-          )
-      );
+      Get.dialog(AlertDialog(
+        title: const Text("Empty!"),
+        content: const Text("Name, code and purchase price can't be empty..."),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"))
+        ],
+      ));
     } else if (map["msg"] == "duplicate") {
-      Get.dialog(
-          AlertDialog(
-            title: const Text("Duplicate!"),
-            content: const Text("This code is already exist..."),
-            actions: [
-              TextButton(onPressed: (){Get.back();}, child: const Text("OK"))
-            ],
-          )
-      );
+      Get.dialog(AlertDialog(
+        title: const Text("Duplicate!"),
+        content: const Text("This code is already exist..."),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"))
+        ],
+      ));
     } else {
       Get.back();
     }
   }
 
-  Widget userInput(text, controller, {type, lineNumber,filter}) {
+  Widget userInput(text, controller, {type, lineNumber, filter}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 7),
       child: TextField(
@@ -140,14 +148,17 @@ class ProductAddScreen extends StatelessWidget {
           border: OutlineInputBorder(),
         ),
       ),
-      items: categoryController.categories.map((category) => category.name.toString()).toList(),
+      items: categoryController.categories
+          .map((category) => category.name.toString())
+          .toList(),
       onChanged: (String? selectedCategory) {
         final selected = categoryController.categories.firstWhere(
-              (category) => category.name == selectedCategory,
+          (category) => category.name == selectedCategory,
         );
         category_id = selected.id;
       },
-      selectedItem: "Default Category", // Optional: Can be null if no initial selection is required
+      selectedItem: "Default Category",
+      // Optional: Can be null if no initial selection is required
       popupProps: const PopupProps.menu(
         showSearchBox: true,
         searchFieldProps: TextFieldProps(
@@ -160,18 +171,18 @@ class ProductAddScreen extends StatelessWidget {
     );
   }
 
-  // Widget categoryBox(context) {
-  //   return DropdownMenu(
-  //     label: const Text("Category"),
-  //     enableFilter: true,
-  //     requestFocusOnTap: true,
-  //     width: double.infinity,
-  //     dropdownMenuEntries: categoryController.categories.map((category) {
-  //       return DropdownMenuEntry(value: category.id, label: category.name);
-  //     }).toList(),
-  //     onSelected: (value) {
-  //       category_id = value;
-  //     },
-  //   );
-  // }
+// Widget categoryBox(context) {
+//   return DropdownMenu(
+//     label: const Text("Category"),
+//     enableFilter: true,
+//     requestFocusOnTap: true,
+//     width: double.infinity,
+//     dropdownMenuEntries: categoryController.categories.map((category) {
+//       return DropdownMenuEntry(value: category.id, label: category.name);
+//     }).toList(),
+//     onSelected: (value) {
+//       category_id = value;
+//     },
+//   );
+// }
 }

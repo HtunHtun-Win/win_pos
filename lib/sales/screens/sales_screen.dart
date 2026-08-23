@@ -112,14 +112,14 @@ class SalesScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: Text(product.name.toString(),style: const TextStyle(fontWeight: FontWeight.w500),)),
-            Text(product.sale_price.toString())
+            Text("${product.sale_price} MMK")
           ],
         ),
         subtitle: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(product.code.toString()),
-            Text(product.quantity.toString())
+            Text("${product.quantity} pcs")
           ],
         ),
         onTap: () {
@@ -163,13 +163,13 @@ class SalesScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: Text(item.product.name.toString(),style: const TextStyle(fontWeight: FontWeight.w500),)),
-              Text(total.toString())
+              Text("$total MMK")
             ],
           ),
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("${item.sprice} x ${item.quantity}"),
+              Text("${item.sprice} MMK x ${item.quantity} pcs"),
             ],
           ),
         ),
