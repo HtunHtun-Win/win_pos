@@ -142,9 +142,9 @@ class ProductListScreen extends StatelessWidget {
           ),
           SlidableAction(
             onPressed: (_) {
-              Get.defaultDialog(
-                  title: "Delete!",
-                  middleText: "Are you sure to delete!",
+              Get.dialog(AlertDialog(
+                  title: const Text("Delete!"),
+                  content: const Text("Are you sure to delete this product!"),
                   actions: [
                     TextButton(
                         onPressed: () {
@@ -158,7 +158,7 @@ class ProductListScreen extends StatelessWidget {
                           Get.back();
                         },
                         child: const Text("Delete")),
-                  ]);
+                  ]));
             },
             icon: Icons.delete,
             foregroundColor: Colors.red,

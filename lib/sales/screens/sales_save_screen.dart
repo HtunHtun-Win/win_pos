@@ -46,6 +46,8 @@ class SalesSaveScreen extends StatelessWidget {
     if (shopInfoController.shop.isNotEmpty) {
       shopModel = ShopModel.fromMap(shopInfoController.shop);
     }
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.primary;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Save Sales Voucher"),
@@ -55,12 +57,12 @@ class SalesSaveScreen extends StatelessWidget {
               onPressed: () {
                 onSave();
               },
-              icon: const Icon(Icons.save)),
+              icon: Icon(Icons.save,color: color,)),
           IconButton(
               onPressed: () {
                 onPrint();
               },
-              icon: const Icon(Icons.print))
+              icon: Icon(Icons.print,color: color,))
         ],
       ),
       body: SingleChildScrollView(

@@ -31,6 +31,8 @@ class SalesDetail extends StatelessWidget {
     if (shopInfoController.shop.isNotEmpty) {
       shopModel = ShopModel.fromMap(shopInfoController.shop);
     }
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.primary;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sale Detail"),
@@ -67,6 +69,7 @@ class SalesDetail extends StatelessWidget {
                 },
                 icon: const Icon(
                   Icons.delete,
+                  color: Colors.red,
                 )),
           IconButton(
               onPressed: () async {
@@ -76,8 +79,9 @@ class SalesDetail extends StatelessWidget {
                       saleDetailModels: salesDetailController.saleDatas,
                     ));
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.print,
+                color: color,
               )),
         ],
       ),
@@ -164,7 +168,7 @@ class SalesDetail extends StatelessWidget {
                 // Expanded(child: Text("No")),
                 Expanded(child: Text("Name")),
                 // Expanded(child: Text("Qty")),
-                Expanded(child: Text("Price")),
+                Expanded(child: Text("Price x Qty")),
                 Expanded(child: Text("Amount")),
               ],
             ),
@@ -175,7 +179,7 @@ class SalesDetail extends StatelessWidget {
               children: [
                 Expanded(child: Container()),
                 const Expanded(child: Text("Net Price")),
-                Expanded(child: Text(voucher.net_price.toString())),
+                Expanded(child: Text("${voucher.net_price} MMK")),
               ],
             ),
             voucher.discount == 0
@@ -184,7 +188,7 @@ class SalesDetail extends StatelessWidget {
                     children: [
                       Expanded(child: Container()),
                       const Expanded(child: Text("Discount")),
-                      Expanded(child: Text(voucher.discount.toString())),
+                      Expanded(child: Text("${voucher.discount} MMK")),
                     ],
                   ),
             const Divider(),
@@ -192,7 +196,7 @@ class SalesDetail extends StatelessWidget {
               children: [
                 Expanded(child: Container()),
                 const Expanded(child: Text("Total")),
-                Expanded(child: Text(voucher.total_price.toString())),
+                Expanded(child: Text("${voucher.total_price} MMK")),
               ],
             ),
           ],

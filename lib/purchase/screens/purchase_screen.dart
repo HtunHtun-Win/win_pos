@@ -131,6 +131,7 @@ class PurchaseScreen extends StatelessWidget {
 
   Widget selectedItem(BuildContext context, CartModel item, index) {
     final theme = Theme.of(context);
+    final color = theme.colorScheme.primary;
     var total = item.pprice! * item.quantity;
     return Slidable(
       endActionPane: ActionPane(
@@ -141,6 +142,7 @@ class PurchaseScreen extends StatelessWidget {
               quantityAlert(context, item, index);
             },
             icon: Icons.edit,
+            foregroundColor: color,
           ),
           SlidableAction(
             onPressed: (_) {
