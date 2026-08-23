@@ -101,9 +101,6 @@ class _SupplierScreenState extends State<SupplierScreen> {
                     itemCount: supplierController.showSuppliers.length,
                     itemBuilder: (context, index) {
                       var supplier = supplierController.showSuppliers[index];
-                      if (supplier.id == 1) {
-                        return Container();
-                      }
                       return listItem(context, supplier);
                     },
                   ),
@@ -128,7 +125,9 @@ class _SupplierScreenState extends State<SupplierScreen> {
       enabled: userController.current_user["role_id"] == 1 ? true : false,
       endActionPane: ActionPane(motion: const StretchMotion(), children: [
         SlidableAction(
-          onPressed: (_) {
+          onPressed: supplier.id == 1
+              ? (_) {}
+              : (_) {
             refreshController.loadFailed();
             Get.to(() => SupplierEditScreen(supplier));
           },
@@ -136,7 +135,9 @@ class _SupplierScreenState extends State<SupplierScreen> {
           foregroundColor: color,
         ),
         SlidableAction(
-          onPressed: (_) {
+          onPressed: supplier.id == 1
+              ? (_) {}
+              : (_) {
             Get.dialog(AlertDialog(
                 title: const Text("Delete!"),
                 content: const Text("Are you sure to delete!"),

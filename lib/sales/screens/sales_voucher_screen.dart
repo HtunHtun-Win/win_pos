@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -18,6 +19,7 @@ class SalesVoucherScreen extends StatelessWidget {
   SalesController salesController = Get.put(SalesController());
   ShopInfoController shopInfoController = Get.put(ShopInfoController());
   final refreshController = RefreshController();
+  String date = 'today';
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +103,7 @@ class SalesVoucherScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  datePicker()
+                  Expanded(child: datePicker())
                 ],
               ),
             ),
@@ -156,28 +158,30 @@ class SalesVoucherScreen extends StatelessWidget {
 
   Widget datePicker() {
     return Container(
-      padding: const EdgeInsets.only(top: 5, right: 10),
-      child: DropdownMenu(
-        initialSelection: salesController.selectedDate,
-        dropdownMenuEntries: const [
-          DropdownMenuEntry(value: "all", label: "All"),
-          DropdownMenuEntry(value: "today", label: "Today"),
-          DropdownMenuEntry(value: "yesterday", label: "Yesterday"),
-          DropdownMenuEntry(value: "thismonth", label: "This month"),
-          DropdownMenuEntry(value: "lastmonth", label: "Last month"),
-          DropdownMenuEntry(value: "thisyear", label: "This year"),
-          DropdownMenuEntry(value: "lastyear", label: "Last year"),
-        ],
-        onSelected: (value) {
-          salesController.selectedDate = value!;
+      margin: const EdgeInsets.all(5),
+      child: DropdownSearch<String>(
+        dropdownDecoratorProps: const DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            border: OutlineInputBorder(),
+          ),
+        ),
+        items: dateOptionList,
+        onChanged: (value) {
+          date = value!.toLowerCase();
+          salesController.selectedDate = date;
           salesController.maxCount = 10;
           refreshController.loadFailed();
-          if (value == 'all') {
+          if (date == 'all') {
             salesController.getAllVouchers();
           } else {
-            salesController.getAllVouchers(map: daterangeCalculate(value));
+            salesController.getAllVouchers(map: daterangeCalculate(date));
           }
         },
+        selectedItem: 'Today',
+        popupProps: const PopupProps.menu(
+          showSearchBox: false,
+        ),
       ),
     );
   }

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:win_pos/contact/customer/controller/customer_controller.dart';
+import 'package:win_pos/contact/customer/screens/customer_add_screen.dart';
 import 'package:win_pos/core/screens/print_screen.dart';
 import 'package:win_pos/payment/controller/payment_controller.dart';
+import 'package:win_pos/payment/screens/payment_add_screen.dart';
 import 'package:win_pos/sales/controller/sales_detail_controller.dart';
 import 'package:win_pos/shop/shop_info_controller.dart';
 import 'package:win_pos/shop/shop_model.dart';
@@ -21,8 +23,8 @@ class SalesSaveScreen extends StatelessWidget {
   ShopInfoController shopInfoController = Get.find();
   SalesDetailController salesDetailController = Get.put(SalesDetailController());
   //
-  CustomerController customerController = CustomerController();
-  PaymentController paymentController = PaymentController();
+  CustomerController customerController = Get.put(CustomerController());
+  PaymentController paymentController = Get.put(PaymentController());
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController netAmountController = TextEditingController();
@@ -46,7 +48,7 @@ class SalesSaveScreen extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Save Vouchers"),
+        title: const Text("Save Sales Voucher"),
         // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
@@ -66,13 +68,27 @@ class SalesSaveScreen extends StatelessWidget {
           margin: const EdgeInsets.all(10),
           child: Column(
             children: [
-              customersBox(),
+              Row(
+                children: [
+                  Expanded(child: customersBox()),
+                  IconButton(onPressed: (){
+                    Get.to(()=>CustomerAddScreen());
+                  }, icon: const Icon(Icons.add_circle)),
+                ],
+              ),
               const SizedBox(height: 10),
               infoBox(controller: phoneController, text: "Phone"),
               const SizedBox(height: 10),
               infoBox(controller: addressController, line: 2, text: "Address"),
               const SizedBox(height: 10),
-              paymentBox(),
+              Row(
+                children: [
+                  Expanded(child: paymentBox()),
+                  IconButton(onPressed: (){
+                    Get.to(()=>PaymentAddScreen());
+                  }, icon: const Icon(Icons.add_circle)),
+                ],
+              ),
               const SizedBox(height: 10),
               infoBox(controller: netAmountController, text: "Net Price"),
               const SizedBox(height: 10),
