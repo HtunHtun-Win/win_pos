@@ -222,7 +222,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(expense.note.toString()),
+              Expanded(child: Text(expense.note.toString(),overflow: TextOverflow.ellipsis,)),
+              const SizedBox(width: 30),
               Text(prettyDate(expense.createdDate.toString())),
             ],
           ),

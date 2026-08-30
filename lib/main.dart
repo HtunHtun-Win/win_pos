@@ -5,7 +5,6 @@ import 'package:win_pos/core/database/db_helper.dart';
 import 'package:win_pos/setting/controller/printer_controller.dart';
 import 'package:win_pos/user/screens/splash_screen.dart';
 import 'package:get/get.dart';
-
 void main() {
   if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI

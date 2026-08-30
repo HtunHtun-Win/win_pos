@@ -8,6 +8,7 @@ class AiChatController extends GetxController {
   final AiDatabaseService _databaseService = AiDatabaseService();
 
   final messages = <AiChatMessage>[].obs;
+  var history = "";
 
   final isLoading = false.obs;
   final isUpdatingData = false.obs;
@@ -24,6 +25,10 @@ class AiChatController extends GetxController {
     await updateAiData();
 
     isInitialized.value = true;
+  }
+
+  void addToHistory(String text){
+    history = "$history \n $text";
   }
 
   /// Read the latest SQLite data.
@@ -65,7 +70,7 @@ class AiChatController extends GetxController {
     try {
       isLoading.value = true;
 
-      final prompt = _buildPrompt(question);
+      final prompt = _buildPrompt(question,history);
 
       final answer = await _aiService.generateText(prompt);
 
@@ -75,6 +80,9 @@ class AiChatController extends GetxController {
           isUser: false,
         ),
       );
+      //store last request and response
+      addToHistory(question);
+      addToHistory(answer);
     } catch (e) {
       messages.add(
         AiChatMessage(
@@ -88,17 +96,18 @@ class AiChatController extends GetxController {
     }
   }
 
-  String _buildPrompt(String currentQuestion) {
+  String _buildPrompt(String currentQuestion,String history) {
     // Build the conversation history from existing messages
     // Excluding the very last message since it is the current question we are appending at the bottom.
-    final historyBuffer = StringBuffer();
-    if (messages.length > 1) {
-      for (int i = 0; i < messages.length - 1; i++) {
-        final msg = messages[i];
-        final role = msg.isUser ? 'USER' : 'ASSISTANT';
-        historyBuffer.writeln('$role: ${msg.text}\n');
-      }
-    }
+
+    // final historyBuffer = StringBuffer();
+    // if (messages.length > 1) {
+    //   for (int i = 0; i < messages.length - 1; i++) {
+    //     final msg = messages[i];
+    //     final role = msg.isUser ? 'USER' : 'ASSISTANT';
+    //     historyBuffer.writeln('$role: ${msg.text}\n');
+    //   }
+    // }
 
     return '''
 You are the AI business assistant for a Point of Sale (POS) application.
@@ -126,7 +135,7 @@ $_databaseContext
 END POS DATABASE DATA.
 
 CONVERSATION HISTORY:
-${historyBuffer.toString().isEmpty ? 'No previous conversation.' : historyBuffer.toString()}
+${history.isEmpty ? 'No previous conversation.' : history}
 
 USER QUESTION:
 
