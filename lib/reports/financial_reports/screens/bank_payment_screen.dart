@@ -39,7 +39,7 @@ class BankPaymentScreen extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 14),
             child: Row(
               children: [
                 Expanded(child: Obx(() => paymentBox())),
@@ -48,12 +48,7 @@ class BankPaymentScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: _TableHeader(),
-          ),
-          const Divider(),
+          const _TableHeader(),
           Expanded(
             child: Obx(() {
               return SmartRefresher(
@@ -80,9 +75,10 @@ class BankPaymentScreen extends StatelessWidget {
                     refreshController.loadComplete();
                   }
                 },
-                child: ListView.builder(
+                child: ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: controller.showVouchers.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     var voucher = controller.showVouchers[index];
                     return reportListTile(index: index + 1, voucher: voucher);
@@ -91,24 +87,40 @@ class BankPaymentScreen extends StatelessWidget {
               );
             }),
           ),
-          Obx(() {
-            return Container(
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Container(
               height: 56,
               decoration: BoxDecoration(
                 color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Center(
-                child: Text(
-                  'Total: ${controller.totalAmount}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Obx(
+                          () => Text(
+                        "${controller.totalAmount} MMK",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          }),
+            ),
+          ),
         ],
       ),
     );
@@ -117,10 +129,18 @@ class BankPaymentScreen extends StatelessWidget {
   Widget reportListTile({required int index, required SaleModel voucher}) {
     return InkWell(
       onTap: () => Get.to(()=>SalesDetail(voucher: voucher)),
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 3),
-        elevation: 1,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 14,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: Row(
@@ -207,18 +227,28 @@ class BankPaymentScreen extends StatelessWidget {
 
 class _TableHeader extends StatelessWidget {
   const _TableHeader();
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(child: Text('No.', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-        Expanded(flex: 2, child: Text('InvNo', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-        Expanded(flex: 2, child: Text('Payment', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-        Expanded(flex: 2, child: Text('Amount', style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold))),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Expanded(child: Text('No.', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(flex: 2, child: Text('InvNo', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(flex: 2, child: Text('Payment', style: TextStyle(fontWeight: FontWeight.w600))),
+              Expanded(flex: 2, child: Text('Amount', style: TextStyle(fontWeight: FontWeight.w600))),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
